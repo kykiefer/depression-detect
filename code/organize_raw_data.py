@@ -3,7 +3,7 @@ import zipfile
 import fnmatch
 
 
-def extract_files(zip_file, delete_zip=False):
+def extract_files(zip_file, out_dir, delete_zip=False):
     """
     A fucntion takes in a zip file and extracts the .wav file and transcript.csv into separate folders in the current working directory.
 
@@ -16,15 +16,14 @@ def extract_files(zip_file, delete_zip=False):
     -------
     Two directories. One named 'audio', containing the extracted wav files and one named 'transcripts' containing the extracted transcript csv files.
     """
-    cwd = os.getcwd()
-
     # create audio directory
-    audio_dir = os.path.join(cwd, 'audio')
+    audio_dir = os.path.join(out_dir, 'audio')
     if not os.path.exists(audio_dir):
         os.makedirs(audio_dir)
+    os.chdir(audio_dir)
 
     # create transcripts directory
-    transcripts_dir = os.path.join(cwd, 'transcripts')
+    transcripts_dir = os.path.join(out_dir, 'transcripts')
     if not os.path.exists(audio_dir):
         os.makedirs(transcripts_dir)
 
@@ -43,9 +42,10 @@ def extract_files(zip_file, delete_zip=False):
 
 if __name__ == '__main__':
     dir_name = '/Volumes/Seagate Backup Plus Drive/DAIC-WOZ/' # directory containing DIAC-WOZ zip files
+    out_dir = '/Users/ky/Desktop/depression-detect/raw_data'
     extension = ".zip"
 
     for file in os.listdir(dir_name):
         if file.endswith(extension):
             filename = os.path.join(dir_name, file)
-            extract_files(filename, delete_zip=False)
+            extract_files(filename, out_dir, delete_zip=False)
