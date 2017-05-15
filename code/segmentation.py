@@ -21,6 +21,7 @@ def silence_extraction(filename, out_dir, smoothing=1.0, weight=0.3, plot=False)
     audio_segments_dir = os.path.join(out_dir, 'audio_segments')
     if not os.path.exists(audio_segments_dir):
         os.makedirs(audio_segments_dir)
+
     os.chdir(audio_segments_dir)
 
     [Fs, x] = aIO.readAudioFile(filename)
@@ -34,8 +35,8 @@ def silence_extraction(filename, out_dir, smoothing=1.0, weight=0.3, plot=False)
 
 if __name__ == '__main__':
     dir_name = '/Users/ky/Desktop/depression-detect/raw_data/audio_test' # directory containing wav files
-    out_dir = '/Users/ky/Desktop/depression-detect/raw_data'
     extension = ".wav"
+    out_dir = '/Users/ky/Desktop/depression-detect/raw_data'
 
     for file in os.listdir(dir_name):
         if file.endswith(extension):

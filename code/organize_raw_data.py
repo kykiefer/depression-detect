@@ -20,12 +20,13 @@ def extract_files(zip_file, out_dir, delete_zip=False):
     audio_dir = os.path.join(out_dir, 'audio')
     if not os.path.exists(audio_dir):
         os.makedirs(audio_dir)
-    os.chdir(audio_dir)
 
     # create transcripts directory
     transcripts_dir = os.path.join(out_dir, 'transcripts')
     if not os.path.exists(audio_dir):
         os.makedirs(transcripts_dir)
+
+    os.chdir(audio_dir)
 
     # save relevant zip files into relevant directory
     zip_ref = zipfile.ZipFile(zip_file)
@@ -42,8 +43,8 @@ def extract_files(zip_file, out_dir, delete_zip=False):
 
 if __name__ == '__main__':
     dir_name = '/Volumes/Seagate Backup Plus Drive/DAIC-WOZ/' # directory containing DIAC-WOZ zip files
-    out_dir = '/Users/ky/Desktop/depression-detect/raw_data'
     extension = ".zip"
+    out_dir = '/Users/ky/Desktop/depression-detect/raw_data'
 
     for file in os.listdir(dir_name):
         if file.endswith(extension):

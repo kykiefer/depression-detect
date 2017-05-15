@@ -1,10 +1,10 @@
 from pyAudioAnalysis import audioBasicIO as aIO
 from pyAudioAnalysis import audioFeatureExtraction as aF
-import matplotlib.pyplot as plt
+import os
 
 
 """
-This script iterates through the 189 wav files provided and extracts short-term audio features as numpy matrices of shape (numOfFeatures x numOfShortTermWindows). pyAudioAnalysis provides 34 features (rows) for extraction.
+This script iterates through the wav files provided and extracts short-term audio features as numpy matrices of shape (numOfFeatures x numOfShortTermWindows). pyAudioAnalysis provides 34 features (rows) for extraction.
 """
 
 def st_feature_extraction(filename, frame_size=50, step=25):
@@ -29,7 +29,6 @@ def st_feature_extraction(filename, frame_size=50, step=25):
     st_features = aF.stFeatureExtraction(x, Fs, frame_size/1000.*Fs, step/1000.*Fs)
     return st_features
 
-
 if __name__ == '__main__':
-    filename = "sample_clips/P369_happy_clip.wav"
+    filename = '/Users/ky/Desktop/depression-detect/raw_data/audio_segments/P303_50.50-51.82.wav'
     happy = st_feature_extraction(filename)
