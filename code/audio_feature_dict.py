@@ -1,3 +1,9 @@
+"""
+A dictiionary of the short-term features available for extraction using pyAudioAnalysis. Descriptions of features availbe here:
+https://github.com/tyiannak/pyAudioAnalysis/wiki/3.-Feature-Extraction
+"""
+
+
 st_feat_dict = {0: 'zero_crossing_rate',
                 1: 'energy',
                 2: 'entropy_of_energy',

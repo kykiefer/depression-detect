@@ -1,7 +1,7 @@
-from pyAudioAnalysis import audioBasicIO
-from pyAudioAnalysis import audioFeatureExtraction
-from audio_feature_dict import st_feat_dict
+from pyAudioAnalysis import audioBasicIO as aIO
+from pyAudioAnalysis import audioFeatureExtraction as aF
 import matplotlib.pyplot as plt
+
 
 """
 This script iterates through the 189 wav files provided and extracts short-term audio features as numpy matrices of shape (numOfFeatures x numOfShortTermWindows). pyAudioAnalysis provides 34 features (rows) for extraction.
@@ -25,8 +25,8 @@ def st_feature_extraction(filename, frame_size=50, step=25):
     st_features : numpy array
         array of numOfFeatures x numOfShortTermWindows
     """
-    [Fs, x] = audioBasicIO.readAudioFile(filename) # get [sample freq, signal]
-    st_features = audioFeatureExtraction.stFeatureExtraction(x, Fs, frame_size/1000.*Fs, step/1000.*Fs)
+    [Fs, x] = aIO.readAudioFile(filename) # get [sample freq, signal]
+    st_features = aF.stFeatureExtraction(x, Fs, frame_size/1000.*Fs, step/1000.*Fs)
     return st_features
 
 
