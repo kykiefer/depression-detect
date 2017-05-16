@@ -28,7 +28,3 @@ def st_feature_extraction(filename, frame_size=50, step=25):
     [Fs, x] = aIO.readAudioFile(filename) # get [sample freq, signal]
     st_features = aF.stFeatureExtraction(x, Fs, frame_size/1000.*Fs, step/1000.*Fs)
     return st_features
-
-if __name__ == '__main__':
-    filename = '/Users/ky/Desktop/depression-detect/raw_data/audio_segments/P303_50.50-51.82.wav'
-    happy = st_feature_extraction(filename)

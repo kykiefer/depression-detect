@@ -34,7 +34,7 @@ def silence_extraction(filename, out_dir, smoothing=1.0, weight=0.3, plot=False)
 
 
 if __name__ == '__main__':
-    dir_name = '/Users/ky/Desktop/depression-detect/raw_data/audio_test' # directory containing wav files
+    dir_name = '/Users/ky/Desktop/depression-detect/raw_data/audio' # directory containing wav files
     extension = ".wav"
     out_dir = '/Users/ky/Desktop/depression-detect/raw_data'
 

@@ -7,7 +7,13 @@
 This script takes the zipfiles and runs through data organization, silence removal (semgentation), feature extraction, building model inputs, through model validation. It is meant to be used as a script to trace the workflow and for one-stop shop for parameter/hyperparemeter tuning.
 """
 
-import organize_raw data
 # starting with a folder of all the zip files from the DAIC-WOZ database extract the wav files and transcript csvs
 
-dir_name = '/Volumes/Seagate Backup Plus Drive/DAIC-WOZ/' # directory containing DIAC-WOZ zip files
+# starting with a folder of all the zip files from the DAIC-WOZ database extract the wav files and transcript csvs
+python organize_raw_data.py
+
+# segmentation removes silence from clips and and saves the segmented wav files
+python segmentation.py
+
+# builds a feature matrix from the segmented wav files
+python build_ml_inputs.py
