@@ -9,7 +9,8 @@ __pycache__/
 .DS_Store
 
 # Folders
-data/
+data/interim
+data/raw
 references/
 src/obsolete/
 
