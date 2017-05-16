@@ -21,7 +21,7 @@ def assemble_dfs(dir_name, extension):
             df = build_df(filename) # build df for segment
             final_df_ls.append(df)
     final_df = pd.concat(final_df_ls, axis=0)
-    final_df.to_csv('')
+    final_df.to_csv('train.csv', index=False)
     return final_df
 
 def build_df(filename):
