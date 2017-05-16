@@ -10,8 +10,8 @@ __pycache__/
 
 # Folders
 /data/*
-!data/processed/*
-!data/processed/*
+!/data/processed/*
+
 /references/
 /src/obsolete/
 
