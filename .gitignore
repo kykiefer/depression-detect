@@ -9,11 +9,9 @@ __pycache__/
 .DS_Store
 
 # Folders
-/data/*
-!data/processed
-
+/data/raw
+/data/interim
 /references/
-
 /src/obsolete/
 
 # csv
