@@ -1,11 +1,11 @@
 # Detecting Depression From Acoustic Features
 
-Depression detections...
+A automated device for detecting depression from acoustic features in speech seeks to lower the barrier of entry of seeking help for potential mental illness and reinforce a medical professional's diagnosis. Early detection and treatment of depression is essential in promoting remission, preventing relapse, and reducing the emotional burden of a disease. Current diagnoses are primarily subjective and early signs of depression are difficult for humans to quantify (i.e. changes in vocal inflection) but have potential to be quantified by machine learning algorithms in a wearable device.
 
 ## Table of Contents
 1. [Dataset](#dataset)
-2. [MRI Background](#mri-background)
-    * [MRI Pre-Processing](#mri-pre-processing)
+2. [Acoustic Features of Depressed Speech](#acoustic-features-of-depressed-speech)
+    * [Segmentation](#segmentation)
     * [Pulse Sequences](#pulse-sequences)
     * [Segmentation](#segmentation)
 3. [High Grade Gliomas](#high-grade-gliomas)
@@ -28,13 +28,17 @@ All audio recordings and associated depression metrics were provided by the [DAI
 
 > **Participant** Yeah, he is a uh. He’s a very he’s a man of few words. And uh he's very calm. Slow to anger. And um very warm very loving man. Responsible. And uh he’s a gentleman has a great sense of style and he’s a great cook.
 
-## MRI Background
+<img alt="Virtual interview with Ellie" src="images/interview_with_ellie.png" width='400'>
 
-Magnetic Resonance Imaging (MRI) is the most common diagnostic
+<sub><b>Figure 1: </b> Virtual interview with Ellie. </sub>  
 
-### MRI pre-processing ([code](https://github.com/naldeborgh7575/brain_segmentation/blob/master/code/brain_pipeline.py))
+## Acoustic Features of Depressed Speech
 
-One of the challenges in working with MRI data is dealing with
+While some research focuses on the semantic content of audio signals in predicting depression, I decided to focus on the prosodic features. Things that are detectable to a listener of in terms of pitch, loudness, speaking rate, rhythm, voice quality, and articulation. (cite Automated Audiovisual Depression Analysis). Some features that have been found to be strong predictors of depression include using short sentences, flat intonation, XXXX.
+
+### Segmentation ([code](https://github.com/kykiefer/depression-detect/blob/master/src/data/remove_silence.py))
+
+The first step in being able to analyze a person's prosodic features of speech is being able to segment the person's speech from silence, other speakers, and noise. Fortunately, the participant's in the DAIC-WOZ study were wearing close proximity microphones and were in low noise environments, which allowed for fairly complete segmentation using [pyAudioAnanlysis' segmentation module](https://github.com/tyiannak/pyAudioAnalysis/wiki/5.-Segmentation). When implementing the algorithm in a wearable, [speaker diarisation](https://en.wikipedia.org/wiki/Speaker_diarisation) and background noise would obviously have to be accounted for, but in interest of establishing an minimum viable product, testing and tuning for robustness was sacrificed.
 
 ### Pulse sequences
 There are multiple radio frequency pulse sequences that can be

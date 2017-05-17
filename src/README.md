@@ -1,3 +1,3 @@
-# Detecting Depression Workflow
+# Depression Detect Workflow
 
 Below is the basic workflow.
