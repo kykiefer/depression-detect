@@ -2,10 +2,10 @@
 
 """ This script creates spectrograms from wave files that can be passed to the CNN. It is necessary to run the script in a Python2 environment. """
 
-import numpy as np
 from matplotlib import pyplot as plt
-import scipy.io.wavfile as wav
+import numpy as np
 from numpy.lib import stride_tricks
+import scipy.io.wavfile as wav
 
 """ short time fourier transform of audio signal """
 def stft(sig, frameSize, overlapFac=0.5, window=np.hanning):
@@ -59,7 +59,6 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
     ims = 20.*np.log10(np.abs(sshow)/10e-6) # amplitude to decibel
 
     timebins, freqbins = np.shape(ims)
-
     plt.figure(figsize=(15, 7.5))
     plt.imshow(np.transpose(ims), origin="lower", aspect="auto", cmap=colormap, interpolation="none")
     plt.colorbar()
@@ -84,5 +83,5 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
 ''' Iterate throught wave files and save spectrograms '''
 if __name__ == '__main__':
     plt.close('all')
-    audiopath = '/Users/ky/Desktop/depression-detect/data/testing/P302_332.90-334.82.wav'
-    plotstft(audiopath, plotpath='spectrogram.png')
+    audiopath = '/Users/ky/Desktop/depression-detect/data/testing/P303_131.70-143.18.wav'
+    plotstft(audiopath)

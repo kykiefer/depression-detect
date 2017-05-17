@@ -32,12 +32,12 @@ While some research focuses on the semantic content of audio signals in predicti
 
 ### Segmentation ([code](https://github.com/kykiefer/depression-detect/blob/master/src/data/remove_silence.py))
 
-The first step in being able to analyze a person's prosodic features of speech is being able to segment the person's speech from silence, other speakers, and noise. Fortunately, the participant's in the DAIC-WOZ study were wearing close proximity microphones and were in low noise environments, which allowed for fairly complete segmentation using [pyAudioAnanlysis' segmentation module](https://github.com/tyiannak/pyAudioAnalysis/wiki/5.-Segmentation). When implementing the algorithm in a wearable, [speaker diarisation](https://en.wikipedia.org/wiki/Speaker_diarisation) and background noise would obviously have to be accounted for, but in interest of establishing an minimum viable product, testing and tuning for segmentation robustness was sacrificed.
+The first step in being able to analyze a person's prosodic features of speech is being able to segment the person's speech from silence, other speakers, and noise. Fortunately, the participant's in the DAIC-WOZ study were wearing close proximity microphones and were in low noise environments, which allowed for fairly complete segmentation using [pyAudioAnanlysis' segmentation module](https://github.com/tyiannak/pyAudioAnalysis/wiki/5.-Segmentation). When implementing the algorithm in a wearable, [speaker diarisation](https://en.wikipedia.org/wiki/Speaker_diarisation) and background noise would obviously have to be accounted for, but in interest of establishing a minimum viable product, extensive testing and tuning for segmentation robustness was sacrificed.
 
 ### Feature Extraction
 There are multiple radio frequency pulse sequences that can be
 
-<img alt="Spectrogram" src="images/spectrogram.png" width='400'>
+<img alt="Spectrogram" src="images/spectrogram.png" width='600'>
 
 <sub><b>Figure 2: </b> Spectrogram of man saying "Watching different TV shows". </sub>  
 
