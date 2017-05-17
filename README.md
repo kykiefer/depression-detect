@@ -37,6 +37,10 @@ The first step in being able to analyze a person's prosodic features of speech i
 ### Feature Extraction
 There are multiple radio frequency pulse sequences that can be
 
+<img alt="Spectrogram" src="images/spectrogram.png" width='400'>
+
+<sub><b>Figure 2: </b> Spectrogram of man saying "Watching different TV shows". </sub>  
+
 ## Convolutional Neural Networks
 Place holder
 
