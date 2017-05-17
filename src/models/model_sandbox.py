@@ -7,7 +7,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 
 df = pd.read_csv('/Users/ky/Desktop/depression-detect/raw_data/train.csv')
-y = df.pop('labels')
+y = df.pop('target')
 X = df
 
 # perform stratifid test train split
