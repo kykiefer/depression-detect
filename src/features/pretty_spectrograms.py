@@ -83,5 +83,5 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
 ''' Iterate throught wave files and save spectrograms '''
 if __name__ == '__main__':
     plt.close('all')
-    audiopath = '/Users/ky/Desktop/depression-detect/data/testing/P303_131.70-143.18.wav'
+    audiopath = '/Users/ky/Desktop/depression-detect/data/testing/doremi.wav'
     plotstft(audiopath)

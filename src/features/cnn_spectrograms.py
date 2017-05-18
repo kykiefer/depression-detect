@@ -1,12 +1,16 @@
 """ This work is licensed under a Creative Commons Attribution 3.0 Unported License. Frank Zalkow, 2012-2013 """
 
-""" This script creates spectrograms from wave files that can be passed to the CNN. It is necessary to run the script in a Python2 environment. """
+"""
+This script creates spectrograms from wave files that can be passed to the CNN. This was heavily adapted form Frank Zalkow's work. I just dropped the matplotlib plotting and added in the PIL functionality so that the .pngs can be passed to a CNN.
+"""
 
 from matplotlib import pyplot as plt
 import numpy as np
 from numpy.lib import stride_tricks
+import os
 from PIL import Image
 import scipy.io.wavfile as wav
+
 
 """ short time fourier transform of audio signal """
 def stft(sig, frameSize, overlapFac=0.5, window=np.hanning):
@@ -52,7 +56,7 @@ def logscale_spec(spec, sr=44100, factor=20.):
     return newspec, freqs
 
 """ plot spectrogram"""
-def plotstft(audiopath, binsize=2**10, name='tmp.png', offset=0):
+def plotstft(audiopath, binsize=2**10, png_name='tmp.png', offset=0):
     samplerate, samples = wav.read(audiopath)
     s = stft(samples, binsize)
 
@@ -65,29 +69,17 @@ def plotstft(audiopath, binsize=2**10, name='tmp.png', offset=0):
     # ims = ims[0:256, offset:offset+768] # 0-11khz, ~9s interval
 
     image = Image.fromarray(ims)
-    image = image.convert('L')
-    image.save(name)
-
-    #plot
-    plt.imshow(ims, origin="lower", aspect="auto", cmap='jet', interpolation="none")
-    plt.colorbar()
-
-    plt.xlabel("time (s)")
-    plt.ylabel("frequency (hz)")
-    plt.xlim([0, timebins-1])
-    plt.ylim([0, freqbins])
-
-    xlocs = np.float32(np.linspace(0, timebins-1, 5))
-    plt.xticks(xlocs, ["%.02f" % l for l in ((xlocs*len(samples)/timebins)+(0.5*binsize))/samplerate])
-    ylocs = np.int16(np.round(np.linspace(0, freqbins-1, 10)))
-    plt.yticks(ylocs, ["%.02f" % freq[i] for i in ylocs])
-
-    plt.show()
-
-
+    image = image.convert('L') # convert to grayscale
+    image.save(png_name)
 
 ''' Iterate throught wave files and save spectrograms '''
 if __name__ == '__main__':
-    plt.close('all')
-    audiopath = '/Users/ky/Desktop/depression-detect/data/testing/P303_131.70-143.18.wav'
-    plotstft(audiopath)
+    rootdir = '/Users/ky/Desktop/depression-detect/data/interim'
+
+    for subdir, dirs, files in os.walk(rootdir):
+        for file in files:
+            if file.endswith('.wav'):
+                wav_file = os.path.join(subdir, file)
+                png_name = subdir + '/' + file[:-4] + '.png'
+                print 'Processing ' + file + '...'
+                plotstft(wav_file, png_name=png_name)
