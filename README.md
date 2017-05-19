@@ -6,6 +6,7 @@ A automated device for detecting depression from acoustic features in speech see
 2. [Acoustic Features of Depressed Speech](#acoustic-features-of-depressed-speech)
     * [Segmentation](#segmentation-code)
     * [Feature Extraction](#feature-extraction)
+    * [Class Imbalance](#class-imbalance)
 3. [Convolutional Neural Networks](#convolutional-neural-networks)
     * [Model Architecture](#model-architecture)
     * [Training the Model](#training-the-model)  
@@ -28,7 +29,7 @@ All audio recordings and associated depression metrics were provided by the [DAI
 <sub><b>Figure 1: </b> Virtual interview with Ellie. </sub>  
 
 ## Acoustic Features of Depressed Speech
-While some research focuses on the semantic content of audio signals in predicting depression, I decided to focus on the [prosodic](https://en.wikipedia.org/wiki/Prosody_(linguistics) features. Things that are detectable to a listener of in terms of pitch, loudness, speaking rate, rhythm, voice quality, and articulation. (cite Automated Audiovisual Depression Analysis). Some features that have been found to be promising predictors of depression include using short sentences, flat intonation, fundamental frequency, Mel frequency cepstral coefficients ([MFCCs](https://en.wikipedia.org/wiki/Mel-frequency_cepstrum)).
+While some research focuses on the semantic content of audio signals in predicting depression, I decided to focus on the [prosodic](http://clas.mq.edu.au/speech/phonetics/phonology/intonation/prosody.html) features. Things that are detectable to a listener of in terms of pitch, loudness, speaking rate, rhythm, voice quality, and articulation. (cite Automated Audiovisual Depression Analysis). Some features that have been found to be promising predictors of depression include using short sentences, flat intonation, fundamental frequency, Mel frequency cepstral coefficients ([MFCCs](https://en.wikipedia.org/wiki/Mel-frequency_cepstrum)).
 
 ### Segmentation ([code](https://github.com/kykiefer/depression-detect/blob/master/src/data/remove_silence.py))
 
@@ -43,6 +44,17 @@ The state of the art emotion and language detection models seem to be using neur
 
 <img alt="Spectrogram" src="images/spectrogram.png" width='700'>
 <sub><b>Figure 2: </b> Spectrogram of man saying "Watching different TV shows". </sub>  
+
+### Class Imbalance
+There exists a large imbalance between positive and negative samples, which incurs a large bias in classification. The number of non-depressed subjects is about four times bigger than that of depressed ones. If these samples are used directly for learning, the model will have a strong bias to the non-depressed class. Additionally, the interview lengths vary from 7-33min. A larger volume of signal may emphasize some characteristics that are person specific.
+
+To solve the problem, I perform random cropping on each of the participant's spectrograms of a specified width (time) and constant height (frequency), to ensure the CNN has an equal proportion for every subject and each class. ELABORATE ONCE FINISHED!!!!!!
+
+<img alt="Random Sampling Method" src="images/random_sampling_method.png" width='400'>
+
+<sub><b>Figure 3: </b> Random sampling depicted with audio signals. Actually performed on spectrograms. [Source](https://www.researchgate.net/publication/309127735_DepAudioNet_An_Efficient_Deep_Model_for_Audio_based_Depression_Classification). </sub>  
+
+This random sampling method was entirely inspired by [DepAudioNet: An Efficient Deep Model for Audio based Depression Classification](https://www.researchgate.net/publication/309127735_DepAudioNet_An_Efficient_Deep_Model_for_Audio_based_Depression_Classification), after quick establishment of model bias to the non-depressed class.
 
 ## Convolutional Neural Networks
 Place holder
@@ -61,14 +73,20 @@ The model yields promising results...
 
 I envision the model being implemented in a wearable device. The device prompts you to answer a simple question in the morning and a simple question before bed on a daily basis. The model stores your predicted depression score and tracks it over time such that the model can learn from your baseline (using a Bayesian approach). If a threshold is crossed, it notifies you to seek help or in extreme cases where action is not being taken, notifies an emergency contact to help you help yourself.
 
-I'm currently excited about the results and and will be monitoring pull requests. However, accessing the DAIC-WOZ database requires signing an agreement form. Access can be granted [here](http://dcapswoz.ict.usc.edu/).
+I'm currently excited about the results and and will be monitoring pull requests. However, accessing the DAIC-WOZ database requires signing an agreement form. Access can be granted [here](http://dcapswoz.ict.usc.edu/). To download the >70MB of zip files `cd` into your desired directory and run:
+
+```shell
+wget -r -np -nH --cut-dirs=3 -R index.html --user=daicwozuser --ask-password  http://dcapswoz.ict.usc.edu/wwwdaicwoz/
+```
+
 
 How I am prioritizing future efforts:
 1. Segmentation robustness
 2. Incorporate Vocal Tract Length Perturbation ([VTLP](http://www.cs.toronto.edu/~ndjaitly/jaitly-icml13.pdf))
 3. Combine CNN with LSTM
+4. Refactoring -- this code was initially written under a 2-week timeline and much usability was sacrificed in prioritizing obtaining a robust model.
 
 ## References
 
     1. Gratch J, Artstein R, Lucas GM, Stratou G, Scherer S, Nazarian A, Wood R, Boberg J, DeVault D, Marsella S, Traum DR. The Distress Analysis Interview Corpus of human and computer interviews. InLREC 2014 May (pp. 3123-3128)
-    2. Placeholder
+    2. X. Ma, H. Yang, Q. Chen, D. Huang, and Y. Wang: DepAudioNet: An Efficient Deep Model for Audio based Depression Classification, ACM International Conference on Multimedia (ACM-MM) Workshop: Audio/Visual Emotion Challenge (AVEC), Amsterdam, Netherlands, 2016.
