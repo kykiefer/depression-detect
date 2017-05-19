@@ -1,5 +1,6 @@
 from spectrogram_dicts import build_class_dictionaries
 from cnn_spectrograms import stft_matrix
+import numpy as np
 import os
 from dataframes import df_dev
 from PIL import Image
@@ -15,6 +16,8 @@ Some success has been found using random crops of 3-5 seconds [reference]. I'll 
 
 Reference: DeepAudioNet: An Efficient Deep Model for Audio based Depression Classification
 """
+
+np.random.seed(15) # for reproducibility
 
 def determine_num_crops(depressed_dict, crop_width=125):
     """
@@ -46,15 +49,35 @@ def sample_from_depressed_class(depressed_dict, n_samples, crop_width):
             partic_samples = []
             print(partic_id)
             samples = random_non_overlapping_samples(clip_mat, n_samples, crop_width)
-            depressed_samples[partic_id] = partic_samples
+            depressed_samples[partic_id] = samples
+    return depressed_samples
 
 def random_non_overlapping_samples(matrix, n_samples, crop_width):
-    print(matrix)
-    print(n_samples)
+    """
+    Get N pseudo-random samples with width of crop_width from the numpy matrix representing the partiipants audio spectrogram.
+    """
+    width = matrix.shape[1]
+    freedom = width - (n_samples * crop_width) # total width - width to be sampled
+    print(width)
+    print('{} samples with {} crop width'.format(n_samples, crop_width))
+    print('{} pixels of freedom'.format(freedom))
+
+    partic_samples = []
+    start_col = 0
+    for sample in range(n_samples):
+        offset = np.random.randint(0, freedom) # randomness gets eaten up pretty quickly -- come back to this...maybe okay
+        freedom -= offset # remaining freedom
+        start_col += offset
+        end_col = start_col + crop_width
+        crop = matrix[:, start_col:end_col] # all frquency bins; specified time slice
+        partic_samples.append(crop)
+        start_col += crop_width
+    return partic_samples
+
 
 
 if __name__ == '__main__':
     crop_width = 125 # 125 pixels = 4 seconds of audio
     depressed_dict, normal_dict = build_class_dictionaries('/Users/ky/Desktop/depression-detect/data/interim')
     n_samples = determine_num_crops(depressed_dict, crop_width=crop_width)
-    sample_from_depressed_class(depressed_dict, n_samples, crop_width)
+    depressed_samples = sample_from_depressed_class(depressed_dict, n_samples, crop_width)
