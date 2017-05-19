@@ -4,18 +4,18 @@ import zipfile
 
 
 """
-A script iterates through a directory of the 189 DAIC-WOZ partcipiant zip files and extracts the wav and transcipt files relavant to analysis.
+A script iterates through a directory of the 189 DAIC-WOZ partcipiant zip files and extracts the wav and transcipt files.
 """
 
 def extract_files(zip_file, out_dir, delete_zip=False):
     """
-    A fucntion takes in a zip file and extracts the .wav file and *TRANSCRIPT.csv files into separate folders in the a user specified directory.
+    A fucntion takes in a zip file and extracts the .wav file and *TRANSCRIPT.csv files into separate folders in the user specified directory (out_dir).
 
     Parameters
     ----------
-    zip_file : string
+    zip_file : filepath
         path to the input zip file
-    out_dir : string
+    out_dir : filepath
         path to the desired directory (where audio and transcipt folders will be created)
     delete_zip : bool
         If true, deletes the zip file onces relevant files are extracted
@@ -50,11 +50,13 @@ def extract_files(zip_file, out_dir, delete_zip=False):
 
 
 if __name__ == '__main__':
-    dir_name = '/Volumes/Seagate Backup Plus Drive/DAIC-WOZ/' # directory containing DIAC-WOZ zip files
-    extension = '.zip'
+    # directory containing DIAC-WOZ zip files
+    dir_name = '/Volumes/Seagate Backup Plus Drive/DAIC-WOZ/'
+    # directory where audio and transcripts folders will be created
     out_dir = '/Users/ky/Desktop/depression-detect/data/raw'
+    delete_zip = False # to save space on your drive make True
 
     for file in os.listdir(dir_name):
-        if file.endswith(extension):
+        if file.endswith('.zip'):
             zip_file = os.path.join(dir_name, file)
-            extract_files(zip_file, out_dir, delete_zip=False)
+            extract_files(zip_file, out_dir, delete_zip=delete_zip)

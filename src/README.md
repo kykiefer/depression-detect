@@ -1,8 +1,8 @@
 # Depression Detect Workflow
 
-Below is the basic workflow.
+Below is the basic workflow I performed. Many of the scripts use my specific file paths and will have to be altered to run on your machine.
 
-Gain access to the DAIC-WOZ data base and download the zip files to your project directory using:
+Gain access to the [DAIC-WOZ database](http://dcapswoz.ict.usc.edu/) and download the zip files to your project directory using:
 
 ```shell
 wget -r -np -nH --cut-dirs=3 -R index.html --user=daicwozuser --ask-password  http://dcapswoz.ict.usc.edu/wwwdaicwoz/
@@ -14,7 +14,7 @@ wget -r -np -nH --cut-dirs=3 -R index.html --user=daicwozuser --ask-password  ht
 2. run `segmentation.py` to create a segmented wave files with silence and the virtual interview's speech removed. Feature extraction is performed on the segmented wave files.
 
 ### Features
-3. `cnn_spectrograms` performs the short-time Fourier transform (STFT) into a spectrogram and and makes a matrix representation.
+3. `cnn_spectrograms.py` performs the short-time Fourier transform (STFT) into a spectrogram and and makes a matrix representation.
 
 4. `spectrogram_dicts.py` builds dictionaries with keys of participant ids for the each class and values with the matrix representation of the spectrogram.
 
