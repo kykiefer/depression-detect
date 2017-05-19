@@ -55,7 +55,7 @@ def get_samples_from_class(segmented_audio_dict, n_samples, crop_width):
     Returns
     -------
     class sample dict : dictionary
-        a dictionary of a class of particpants with keys of participant ids and values of a list of the croped samples from the matrices. The lists are n_samples long and the entiries within the list have dimension (numFrequencyBins * crop_width)
+        a dictionary of a class of particpants with keys of participant ids and values of a list of the croped samples from the specgrogram matrices. The lists are n_samples long and the entries within the list have dimension (numFrequencyBins * crop_width)
     """
     class_samples_dict = dict()
     for partic_id, clip_mat in segmented_audio_dict.iteritems():
@@ -86,7 +86,10 @@ def random_non_overlapping_samples(matrix, n_samples, crop_width):
         start_col += crop_width
     return partic_samples
 
-if __name__ == '__main__':
+def create_sample_dicts():
+    """
+    Utilizes the above function to return two dictionaries, depressed and normal. Each dictionary has only participants in the specific class, with participant ids as key, a values of a list of the croped samples from the spectorgram matrices. The lists are n_samples long and the entries within the list have dimension
+    """
     np.random.seed(15) # for reproducibility
     crop_width = 125 # 125 pixels = 4 seconds of audio
     # build dictonaries of participants and segmented audio matrix
@@ -96,3 +99,4 @@ if __name__ == '__main__':
     depressed_samples = get_samples_from_class(depressed_dict, n_samples, crop_width)
     # get n_sample pseudo-random samples from each non-depressed participant
     normal_samples = get_samples_from_class(normal_dict, n_samples, crop_width)
+    return depressed_samples, normal_samples
