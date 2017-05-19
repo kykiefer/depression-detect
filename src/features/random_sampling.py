@@ -1,5 +1,5 @@
 from spectrogram_dicts import build_class_dictionaries
-from cnn_spectrograms import stft_matrix
+from spectrograms import stft_matrix
 import numpy as np
 import os
 from dataframes import df_dev

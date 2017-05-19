@@ -1,4 +1,4 @@
-from cnn_spectrograms import stft_matrix
+from spectrograms import stft_matrix
 import os
 from dataframes import df_dev
 from PIL import Image
