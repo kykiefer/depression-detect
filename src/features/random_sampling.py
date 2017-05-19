@@ -69,7 +69,7 @@ def random_non_overlapping_samples(matrix, n_samples, crop_width):
     Get N pseudo-random samples with width of crop_width from the numpy matrix representing the partiipants audio spectrogram.
     """
     width = matrix.shape[1]
-    freedom = width - (n_samples * crop_width) # total width - width to be sampled
+    freedom = width - (n_samples * crop_width) # available width - width to be sampled
     # print(width)
     # print('{} samples with {} crop width'.format(n_samples, crop_width))
     # print('{} pixels of freedom'.format(freedom))
@@ -100,3 +100,12 @@ def create_sample_dicts():
     # get n_sample pseudo-random samples from each non-depressed participant
     normal_samples = get_samples_from_class(normal_dict, n_samples, crop_width)
     return depressed_samples, normal_samples
+
+def test_train_split(test_size=0.25):
+    depressed_samples, normal_samples = create_sample_dicts()
+    num_samp_from_minority_class = min(len(depressed_samples), len(normal_samples))
+    print('Your minority class has {} samples'.format(num_samp_from_minority_class))
+
+
+if __name__ == '__main__':
+    test_train_split(test_size=0.25)
