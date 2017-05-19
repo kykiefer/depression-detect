@@ -2,16 +2,16 @@
 
 Below is the basic workflow I performed. Many of the scripts use my specific file paths and will have to be altered to run on your machine.
 
-Gain access to the [DAIC-WOZ database](http://dcapswoz.ict.usc.edu/) and download the zip files to your project directory using:
+Gain access to the [DAIC-WOZ database](http://dcapswoz.ict.usc.edu/) and download the zip files to your project directory by running the following command in your shell:
 
 ```shell
 wget -r -np -nH --cut-dirs=3 -R index.html --user=daicwozuser --ask-password  http://dcapswoz.ict.usc.edu/wwwdaicwoz/
 ```
 
 ### Data
-1. run `extract_from_zip.py` to extract the wave files and transcript csv's from the zip files.
+1. Run `extract_from_zip.py` to extract the wav files of the interviews and interview transcription csv files from the zip files.
 
-2. run `segmentation.py` to create a segmented wave files with silence and the virtual interview's speech removed. Feature extraction is performed on the segmented wave files.
+2. Run `segmentation.py` to create segmented wav files for each participant (silence and the virtual interview's speech removed). Feature extraction is performed on the segmented wav files.
 
 ### Features
 3. `cnn_spectrograms.py` performs the short-time Fourier transform (STFT) into a spectrogram and and makes a matrix representation.
