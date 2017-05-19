@@ -86,8 +86,6 @@ def create_png(im_matrix, png_name):
     image = image.convert('L') # convert to grayscale
     image.save(png_name)
 
-
-''' Iterate throught wave files and save spectrograms '''
 if __name__ == '__main__':
     rootdir = '/Users/ky/Desktop/depression-detect/data/interim'
 

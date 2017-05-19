@@ -1,4 +1,5 @@
-from class_imbalance import get_class_imbalance
+from spectrogram_dicts import build_class_dictionaries
+from cnn_spectrograms import stft_matrix
 import os
 from dataframes import df_dev
 from PIL import Image
@@ -35,7 +36,8 @@ def crop_image(png_file, out_png):
     # img2.save("img2.png")
 
 if __name__ == '__main__':
-    # directory containing participant's folders (which contains the no_silence.png)
+    # directory containing participant's folders (which contains the no_silence.wav)
     rootdir = '/Users/ky/Desktop/depression-detect/data/interim'
     depressed_dict, normal_dict = get_class_imbalance(rootdir)
-    deterimine_how_many_samples_to_crop_from_each_particpant(depressed_dict, normal_dict)
+    # deterimine_how_many_samples_to_crop_from_each_particpant(depressed_dict, normal_dict)
+    compile_spectrogram_matrices()
