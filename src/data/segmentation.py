@@ -6,7 +6,7 @@ import wave
 
 
 """
-A script that iterates through the wav files and uses pyAudioAnalysis' silence extraction module to make wav files of segments when the participant is speaking and concatenates them into a single wave file.
+A script that iterates through the wav files and uses pyAudioAnalysis' silence extraction module to make a wav file containing the segmented audio (when the particpant is speaking -- silence and virtual interviewer speech removed)
 """
 
 
