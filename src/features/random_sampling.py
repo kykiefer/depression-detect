@@ -12,12 +12,11 @@ To solve the problem, I perform random cropping on each of the participant's spe
 
 The size of the Hanning window is 1024, and the audio sample rate is 16000 Hz, which leads to a covering domain of 1024/16000 Hz=0.064s; accordingly, the hop size is 32ms, half of the analysis window. Meaning each pixel of width represents 32ms.
 
-Some success has been found using random crops of 3-5 seconds [reference]. I'll start with 4 seconds and tune it like a hyperparameter. A width of 4 seconds means 4/0.032 = 125 pixel window size.
+Some success has been found using random crops of 3-5 seconds [1]. I'll start with 4 seconds and tune it like a hyperparameter. A width of 4 seconds means 4/0.032 = 125 pixel window size.
 
-Reference: DeepAudioNet: An Efficient Deep Model for Audio based Depression Classification
+[1] DeepAudioNet: An Efficient Deep Model for Audio based Depression Classification
 """
 
-np.random.seed(15) # for reproducibility
 
 def determine_num_crops(depressed_dict, crop_width=125):
     """
@@ -40,17 +39,30 @@ def determine_num_crops(depressed_dict, crop_width=125):
     num_samples_from_clips = shortest_pixel_width / crop_width
     return num_samples_from_clips
 
-def sample_from_depressed_class(depressed_dict, n_samples, crop_width):
+def get_samples_from_class(segmented_audio_dict, n_samples, crop_width):
     """
-    From the minority (depressed class) get N (num_samples_from_clips) random non-overlapping samples from the all the depressed participants.
+    Get N (num_samples) pseudo random non-overlapping samples from the all the depressed participants.
+
+    Parameters
+    ----------
+    segmented_audio_dict : dictionary
+        a dictionary of a class of particpants with keys of participant ids and values of the segmented audio matrix spectrogram representation
+    n_samples : integer
+        number of pseudo-random non-overlapping samples to extract from each segmented audio matrix spectrogram
+    crop_width : integer
+        the desired pixel width of the crop samples (125 pixes = 4 seconds of audio)
+
+    Returns
+    -------
+    class sample dict : dictionary
+        a dictionary of a class of particpants with keys of participant ids and values of a list of the croped samples from the matrices. The lists are n_samples long and the entiries within the list have dimension (numFrequencyBins * crop_width)
     """
-    depressed_samples = dict()
-    for partic_id, clip_mat in depressed_dict.iteritems():
-            partic_samples = []
-            print(partic_id)
+    class_samples_dict = dict()
+    for partic_id, clip_mat in segmented_audio_dict.iteritems():
+            # print(partic_id)
             samples = random_non_overlapping_samples(clip_mat, n_samples, crop_width)
-            depressed_samples[partic_id] = samples
-    return depressed_samples
+            class_samples_dict[partic_id] = samples
+    return class_samples_dict
 
 def random_non_overlapping_samples(matrix, n_samples, crop_width):
     """
@@ -58,9 +70,9 @@ def random_non_overlapping_samples(matrix, n_samples, crop_width):
     """
     width = matrix.shape[1]
     freedom = width - (n_samples * crop_width) # total width - width to be sampled
-    print(width)
-    print('{} samples with {} crop width'.format(n_samples, crop_width))
-    print('{} pixels of freedom'.format(freedom))
+    # print(width)
+    # print('{} samples with {} crop width'.format(n_samples, crop_width))
+    # print('{} pixels of freedom'.format(freedom))
 
     partic_samples = []
     start_col = 0
@@ -74,10 +86,13 @@ def random_non_overlapping_samples(matrix, n_samples, crop_width):
         start_col += crop_width
     return partic_samples
 
-
-
 if __name__ == '__main__':
+    np.random.seed(15) # for reproducibility
     crop_width = 125 # 125 pixels = 4 seconds of audio
+    # build dictonaries of participants and segmented audio matrix
     depressed_dict, normal_dict = build_class_dictionaries('/Users/ky/Desktop/depression-detect/data/interim')
     n_samples = determine_num_crops(depressed_dict, crop_width=crop_width)
-    depressed_samples = sample_from_depressed_class(depressed_dict, n_samples, crop_width)
+    # get n_sample pseudo-random samples from each depressed participant
+    depressed_samples = get_samples_from_class(depressed_dict, n_samples, crop_width)
+    # get n_sample pseudo-random samples from each non-depressed participant
+    normal_samples = get_samples_from_class(normal_dict, n_samples, crop_width)
