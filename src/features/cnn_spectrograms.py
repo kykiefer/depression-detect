@@ -56,7 +56,7 @@ def logscale_spec(spec, sr=44100, factor=20.):
     return newspec, freqs
 
 """ plot spectrogram"""
-def plotstft(audiopath, binsize=2**10, png_name='tmp.png', offset=0):
+def plotstft(audiopath, binsize=2**10, png_name='tmp.png', save_png=False, offset=0):
     samplerate, samples = wav.read(audiopath)
     s = stft(samples, binsize)
 
@@ -66,11 +66,17 @@ def plotstft(audiopath, binsize=2**10, png_name='tmp.png', offset=0):
 
     ims = np.transpose(ims)
     ims = np.flipud(ims) # weird - dig into why it needs to be flipped for PIL as opposed to not flipped for matplotlib
-    # ims = ims[0:256, offset:offset+768] # 0-11khz, ~9s interval
 
-    image = Image.fromarray(ims)
+    if save_png:
+        create_png(ims, png_name)
+
+    return ims
+
+def create_png(im_matrix, png_name):
+    image = Image.fromarray(im_matrix)
     image = image.convert('L') # convert to grayscale
     image.save(png_name)
+
 
 ''' Iterate throught wave files and save spectrograms '''
 if __name__ == '__main__':
@@ -82,4 +88,4 @@ if __name__ == '__main__':
                 wav_file = os.path.join(subdir, file)
                 png_name = subdir + '/' + file[:-4] + '.png'
                 print 'Processing ' + file + '...'
-                plotstft(wav_file, png_name=png_name)
+                plotstft(wav_file, png_name=png_name, save_png=True)
