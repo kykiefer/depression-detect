@@ -31,11 +31,11 @@ All audio recordings and associated depression metrics were provided by the [DAI
 ## Acoustic Features of Depressed Speech
 While some research focuses on the semantic content of audio signals in predicting depression, I decided to focus on the [prosodic](http://clas.mq.edu.au/speech/phonetics/phonology/intonation/prosody.html) features. Things that are detectable to a listener of in terms of pitch, loudness, speaking rate, rhythm, voice quality, and articulation. (cite Automated Audiovisual Depression Analysis). Some features that have been found to be promising predictors of depression include using short sentences, flat intonation, fundamental frequency, Mel frequency cepstral coefficients ([MFCCs](https://en.wikipedia.org/wiki/Mel-frequency_cepstrum)).
 
-### Segmentation ([code](https://github.com/kykiefer/depression-detect/blob/master/src/data/remove_silence.py))
+### Segmentation ([code](https://github.com/kykiefer/depression-detect/blob/master/src/data/segmentation.py))
 
 The first step in being able to analyze a person's prosodic features of speech is being able to segment the person's speech from silence, other speakers, and noise. Fortunately, the participant's in the DAIC-WOZ study were wearing close proximity microphones and were in low noise environments, which allowed for fairly complete segmentation using [pyAudioAnanlysis' segmentation module](https://github.com/tyiannak/pyAudioAnalysis/wiki/5.-Segmentation). When implementing the algorithm in a wearable, [speaker diarisation](https://en.wikipedia.org/wiki/Speaker_diarisation) and background noise removal would obviously have to be extensively explored, but in interest of establishing a minimum viable product, extensive testing and tuning for segmentation robustness was forgone.
 
-### Feature Extraction
+### Feature Extraction ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/cnn_spectrograms.py))
 There are several ways to approach this problem and this is by far the most critical component to building a successful model within this space. Approaches vary from extracting short-term and mid-term audio features such as MFCCs, [chroma vectors](https://en.wikipedia.org/wiki/Chroma_feature), [zero crossing rate](https://en.wikipedia.org/wiki/Zero-crossing_rate), etc. and feeding them as inputs to a Support Vector Machine (SVM). Since pyAudioAnalysis makes short-term feature extraction fairly streamlined, my first go at the problem was building a short-term feature matrix of 50ms audio segments of the 34 short-term features available form pyAudioAnalysis.
 
 Results...
@@ -45,7 +45,7 @@ The state of the art emotion and language detection models seem to be using neur
 <img alt="Spectrogram" src="images/spectrogram.png" width='700'>
 <sub><b>Figure 2: </b> Spectrogram of man saying "Watching different TV shows". </sub>  
 
-### Class Imbalance
+### Class Imbalance ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/random_cropping.py))
 There exists a large imbalance between positive and negative samples, which incurs a large bias in classification. The number of non-depressed subjects is about four times bigger than that of depressed ones. If these samples are used directly for learning, the model will have a strong bias to the non-depressed class. Additionally, the interview lengths vary from 7-33min. A larger volume of signal may emphasize some characteristics that are person specific.
 
 To solve the problem, I perform random cropping on each of the participant's spectrograms of a specified width (time) and constant height (frequency), to ensure the CNN has an equal proportion for every subject and each class. ELABORATE ONCE FINISHED!!!!!!
@@ -57,7 +57,10 @@ To solve the problem, I perform random cropping on each of the participant's spe
 This random sampling method was entirely inspired by [DepAudioNet: An Efficient Deep Model for Audio based Depression Classification](https://www.researchgate.net/publication/309127735_DepAudioNet_An_Efficient_Deep_Model_for_Audio_based_Depression_Classification), after quick establishment of model bias to the non-depressed class.
 
 ## Convolutional Neural Networks
-Place holder
+Convolutional Neural Networks (CNNs) is a variation of the better known Multilayer Perceptron (MLP) in which nodes connections are inspired by the visual cortex. They have proved a powerful tool in image recognition, video analysis, and natural language processing.
+
+A filter is subsequently slid over an image (in this case a spectrogram) and patterns for depressed and non-depressed individuals are learned. These patterns are representative of things like vocal inflection, rhythm, etc.
+
 
 ### Model Architecture
 Place holder
