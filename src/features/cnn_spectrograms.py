@@ -1,7 +1,7 @@
 """ This work is licensed under a Creative Commons Attribution 3.0 Unported License. Frank Zalkow, 2012-2013 """
 
 """
-This script creates spectrograms from wave files that can be passed to the CNN. This was heavily adapted form Frank Zalkow's work. I just dropped the matplotlib plotting and added in the PIL functionality so that the .pngs can be passed to a CNN.
+This script creates spectrogram matrices from wave files that can be passed to the CNN. This was adapted from Frank Zalkow's work.
 """
 
 from matplotlib import pyplot as plt
@@ -12,8 +12,10 @@ from PIL import Image
 import scipy.io.wavfile as wav
 
 
-""" short time fourier transform of audio signal """
 def stft(sig, frameSize, overlapFac=0.5, window=np.hanning):
+    """
+    Short time fourier transform of audio signal
+    """
     win = window(frameSize)
     hopSize = int(frameSize - np.floor(overlapFac * frameSize))
     # zeros at beginning (thus center of 1st window should be for sample nr. 0)
@@ -28,8 +30,10 @@ def stft(sig, frameSize, overlapFac=0.5, window=np.hanning):
 
     return np.fft.rfft(frames)
 
-""" scale frequency axis logarithmically """
 def logscale_spec(spec, sr=44100, factor=20.):
+    """
+    Scale frequency axis logarithmically
+    """
     timebins, freqbins = np.shape(spec)
 
     scale = np.linspace(0, 1, freqbins) ** factor
@@ -55,8 +59,10 @@ def logscale_spec(spec, sr=44100, factor=20.):
 
     return newspec, freqs
 
-""" plot spectrogram"""
-def plotstft(audiopath, binsize=2**10, png_name='tmp.png', save_png=False, offset=0):
+def stft_matrix(audiopath, binsize=2**10, png_name='tmp.png', save_png=False, offset=0):
+    """
+    A function that converts a wave file into a spectrogram represented by a matrix where rows represent frequency bins, columns represent time, and the values of the matrix represent the decibel intensity.
+    """
     samplerate, samples = wav.read(audiopath)
     s = stft(samples, binsize)
 
@@ -73,6 +79,9 @@ def plotstft(audiopath, binsize=2**10, png_name='tmp.png', save_png=False, offse
     return ims
 
 def create_png(im_matrix, png_name):
+    """
+    Save png of spectrogram representation consumable by CNN
+    """
     image = Image.fromarray(im_matrix)
     image = image.convert('L') # convert to grayscale
     image.save(png_name)
@@ -88,4 +97,4 @@ if __name__ == '__main__':
                 wav_file = os.path.join(subdir, file)
                 png_name = subdir + '/' + file[:-4] + '.png'
                 print 'Processing ' + file + '...'
-                plotstft(wav_file, png_name=png_name, save_png=True)
+                stft_matrix(wav_file, png_name=png_name, save_png=True)
