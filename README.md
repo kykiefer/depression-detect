@@ -87,10 +87,10 @@ How I am prioritizing future efforts:
 1. Segmentation robustness
 2. Incorporate Vocal Tract Length Perturbation ([VTLP](http://www.cs.toronto.edu/~ndjaitly/jaitly-icml13.pdf))
 3. Combine CNN with LSTM
-4. Refactoring -- this code was initially written under a 2-week timeline and much usability was sacrificed in prioritizing obtaining a robust model.
+4. Refactoring -- this code was initially written under a 2-week timeline and much optimization was sacrificed in prioritizing obtaining a robust model.
 
 ## References
 
     1. Gratch J, Artstein R, Lucas GM, Stratou G, Scherer S, Nazarian A, Wood R, Boberg J, DeVault D, Marsella S, Traum DR. The Distress Analysis Interview Corpus of human and computer interviews. InLREC 2014 May (pp. 3123-3128)
-    2. Girard J, Cohn J. Automated Depression Analysis. Curr Opin Psychol. 2015 August ; 4: 75–79.
-    3. X. Ma, H. Yang, Q. Chen, D. Huang, and Y. Wang: DepAudioNet: An Efficient Deep Model for Audio based Depression Classification, ACM International Conference on Multimedia (ACM-MM) Workshop: Audio/Visual Emotion Challenge (AVEC), Amsterdam, Netherlands, 2016.
+    2. Girard J, Cohn J. Automated Depression Analysis. Curr Opin Psychol. 2015 August; 4: 75–79.
+    3. Ma X, Yang H, Chen Q, Huang D, and Wang Y. DepAudioNet: An Efficient Deep Model for Audio based Depression Classification. ACM International Conference on Multimedia (ACM-MM) Workshop: Audio/Visual Emotion Challenge (AVEC), 2016.

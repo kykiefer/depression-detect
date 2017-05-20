@@ -1,12 +1,32 @@
 # Depression Detect Workflow
 Below is the basic workflow I performed. Many of the scripts use my specific file paths and will have to be altered to run on your machine. I'm running in my Python 2.7.13 environment on macOS.
 
+
 For dependencies see: [requirements.txt](https://github.com/kykiefer/depression-detect/blob/master/requirements.txt)
 
 Gain access to the [DAIC-WOZ database](http://dcapswoz.ict.usc.edu/) and download the zip files to your project directory by running the following command in your shell:
 
 ```shell
 wget -r -np -nH --cut-dirs=3 -R index.html --user=daicwozuser --ask-password  http://dcapswoz.ict.usc.edu/wwwdaicwoz/
+```
+
+## Folder Structure
+```
+src
+└───README.md   
+└───data
+│   ├──extract_from_zip.py
+│   ├──segmentation.py
+│
+└───features
+│   ├──cnn.py
+│   ├──dataframes.py
+│   ├──random_sampling.py
+│   ├──spectrogram_dicts.py
+│   ├──spectrograms.py
+│
+└───models
+    ├──model_sandbox.py
 ```
 
 ### Data

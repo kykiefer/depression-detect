@@ -1,7 +1,9 @@
-.DS_Store
-.ipynb_checkpoints
-__pycache__/
 *.pyc
+.idea
+.ipynb_checkpoints
+*.bak
+*.swp
+.DS_Store
 
 # Folders
 /data/
