@@ -75,12 +75,13 @@ The model yields promising results...
 
 I envision the model being implemented in a wearable device. The device prompts you to answer a simple question in the morning and a simple question before bed on a daily basis. The model stores your predicted depression score and tracks it over time such that the model can learn from your baseline (perhaps using a Bayesian approach). If a threshold is crossed, it notifies you to seek help, or in extreme cases, notifies an emergency contact to help you help yourself.
 
-I'm currently excited about the results and and will be monitoring pull requests. However, accessing the DAIC-WOZ database requires signing an agreement form. Access can be granted [here](http://dcapswoz.ict.usc.edu/). To download the >70MB of zip files `cd` into your desired directory and run:
+I'm currently excited about the results and and will be monitoring pull requests. However, accessing the DAIC-WOZ Database requires signing an agreement form. Access can be granted [here](http://dcapswoz.ict.usc.edu/). To download the >70MB of zip files `cd` into your desired directory and run the following in your shell:
 
 ```shell
 wget -r -np -nH --cut-dirs=3 -R index.html --user=daicwozuser --ask-password  http://dcapswoz.ict.usc.edu/wwwdaicwoz/
 ```
 
+A code walkthrough can be found [here](https://github.com/kykiefer/depression-detect/tree/master/src).
 
 How I am prioritizing future efforts:
 1. Segmentation robustness
