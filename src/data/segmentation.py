@@ -55,7 +55,7 @@ def is_segmentable(partic_id):
     """
     A function that returns True if the participant's interview clip is not in the manually identified set of troubled clips. The clips below were not segmentable do to excessive static, proximity to the virtual interviewer, volume levels, etc.
     """
-    troubled = set(['P300', 'P305', 'P306', 'P308', 'P315', 'P316'])
+    troubled = set(['P300', 'P305', 'P306', 'P308', 'P315', 'P316', 'P343', 'P354', 'P362', 'P375', 'P378', 'P381', 'P382', 'P385', 'P387', 'P388', '390', 'P392', 'P393', 'P395', 'P408', 'P413', 'P421', 'P438', 'P473', 'P476', 'P479', 'P490', 'P492'])
     return partic_id not in troubled
 
 
