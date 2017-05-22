@@ -40,7 +40,7 @@ def determine_num_crops(depressed_dict, normal_dict, crop_width=125):
     return num_samples_from_clips
 
 
-def get_samples_from_class(segmented_audio_dict, n_samples, crop_width):
+def build_class_sample_dict(segmented_audio_dict, n_samples, crop_width):
     """
     Get N (num_samples) pseudo random non-overlapping samples from the all the depressed participants.
 
@@ -87,19 +87,11 @@ def create_sample_dicts(crop_width):
     depressed_dict, normal_dict = build_class_dictionaries('/Users/ky/Desktop/depression-detect/data/interim')
     n_samples = determine_num_crops(depressed_dict, normal_dict, crop_width=crop_width)
     # get n_sample random samples from each depressed participant
-    depressed_samples = get_samples_from_class(depressed_dict, n_samples, crop_width)
+    depressed_samples = build_class_sample_dict(depressed_dict, n_samples, crop_width)
     # get n_sample random samples from each non-depressed participant
-    normal_samples = get_samples_from_class(normal_dict, n_samples, crop_width)
+    normal_samples = build_class_sample_dict(normal_dict, n_samples, crop_width)
     return depressed_samples, normal_samples
 
 
-def test_train_split(test_size=0.25):
-    depressed_dict, normal_samples = create_sample_dicts()
-    num_samp_from_minority_class = min(len(depressed_dict), len(normal_dict))
-    print('Your minority class has {} samples'.format(num_samp_from_minority_class))
-
-
 if __name__ == '__main__':
-    # test_train_split(test_size=0.25)
-    # depressed_dict, normal_dict = build_class_dictionaries('/Users/ky/Desktop/depression-detect/data/interim')
     depressed_samples, normal_samples = create_sample_dicts(crop_width=125)  # 125 pixels = 4 seconds of audio
