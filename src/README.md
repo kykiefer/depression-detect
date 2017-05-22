@@ -36,8 +36,8 @@ src
 ### Features
 3. `spectrograms.py` performs the short-time Fourier transform ([STFT](https://en.wikipedia.org/wiki/Short-time_Fourier_transform)) on the segmented wav files, transforming the wav files into a matrix representation of a spectrogram. The vertical axis representing frequency, the horizontal axis representing time, and a value in the matrix representing the intensity of the frequency component at a particular time. (IN DECIBELS???)
 
-4. `spectrogram_dicts.py` builds dictionaries with keys of participant ids for the each class and values with the matrix representation of the spectrogram.
+4. `spectrogram_dicts.py` builds dictionaries with keys of participant IDs for the each class and values with the matrix representation of the entire segmented wav file's spectrogram.
 
-5. `random_sampling.py` is a script that returns a test/train split for input to the Convolutional Neural Network (CNN) based on random sampling from the `spectrogram_dicts` for each class. This was really important because of the class imbalance.
+5. `random_sampling.py` returns 40 random, 4 second spectrograms for each participant. Then, participants from each class are randomly selected in equal proportion as input to the Convolutional Neural Network (CNN). This was critical step in reducing model bias.
 
 6. Run `cnn.py` to train the CNN.
