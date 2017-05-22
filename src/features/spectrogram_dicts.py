@@ -3,9 +3,6 @@ import os
 from dataframes import df_dev
 
 
-crop_width = 125  # 125 pixels = 4 seconds of audio
-
-
 def build_class_dictionaries(dir_name):
     """
     Builds a dictionary of depressed participants and non-depressed participants with the participant id as the key and the matrix representation of the no_silence wav file as the value. These dictionaries are randomly sampled from to build batch inputs to the CNN.

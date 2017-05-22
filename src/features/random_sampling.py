@@ -1,9 +1,5 @@
-from spectrogram_dicts import build_class_dictionaries
-from spectrograms import stft_matrix
 import numpy as np
-import os
-from dataframes import df_dev
-from PIL import Image
+from spectrogram_dicts import build_class_dictionaries
 
 """
 There exists a large data imbalance between positive and negative samples, which incurs a large bias in classification. The number of non-depressed subjects is about four times bigger than that of depressed ones. If these samples for learning, the model will have a strong bias to the non-depressed class. Moreover, regarding the length of each sample, a much longer signal of an individual may emphasize some characteristics that are person specific.
@@ -34,10 +30,11 @@ def determine_num_crops(depressed_dict, crop_width=125):
     num_samples_from_clips : int
         the maximum number of samples that should be sampled from each clip to ensure balanced classes can be built
     """
-    shortest_clip = min(depressed_dict.items(), key=lambda x: x[1].shape[1]) # returns dictionary entry
+    shortest_clip = min(depressed_dict.items(), key=lambda x: x[1].shape[1])  # returns dictionary entry
     shortest_pixel_width = shortest_clip[1].shape[1]
     num_samples_from_clips = shortest_pixel_width / crop_width
     return num_samples_from_clips
+
 
 def get_samples_from_class(segmented_audio_dict, n_samples, crop_width):
     """
@@ -64,12 +61,13 @@ def get_samples_from_class(segmented_audio_dict, n_samples, crop_width):
             class_samples_dict[partic_id] = samples
     return class_samples_dict
 
+
 def random_non_overlapping_samples(matrix, n_samples, crop_width):
     """
     Get N pseudo-random samples with width of crop_width from the numpy matrix representing the partiipants audio spectrogram.
     """
     width = matrix.shape[1]
-    freedom = width - (n_samples * crop_width) # available width - width to be sampled
+    freedom = width - (n_samples * crop_width)  # available width - width to be sampled
     # print(width)
     # print('{} samples with {} crop width'.format(n_samples, crop_width))
     # print('{} pixels of freedom'.format(freedom))
@@ -77,22 +75,23 @@ def random_non_overlapping_samples(matrix, n_samples, crop_width):
     partic_samples = []
     start_col = 0
     for sample in range(n_samples):
-        offset = np.random.randint(0, freedom) # randomness gets eaten up pretty quickly -- come back to this...maybe okay
-        freedom -= offset # remaining freedom
+        offset = np.random.randint(0, freedom)  # randomness gets eaten up pretty quickly -- come back to this...maybe okay
+        freedom -= offset  # remaining freedom
         start_col += offset
         end_col = start_col + crop_width
-        crop = matrix[:, start_col:end_col] # all frquency bins; specified time slice
+        crop = matrix[:, start_col:end_col]  # all frequency bins; specified time slice
         partic_samples.append(crop)
         start_col += crop_width
     return partic_samples
 
+
 def create_sample_dicts():
     """
-    Utilizes the above function to return two dictionaries, depressed and normal. Each dictionary has only participants in the specific class, with participant ids as key, a values of a list of the croped samples from the spectorgram matrices. The lists are n_samples long and the entries within the list have dimension
+    Utilizes the above function to return two dictionaries, depressed and normal. Each dictionary has only participants in the specific class, with participant ids as key, a values of a list of the cropped samples from the spectrogram matrices. The lists are n_samples long and the entries within the list have dimension
     """
-    np.random.seed(15) # for reproducibility
-    crop_width = 125 # 125 pixels = 4 seconds of audio
-    # build dictonaries of participants and segmented audio matrix
+    np.random.seed(15)  # for reproducibility
+    crop_width = 125  # 125 pixels = 4 seconds of audio
+    # build dictionaries of participants and segmented audio matrix
     depressed_dict, normal_dict = build_class_dictionaries('/Users/ky/Desktop/depression-detect/data/interim')
     n_samples = determine_num_crops(depressed_dict, crop_width=crop_width)
     # get n_sample pseudo-random samples from each depressed participant
@@ -101,11 +100,13 @@ def create_sample_dicts():
     normal_samples = get_samples_from_class(normal_dict, n_samples, crop_width)
     return depressed_samples, normal_samples
 
+
 def test_train_split(test_size=0.25):
-    depressed_samples, normal_samples = create_sample_dicts()
-    num_samp_from_minority_class = min(len(depressed_samples), len(normal_samples))
+    depressed_dict, normal_samples = create_sample_dicts()
+    num_samp_from_minority_class = min(len(depressed_dict), len(normal_dict))
     print('Your minority class has {} samples'.format(num_samp_from_minority_class))
 
 
 if __name__ == '__main__':
-    test_train_split(test_size=0.25)
+    # test_train_split(test_size=0.25)
+    depressed_dict, normal_dict = build_class_dictionaries('/Users/ky/Desktop/depression-detect/data/interim')
