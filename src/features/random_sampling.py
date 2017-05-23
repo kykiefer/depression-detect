@@ -90,7 +90,18 @@ def create_sample_dicts(crop_width):
     depressed_samples = build_class_sample_dict(depressed_dict, n_samples, crop_width)
     # get n_sample random samples from each non-depressed participant
     normal_samples = build_class_sample_dict(normal_dict, n_samples, crop_width)
-    return depressed_samples, normal_samples
+    # save depressed arrays to .npz
+    for key, _ in depressed_samples.iteritems():
+        path = '/Users/ky/Desktop/depression-detect/data/processed/'
+        filename = 'D{}.npz'.format(key)
+        outfile = path + filename
+        np.savez(outfile, *depressed_samples[key])
+    # save normal arrays to .npz
+    for key, _ in normal_samples.iteritems():
+        path = '/Users/ky/Desktop/depression-detect/data/processed'
+        filename = '/N{}.npz'.format(key)
+        outfile = path + filename
+        np.savez(outfile, *normal_samples[key])
 
 
 if __name__ == '__main__':
