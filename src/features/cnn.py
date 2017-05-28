@@ -1,5 +1,7 @@
 from __future__ import print_function
+import os
 import numpy as np
+from random_sampling import build_array_of_random_samples
 np.random.seed(15)  # for reproducibility
 
 from keras.datasets import mnist
@@ -9,16 +11,10 @@ from keras.layers import Convolution2D, MaxPooling2D
 from keras.utils import np_utils
 from keras import backend as K
 
+# get X and y arrays
+X, y = build_array_of_random_samples('/Users/ky/Desktop/depression-detect/data/processed')
 
-    # manually doing this for now
-    X_train = depressed_samples[319] + depressed_samples[320] + normal_samples[302] + normal_samples[303]
-    X_test = depressed_samples[321] + normal_samples[304]
-    X_train = np.array(X_train)
-    X_test = np.array(X_test)
-    y_train = np.concatenate((np.ones(len(depressed_samples[319])), np.ones(len(depressed_samples[320])), np.zeros(len(depressed_samples[320])), np.zeros(len(normal_samples[303]))), axis=0)
-
-    y_test = np.concatenate((np.ones(len(depressed_samples[321])), np.ones(len(normal_samples[304]))), axis=0)
-
+# train test split
 
 
 
@@ -110,5 +106,4 @@ But their parameters and other hyperparameters could use some work.
 # print('Test accuracy:', score[1]) # this is the one we care about
 
 if __name__ == '__main__':
-    depressed_samples, normal_samples = create_sample_dicts()
-    test_train_split(depressed_samples, normal_samples, test_size=.25)
+    pass

@@ -1,8 +1,8 @@
 import numpy as np
+import os
 import random
 from spectrogram_dicts import build_class_dictionaries
 np.random.seed(15)  # for reproducibility
-
 
 """
 There exists a large data imbalance between positive and negative samples, which incurs a large bias in classification. The number of non-depressed subjects is about four times bigger than that of depressed ones. If these samples for learning, the model will have a strong bias to the non-depressed class. Moreover, regarding the length of each sample, a much longer signal of an individual may emphasize some characteristics that are person specific.
@@ -68,7 +68,7 @@ def build_class_sample_dict(segmented_audio_dict, n_samples, crop_width):
 
 def get_random_samples(matrix, n_samples, crop_width):
     """
-    Get N pseudo-random samples with width of crop_width from the numpy matrix representing the partiipants audio spectrogram.
+    Get N random samples with width of crop_width from the numpy matrix representing the partiipants audio spectrogram.
     """
     clipped_mat = matrix[:, (matrix.shape[1] % crop_width):]  # turn into width divisible by crop_width
     n_splits = clipped_mat.shape[1] / crop_width
@@ -102,7 +102,40 @@ def create_sample_dicts(crop_width):
         filename = '/N{}.npz'.format(key)
         outfile = path + filename
         np.savez(outfile, *normal_samples[key])
+    return n_samples
 
+
+def build_array_of_random_samples(npz_file_dir):
+    # print files in directory
+    npz_files = os.listdir(npz_file_dir)
+
+    dep_samps = [f for f in npz_files if f.startswith('D')]
+    norm_samps = [f for f in npz_files if f.startswith('N')]
+    # calculate how many samples to balance classes
+    max_samples = min(len(dep_samps), len(norm_samps))
+
+    # randomly select max participnats from each class
+    dep_select_samps = np.random.choice(dep_samps, size=max_samples)
+    norm_select_samps = np.random.choice(norm_samps, size=max_samples)
+
+    # randomly select n_samples_per_person (40 in the case of a crop width of 125) from each of the partipcant lists
+
+    # refactor this code!
+    samples = []
+    for sample in dep_select_samps:
+        npz_file = npz_file_dir +  '/' + sample
+        with np.load(npz_file) as data:
+            for key in data.keys():
+                samples.append(data[key])
+    for sample in norm_select_samps:
+        npz_file = npz_file_dir +  '/' + sample
+        with np.load(npz_file) as data:
+            for key in data.keys():
+                samples.append(data[key])
+    labels = np.concatenate((np.ones(len(samples)/2), np.zeros(len(samples)/2)))
+    return np.array(samples), labels
 
 if __name__ == '__main__':
-    depressed_samples, normal_samples = create_sample_dicts(crop_width=125)  # 125 pixels = 4 seconds of audio
+    # build particpants npz files
+    # create_sample_dicts(crop_width=125)
+    samples, labels = build_array_of_random_samples('/Users/ky/Desktop/depression-detect/data/processed')
