@@ -127,7 +127,7 @@ if __name__ == '__main__':
     # CNN parameters
     batch_size = 228
     nb_classes = 2
-    epochs = 1
+    epochs = 20
     kernel_size = (3, 3)
     pool_size = (2, 2)
     nb_filters = 32
