@@ -1,8 +1,12 @@
+import boto
 import numpy as np
 import os
 import random
 from spectrogram_dicts import build_class_dictionaries
 np.random.seed(15)  # for reproducibility
+access_key = os.environ['AWS_ACCESS_KEY_ID']
+access_secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
+
 
 """
 There exists a large data imbalance between positive and negative samples, which incurs a large bias in classification. The number of non-depressed subjects is about four times bigger than that of depressed ones. If these samples for learning, the model will have a strong bias to the non-depressed class. Moreover, regarding the length of each sample, a much longer signal of an individual may emphasize some characteristics that are person specific.
@@ -135,7 +139,30 @@ def build_array_of_random_samples(npz_file_dir):
     labels = np.concatenate((np.ones(len(samples)/2), np.zeros(len(samples)/2)))
     return np.array(samples), labels
 
+
+def save_to_bucket(file, obj_name):
+    """
+    Saves local file to S3 bucket for redundancy and repreoducibility by others.
+    """
+    conn =  boto.connect_s3(access_key, access_secret_key)
+
+    bucket = conn.get_bucket('depression-detect')
+
+    file_object = bucket.new_key(obj_name)
+    file_object.set_contents_from_filename(file)
+
+
 if __name__ == '__main__':
-    # build particpants npz files
+    # # build particpants npz files
     # create_sample_dicts(crop_width=125)
-    samples, labels = build_array_of_random_samples('/Users/ky/Desktop/depression-detect/data/processed')
+    # samples, labels = build_array_of_random_samples('/Users/ky/Desktop/depression-detect/data/processed')
+    #
+    # # save as npz locally
+    # # np.savez('/Users/ky/Desktop/depression-detect/data/processed/samples.npz', samples)
+    # print "saving locally..."
+    # np.savez('/Users/ky/Desktop/depression-detect/data/processed/labels.npz', labels)
+
+    # upload npz files to S3 bucket for accessibilty
+    print "uploading to S3..."
+    save_to_bucket('/Users/ky/Desktop/depression-detect/data/processed/samples.npz', 'samples.npz')
+    # save_to_bucket('/Users/ky/Desktop/depression-detect/data/processed/labels.npz', 'labels.npz')

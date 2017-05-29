@@ -1,6 +1,7 @@
 from __future__ import print_function
+import boto
+import os
 import numpy as np
-from random_sampling import build_array_of_random_samples
 from sklearn.model_selection import train_test_split
 np.random.seed(15)  # for reproducibility
 
@@ -10,6 +11,9 @@ from keras.layers import Convolution2D, MaxPooling2D
 from keras.utils import np_utils
 from keras import backend as K
 K.set_image_dim_ordering('tf')
+access_key = os.environ['AWS_ACCESS_KEY_ID']
+access_secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
+
 
 """
 CNN to classify spectrograms of normal particpants (0) or depressed particpants (1).
@@ -18,6 +22,16 @@ Using Theano with TensorFlow image_dim_ordering:
 (3040, 513, 125, 1) for the X images below
 """
 
+def retrieve_from_bucket(file):
+    """
+    Download matrices from S3 bucket
+    """
+    conn = boto.connect_s3(access_key, access_secret_key)
+    bucket = conn.get_bucket('depression-detect')
+    file_key = bucket.get_key(file)
+    file_key.get_contents_to_filename(file)
+    X = np.load(file)
+    return X
 
 def preprocess(X_train, X_test):
     """
@@ -95,7 +109,7 @@ def cnn(X_train, y_train, X_test, y_test, kernel_size, pool_size, batch_size, nb
     model.add(Activation('relu'))
     model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1]))
     model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=pool_size))
+    # model.add(MaxPooling2D(pool_size=pool_size))
     model.add(Dropout(0.25))
 
     model.add(Flatten())
@@ -121,16 +135,21 @@ def cnn(X_train, y_train, X_test, y_test, kernel_size, pool_size, batch_size, nb
     return model
 
 if __name__ == '__main__':
-    # get X and y arrays. Move into S3 bucket.
-    X, y = build_array_of_random_samples('/Users/ky/Desktop/depression-detect/data/processed')
+    # # Uncomment to load from S3 bucket
+    # X = retrieve_from_bucket('samples.npz')
+    # y = retrieve_from_bucket('labels.npz')
+
+    # Once stored locally, access with the following
+    X = np.load('samples.npz')['arr_0']
+    y = np.load('labels.npz')['arr_0']
 
     # CNN parameters
-    batch_size = 228
+    batch_size = 200
     nb_classes = 2
-    epochs = 20
+    epochs = 2
     kernel_size = (3, 3)
     pool_size = (2, 2)
-    nb_filters = 32
+    nb_filters = 12
 
     # train/test split for cross validation
     test_size = 0.2
