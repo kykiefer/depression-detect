@@ -39,7 +39,9 @@ def preprocess(X_train, X_test):
     """
     X_train = X_train.astype('float32')
     X_test = X_test.astype('float32')
-    # normalize here
+    # normalize
+    X_train = np.array([X / X.max() for X in X_train])
+    X_test = np.array([X / X.max() for X in X_test])
     return X_train, X_test
 
 
@@ -103,15 +105,21 @@ def cnn(X_train, y_train, X_test, y_test, kernel_size, pool_size, batch_size, nb
     """
     model = Sequential()
 
-    model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1],
+    # CONV-RELU-POOL 1
+    # follewed by 50% Dropout
+    model.add(Convolution2D(32, 41, 41,
                             border_mode='valid',
                             input_shape=input_shape))
     model.add(Activation('relu'))
-    model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1]))
+    model.add(MaxPooling2D(pool_size=(5,5)))
+
+
+    model.add(Convolution2D(nb_filters, 5, 5))
     model.add(Activation('relu'))
-    # model.add(MaxPooling2D(pool_size=pool_size))
+    model.add(MaxPooling2D(pool_size=(3,3)))
     model.add(Dropout(0.25))
 
+    # Dense Layer with RELU activation applied
     model.add(Flatten())
     model.add(Dense(128))
     model.add(Activation('relu'))
@@ -119,6 +127,7 @@ def cnn(X_train, y_train, X_test, y_test, kernel_size, pool_size, batch_size, nb
     model.add(Dense(nb_classes))
     model.add(Activation('softmax'))
 
+    # Configure the model, using AdaDelta Gradient Descent optimization
     model.compile(loss='categorical_crossentropy',
                   optimizer='adadelta',
                   metrics=['accuracy'])
@@ -134,6 +143,7 @@ def cnn(X_train, y_train, X_test, y_test, kernel_size, pool_size, batch_size, nb
 
     return model
 
+
 if __name__ == '__main__':
     # # Uncomment to load from S3 bucket
     # X = retrieve_from_bucket('samples.npz')
@@ -143,13 +153,16 @@ if __name__ == '__main__':
     X = np.load('samples.npz')['arr_0']
     y = np.load('labels.npz')['arr_0']
 
+    # bottom of the frequnecy spectrum
+    X = np.array([x[-125:, :] for x in X])
+
     # CNN parameters
     batch_size = 200
     nb_classes = 2
-    epochs = 2
-    kernel_size = (3, 3)
+    epochs = 20
+    kernel_size = (10, 125)  # (width, height)
     pool_size = (2, 2)
-    nb_filters = 12
+    nb_filters = 32
 
     # train/test split for cross validation
     test_size = 0.2
