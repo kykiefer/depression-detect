@@ -3,6 +3,7 @@ import boto
 import os
 import numpy as np
 from sklearn.model_selection import train_test_split
+from skimage.measure import block_reduce # for downsampling
 np.random.seed(15)  # for reproducibility
 
 from keras.models import Sequential
@@ -105,21 +106,15 @@ def cnn(X_train, y_train, X_test, y_test, kernel_size, pool_size, batch_size, nb
     """
     model = Sequential()
 
-    # CONV-RELU-POOL 1
-    # follewed by 50% Dropout
-    model.add(Convolution2D(32, 41, 41,
+    model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1],
                             border_mode='valid',
                             input_shape=input_shape))
     model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(5,5)))
-
-
-    model.add(Convolution2D(nb_filters, 5, 5))
+    model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1]))
     model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(3,3)))
+    model.add(MaxPooling2D(pool_size=pool_size))
     model.add(Dropout(0.25))
 
-    # Dense Layer with RELU activation applied
     model.add(Flatten())
     model.add(Dense(128))
     model.add(Activation('relu'))
@@ -137,11 +132,21 @@ def cnn(X_train, y_train, X_test, y_test, kernel_size, pool_size, batch_size, nb
 
     # Evaluate accuracy on test and train sets
     score_train = model.evaluate(X_train, y_train, verbose=0)
-    print('Test accuracy:', score_train[1])
+    print('Train accuracy:', score_train[1])
     score_test = model.evaluate(X_test, y_test, verbose=0)
     print('Test accuracy:', score_test[1])
 
     return model
+
+
+def model_performance(model, X_train, X_test, y_train, y_test):
+    y_test_pred = model.predict_classes(X_test)
+    y_train_pred = model.predict_classes(X_train)
+
+    y_test_pred_proba = model.predict_proba(X_test)
+    y_train_pred_proba = model.predict_proba(X_train)
+
+    return y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba
 
 
 if __name__ == '__main__':
@@ -153,15 +158,22 @@ if __name__ == '__main__':
     X = np.load('samples.npz')['arr_0']
     y = np.load('labels.npz')['arr_0']
 
+    # troubleshooting - subsample 10 from each class
+    X = np.concatenate((X[:10], X[-10:]))
+    y = np.concatenate((y[:10], y[-10:]))
+
+    # # troubleshooting - downsample images -- mean doesn't work for decibels
+    # X = np.array([block_reduce(x, block_size=(4, 1), func=np.mean) for x in X])
+
     # bottom of the frequnecy spectrum
-    X = np.array([x[-125:, :] for x in X])
+    # X = np.array([x[-125:, :] for x in X])
 
     # CNN parameters
-    batch_size = 200
+    batch_size = 4
     nb_classes = 2
-    epochs = 20
-    kernel_size = (10, 125)  # (width, height)
-    pool_size = (2, 2)
+    epochs = 2
+    kernel_size = (11, 11)  # (width, height)
+    pool_size = (5, 5)
     nb_filters = 32
 
     # train/test split for cross validation
@@ -178,3 +190,6 @@ if __name__ == '__main__':
 
     # run CNN
     model = cnn(X_train, y_train, X_test, y_test, kernel_size, pool_size, batch_size, nb_classes, epochs, input_shape)
+
+    # evaluate model
+    y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba = model_performance(model, X_train, X_test, y_train, y_test)
