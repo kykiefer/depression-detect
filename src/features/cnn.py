@@ -3,7 +3,7 @@ import boto
 import os
 import numpy as np
 from sklearn.model_selection import train_test_split
-from skimage.measure import block_reduce # for downsampling
+from skimage.measure import block_reduce  # for downsampling
 np.random.seed(15)  # for reproducibility
 
 from keras.models import Sequential
@@ -104,6 +104,7 @@ def cnn(X_train, y_train, X_test, y_test, kernel_size, pool_size, batch_size, nb
     This Convolutional Neural Net architecture for classifying the audio clips
     as normal (0) or depressed (1).
     """
+    print('HERER', input_shape)
     model = Sequential()
 
     model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1],
@@ -158,9 +159,9 @@ if __name__ == '__main__':
     X = np.load('samples.npz')['arr_0']
     y = np.load('labels.npz')['arr_0']
 
-    # troubleshooting - subsample 10 from each class
-    X = np.concatenate((X[:10], X[-10:]))
-    y = np.concatenate((y[:10], y[-10:]))
+    # troubleshooting - subsample 20 from each class
+    X = np.concatenate((X[:20], X[-20:]))
+    y = np.concatenate((y[:20], y[-20:]))
 
     # # troubleshooting - downsample images -- mean doesn't work for decibels
     # X = np.array([block_reduce(x, block_size=(4, 1), func=np.mean) for x in X])
@@ -169,11 +170,11 @@ if __name__ == '__main__':
     # X = np.array([x[-125:, :] for x in X])
 
     # CNN parameters
-    batch_size = 4
+    batch_size = 16
     nb_classes = 2
     epochs = 2
-    kernel_size = (11, 11)  # (width, height)
-    pool_size = (5, 5)
+    kernel_size = (9, 9)  # (width, height)
+    pool_size = (7, 7)
     nb_filters = 32
 
     # train/test split for cross validation
