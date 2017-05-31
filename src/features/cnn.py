@@ -8,10 +8,10 @@ np.random.seed(15)  # for reproducibility
 
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
-from keras.layers import Convolution2D, MaxPooling2D
+from keras.layers import Conv2D, MaxPooling2D
 from keras.utils import np_utils
 from keras import backend as K
-K.set_image_dim_ordering('tf')
+K.set_image_dim_ordering('th')
 access_key = os.environ['AWS_ACCESS_KEY_ID']
 access_secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
 
@@ -19,8 +19,8 @@ access_secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
 """
 CNN to classify spectrograms of normal particpants (0) or depressed particpants (1).
 Using Theano with TensorFlow image_dim_ordering:
-(# images, # rows, # cols, # channels)
-(3040, 513, 125, 1) for the X images below
+(# images, # channels, # rows, # cols)
+(3040, 1, 513, 125) for the X images below
 """
 
 def retrieve_from_bucket(file):
@@ -104,21 +104,15 @@ def cnn(X_train, y_train, X_test, y_test, kernel_size, pool_size, batch_size, nb
     This Convolutional Neural Net architecture for classifying the audio clips
     as normal (0) or depressed (1).
     """
-    print('HERER', input_shape)
     model = Sequential()
 
-    model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1],
-                            border_mode='valid',
-                            input_shape=input_shape))
-    model.add(Activation('relu'))
-    model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1]))
-    model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=pool_size))
+    model.add(Conv2D(32, (9, 9), padding='valid', input_shape=input_shape, activation='relu'))
+    model.add(Conv2D(32, (9, 9), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(7, 7)))
     model.add(Dropout(0.25))
 
     model.add(Flatten())
-    model.add(Dense(128))
-    model.add(Activation('relu'))
+    model.add(Dense(128, activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(nb_classes))
     model.add(Activation('softmax'))
@@ -160,8 +154,8 @@ if __name__ == '__main__':
     y = np.load('labels.npz')['arr_0']
 
     # troubleshooting - subsample 20 from each class
-    X = np.concatenate((X[:20], X[-20:]))
-    y = np.concatenate((y[:20], y[-20:]))
+    # X = np.concatenate((X[:20], X[-20:]))
+    # y = np.concatenate((y[:20], y[-20:]))
 
     # # troubleshooting - downsample images -- mean doesn't work for decibels
     # X = np.array([block_reduce(x, block_size=(4, 1), func=np.mean) for x in X])
@@ -170,7 +164,7 @@ if __name__ == '__main__':
     # X = np.array([x[-125:, :] for x in X])
 
     # CNN parameters
-    batch_size = 16
+    batch_size = 76
     nb_classes = 2
     epochs = 2
     kernel_size = (9, 9)  # (width, height)
