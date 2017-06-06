@@ -106,7 +106,15 @@ def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_
     """
     model = Sequential()
 
-    model.add(Conv2D(32, (57, 6), padding='valid', strides=1, input_shape=input_shape, activation='relu'))
+    # model.add(Conv2D(32, (7, 7), input_shape=input_shape, activation='relu'))
+    #
+    # model.add(Flatten())
+    # model.add(Dense(128, activation='relu'))
+    # model.add(Dense(128, activation='relu'))
+    # model.add(Dense(128, activation='relu'))
+    # model.add(Activation('softmax'))
+
+    model.add(Conv2D(32, (57, 6), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
     model.add(MaxPooling2D(pool_size=(4,3), strides=(1,3)))
     model.add(Conv2D(32, (1, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu'))
     model.add(MaxPooling2D(pool_size=(1,3), strides=(1,3)))
@@ -118,7 +126,7 @@ def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_
     model.add(Activation('softmax'))
 
     # sgd = SGD(lr=0.001, decay=1e-6, momentum=1.0)
-    model.compile(loss='binary_crossentropy',
+    model.compile(loss='categorical_crossentropy',
                   optimizer='adadelta',
                   metrics=['accuracy'])
 
@@ -153,20 +161,23 @@ if __name__ == '__main__':
     # X = np.load('samples.npz')['arr_0']
     # y = np.load('labels.npz')['arr_0']
 
-    # # troubleshooting - subsample 10 from each class
-    # X = np.concatenate((X[:10], X[-10:]))
-    # y = np.concatenate((y[:10], y[-10:]))
-
-    # more testing
+    # troubleshooting -- ymore testing 80 samples from 4 particpants
     samples = []
-    depressed = np.load('/Users/ky/Desktop/depression-detect/data/processed/D321.npz')
-    for key in depressed.keys():
-        samples.append(depressed[key])
-    normal = np.load('/Users/ky/Desktop/depression-detect/data/processed/N310.npz')
-    for key in normal.keys():
-        samples.append(normal[key])
+    depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D321.npz')
+    for key in depressed1.keys():
+        samples.append(depressed1[key])
+    depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D330.npz')
+    for key in depressed1.keys():
+        samples.append(depressed1[key])
+    normal1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/N310.npz')
+    for key in normal1.keys():
+        samples.append(normal1[key])
+    normal2 = np.load('/Users/ky/Desktop/depression-detect/data/processed/N429.npz')
+    for key in normal2.keys():
+        samples.append(normal2[key])
+
     X = np.array(samples)
-    y = np.concatenate((np.ones(40), np.zeros(40)))
+    y = np.concatenate((np.ones(80), np.zeros(80)))
 
     print('X shape', X.shape)
 
@@ -179,7 +190,7 @@ if __name__ == '__main__':
     # CNN parameters
     batch_size = 8
     nb_classes = 2
-    epochs = 15
+    epochs = 20
 
     # train/test split
     test_size = 0.2
