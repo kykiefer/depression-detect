@@ -161,7 +161,7 @@ if __name__ == '__main__':
     # X = np.load('samples.npz')['arr_0']
     # y = np.load('labels.npz')['arr_0']
 
-    # troubleshooting -- ymore testing 80 samples from 4 particpants
+    # troubleshooting -- 80 samples from 4 particpants
     samples = []
     depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D321.npz')
     for key in depressed1.keys():
@@ -207,9 +207,9 @@ if __name__ == '__main__':
     print('input shape', input_shape)
 
     print('image data format:', K.image_data_format())
-
-    # run CNN
-    model = cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_shape)
-
-    # evaluate model
-    y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba = model_performance(model, X_train, X_test, y_train, y_test)
+    #
+    # # run CNN
+    # model = cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_shape)
+    #
+    # # evaluate model
+    # y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba = model_performance(model, X_train, X_test, y_train, y_test)
