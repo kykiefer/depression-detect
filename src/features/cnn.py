@@ -41,9 +41,9 @@ def preprocess(X_train, X_test):
     """
     X_train = X_train.astype('float32')
     X_test = X_test.astype('float32')
-    # normalize to decibels relative to full scale for the 4 sec clip
-    X_train = np.array([X / X.max() for X in X_train])
-    X_test = np.array([X / X.max() for X in X_test])
+    # normalize to decibels relative to full scale (dBFS) for the 4 sec clip
+    X_train = np.array([(X - X.min()) / (X.max() - X.min()) for X in X_train])
+    X_test = np.array([(X - X.min()) / (X.max() - X.min()) for X in X_test])
     return X_train, X_test
 
 
@@ -99,7 +99,7 @@ def keras_img_prep(X_train, X_test, img_dep, img_rows, img_cols):
     return X_train, X_test, input_shape
 
 
-def cnn(X_train, y_train, X_test, y_test, kernel_size, pool_size, batch_size, nb_classes, epochs, input_shape):
+def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_shape):
     """
     This Convolutional Neural Net architecture for classifying the audio clips
     as normal (0) or depressed (1).
@@ -112,15 +112,13 @@ def cnn(X_train, y_train, X_test, y_test, kernel_size, pool_size, batch_size, nb
     model.add(MaxPooling2D(pool_size=(1,3), strides=(1,3)))
 
     model.add(Flatten())
-    model.add(Dense(128, activation='softmax'))
+    model.add(Dense(128, activation='relu'))
     model.add(Dense(128, activation='relu'))
     model.add(Dense(nb_classes))
     model.add(Activation('softmax'))
 
-
-    sgd = SGD(lr=0.001, decay=1e-6, momentum=1.0)
-    # Configure the model, using AdaDelta Gradient Descent optimization
-    model.compile(loss='categorical_crossentropy',
+    # sgd = SGD(lr=0.001, decay=1e-6, momentum=1.0)
+    model.compile(loss='binary_crossentropy',
                   optimizer='adadelta',
                   metrics=['accuracy'])
 
@@ -151,24 +149,24 @@ if __name__ == '__main__':
     # X = retrieve_from_bucket('samples.npz')
     # y = retrieve_from_bucket('labels.npz')
 
-    # Once stored locally, access with the following
-    X = np.load('samples.npz')['arr_0']
-    y = np.load('labels.npz')['arr_0']
+    # # Once stored locally, access with the following
+    # X = np.load('samples.npz')['arr_0']
+    # y = np.load('labels.npz')['arr_0']
 
     # # troubleshooting - subsample 10 from each class
     # X = np.concatenate((X[:10], X[-10:]))
     # y = np.concatenate((y[:10], y[-10:]))
 
     # more testing
-    # samples = []
-    # depressed = np.load('/Users/ky/Desktop/depression-detect/data/processed/D319.npz')
-    # for key in depressed.keys():
-    #     samples.append(depressed[key])
-    # normal = np.load('/Users/ky/Desktop/depression-detect/data/processed/N303.npz')
-    # for key in normal.keys():
-    #     samples.append(normal[key])
-    # X = np.array(samples)
-    # y = np.concatenate((np.ones(40), np.zeros(40)))
+    samples = []
+    depressed = np.load('/Users/ky/Desktop/depression-detect/data/processed/D321.npz')
+    for key in depressed.keys():
+        samples.append(depressed[key])
+    normal = np.load('/Users/ky/Desktop/depression-detect/data/processed/N310.npz')
+    for key in normal.keys():
+        samples.append(normal[key])
+    X = np.array(samples)
+    y = np.concatenate((np.ones(40), np.zeros(40)))
 
     print('X shape', X.shape)
 
@@ -176,15 +174,12 @@ if __name__ == '__main__':
     # X = np.array([block_reduce(x, block_size=(4, 1), func=np.mean) for x in X])
 
     # bottom of the frequnecy spectrum
-    # X = np.array([x[125:, :] for x in X])
+    # X = np.array([x[-125:, :] for x in X])
 
     # CNN parameters
-    batch_size = 16
+    batch_size = 8
     nb_classes = 2
-    epochs = 30
-    kernel_size = (9, 9)  # (width, height)
-    pool_size = (7, 7)
-    nb_filters = 32
+    epochs = 15
 
     # train/test split
     test_size = 0.2
@@ -200,10 +195,10 @@ if __name__ == '__main__':
     print('X_train shape', X_train.shape)
     print('input shape', input_shape)
 
-    print(K.image_data_format())
+    print('image data format:', K.image_data_format())
 
     # run CNN
-    model = cnn(X_train, y_train, X_test, y_test, kernel_size, pool_size, batch_size, nb_classes, epochs, input_shape)
+    model = cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_shape)
 
     # evaluate model
     y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba = model_performance(model, X_train, X_test, y_train, y_test)
