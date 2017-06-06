@@ -13,26 +13,28 @@ from keras.layers.core import Dense
 from keras.optimizers import SGD
 import theano
 from cnn import train_test, keras_img_prep
+from sklearn.model_selection import train_test_split
 
 def load_and_condition_MNIST_data():
     X = np.load('samples.npz')['arr_0']
     y = np.load('labels.npz')['arr_0']
-    test_size = 0.2
-    X_train, X_test, y_train, y_test = train_test(X, y, nb_classes=2, test_size=test_size)
-    X_train, X_test, input_shape = keras_img_prep(X_train, X_test, img_depth, img_rows, img_cols)
+
+    # vertically stack as input to MLP
+    vert_stack_ls = []
+
+    for idx in range(X.shape[0]):
+        split_spect = np.array_split(X[idx], 125, axis=1)
+        vert_stack = np.vstack(split_spect)
+        vert_stack_ls.append(vert_stack)
+
+    X_train, X_test, y_train, y_test = train_test_split(np.array(vert_stack_ls), y, test_size=0.2, random_state=15, stratify=y)
+    X_train = X_train.astype('float32')
+    X_train = np.squeeze(X_train, axis=2)
+    X_test = X_test.astype('float32')
+    X_test = np.squeeze(X_test, axis=2)
+    y_train_ohe = np_utils.to_categorical(y_train, 2)
 
 
-    (X_train, y_train), (X_test, y_test) = mnist.load_data()
-    print "\nLoaded MNIST images"
-    theano.config.floatX = 'float32'
-    X_train = X_train.astype(theano.config.floatX) #before conversion were uint8
-    X_test = X_test.astype(theano.config.floatX)
-    X_train.resize(len(y_train), 784) # 28 pix x 28 pix = 784 pixels
-    X_test.resize(len(y_test), 784)
-    print '\nFirst 5 labels of MNIST y_train: ', y_train[:5]
-    y_train_ohe = np_utils.to_categorical(y_train)
-    print '\nFirst 5 labels of MNIST y_train (one-hot):\n', y_train_ohe[:5]
-    print ''
     return X_train, y_train, X_test, y_test, y_train_ohe
 
 def define_nn_mlp_model(X_train, y_train_ohe):
@@ -45,13 +47,13 @@ def define_nn_mlp_model(X_train, y_train_ohe):
 
     model = Sequential() # sequence of layers
     num_neurons_in_layer = 100 # number of neurons in a layer
-    num_inputs = X_train.shape[1] # number of features (784)
-    num_classes = y_train_ohe.shape[1]  # number of classes, 0-9
+    num_inputs = X_train.shape[1] # number of features (64125)
+    num_classes = y_train_ohe.shape[1]  # number of classes, 0-1
     model.add(Dense(input_dim=num_inputs,
-                     output_dim=num_neurons_in_layer,
+                     output_dim=2000,
                      init='uniform',
-                     activation='relu'))
-    model.add(Dense(input_dim=num_neurons_in_layer,
+                     activation='softmax'))
+    model.add(Dense(input_dim=2000,
                      output_dim=num_neurons_in_layer,
                      init='uniform',
                      activation='relu'))
@@ -60,7 +62,7 @@ def define_nn_mlp_model(X_train, y_train_ohe):
                      init='uniform',
                      activation='softmax'))
     sgd = SGD(lr=0.001, decay=1e-7, momentum=.9) # using stochastic gradient descent (keep)
-    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=["accuracy"] ) # (keep)
+    model.compile(loss='binary_crossentropy', optimizer='adadelta', metrics=["accuracy"] ) # (keep)
     return model
 
 def print_output(model, y_train, y_test, rng_seed):
@@ -85,7 +87,9 @@ if __name__ == '__main__':
     rng_seed = 2 # set random number generator seed
     X_train, y_train, X_test, y_test, y_train_ohe = load_and_condition_MNIST_data()
     np.random.seed(rng_seed)
+    print('building model')
     model = define_nn_mlp_model(X_train, y_train_ohe)
-    model.fit(X_train, y_train_ohe, nb_epoch=25, batch_size=100, verbose=1,
+    print('fitting model')
+    model.fit(X_train, y_train_ohe, nb_epoch=20, batch_size=50, verbose=1,
               validation_split=0.1) # cross val to estimate test error
     print_output(model, y_train, y_test, rng_seed)
