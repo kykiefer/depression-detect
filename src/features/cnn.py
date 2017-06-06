@@ -35,16 +35,16 @@ def retrieve_from_bucket(file):
     X = np.load(file)
     return X
 
-# def preprocess(X_train, X_test):
-#     """
-#     Convert from float64 to float32 for speed.
-#     """
-#     X_train = X_train.astype('float32')
-#     X_test = X_test.astype('float32')
-#     # normalize
-#     X_train = np.array([X / X.max() for X in X_train])
-#     X_test = np.array([X / X.max() for X in X_test])
-#     return X_train, X_test
+def preprocess(X_train, X_test):
+    """
+    Convert from float64 to float32 for speed.
+    """
+    X_train = X_train.astype('float32')
+    X_test = X_test.astype('float32')
+    # normalize to decibels relative to full scale for the 4 sec clip
+    X_train = np.array([X / X.max() for X in X_train])
+    X_test = np.array([X / X.max() for X in X_test])
+    return X_train, X_test
 
 
 def train_test(X, y, nb_classes, test_size=0.2):
@@ -73,7 +73,7 @@ def train_test(X, y, nb_classes, test_size=0.2):
     print('X_train shape:', X_train.shape)
     print('Train on {} samples, validate on {}'.format(X_train.shape[0], X_test.shape[0]))
 
-    # X_train, X_test = preprocess(X_train, X_test)
+    X_train, X_test = preprocess(X_train, X_test)
 
     # Convert class vectors to binary class matrices
     Y_train = np_utils.to_categorical(y_train, nb_classes)
@@ -121,7 +121,7 @@ def cnn(X_train, y_train, X_test, y_test, kernel_size, pool_size, batch_size, nb
     sgd = SGD(lr=0.001, decay=1e-6, momentum=1.0)
     # Configure the model, using AdaDelta Gradient Descent optimization
     model.compile(loss='categorical_crossentropy',
-                  optimizer=sgd,
+                  optimizer='adadelta',
                   metrics=['accuracy'])
 
     model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs,
@@ -160,15 +160,15 @@ if __name__ == '__main__':
     # y = np.concatenate((y[:10], y[-10:]))
 
     # more testing
-    samples = []
-    depressed = np.load('/Users/ky/Desktop/depression-detect/data/processed/D319.npz')
-    for key in depressed.keys():
-        samples.append(depressed[key])
-    normal = np.load('/Users/ky/Desktop/depression-detect/data/processed/N303.npz')
-    for key in normal.keys():
-        samples.append(normal[key])
-    X = np.array(samples)
-    y = np.concatenate((np.ones(40), np.zeros(40)))
+    # samples = []
+    # depressed = np.load('/Users/ky/Desktop/depression-detect/data/processed/D319.npz')
+    # for key in depressed.keys():
+    #     samples.append(depressed[key])
+    # normal = np.load('/Users/ky/Desktop/depression-detect/data/processed/N303.npz')
+    # for key in normal.keys():
+    #     samples.append(normal[key])
+    # X = np.array(samples)
+    # y = np.concatenate((np.ones(40), np.zeros(40)))
 
     print('X shape', X.shape)
 
