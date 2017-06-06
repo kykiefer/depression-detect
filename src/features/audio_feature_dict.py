@@ -1,0 +1,40 @@
+"""
+A dictiionary of the short-term features available for extraction using pyAudioAnalysis. Descriptions of features availbe here:
+https://github.com/tyiannak/pyAudioAnalysis/wiki/3.-Feature-Extraction
+"""
+
+
+st_feat_dict = {0: 'zero_crossing_rate',
+                1: 'energy',
+                2: 'entropy_of_energy',
+                3: 'spectral_centroid',
+                4: 'spectral_spread',
+                5: 'spectral_entropy',
+                6: 'spectral_flux',
+                7: 'spectral_rolloff',
+                8: 'mffc1',
+                9: 'mffc2',
+                10: 'mffc3',
+                11: 'mffc4',
+                12: 'mffc5',
+                13: 'mffc6',
+                14: 'mffc7',
+                15: 'mffc8',
+                16: 'mffc9',
+                17: 'mffc10',
+                18: 'mffc11',
+                19: 'mffc12',
+                20: 'mffc13',
+                21: 'chrome_vector1',
+                22: 'chrome_vector2',
+                23: 'chrome_vector3',
+                24: 'chrome_vector4',
+                25: 'chrome_vector5',
+                26: 'chrome_vector6',
+                27: 'chrome_vector7',
+                28: 'chrome_vector8',
+                29: 'chrome_vector9',
+                30: 'chrome_vector10',
+                31: 'chrome_vector11',
+                32: 'chrome_vector12',
+                33: 'chroma_deviation'}
