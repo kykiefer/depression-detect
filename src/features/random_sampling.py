@@ -170,18 +170,20 @@ def save_to_bucket(file, obj_name):
 
 
 if __name__ == '__main__':
-    # build particpants npz files
-    # create_sample_dicts(crop_width=125)
-    train_samples, train_labels, test_samples, test_labels = build_array_of_random_samples('/Users/ky/Desktop/depression-detect/data/processed')
+    # # build particpants npz files
+    # # create_sample_dicts(crop_width=125)
+    # train_samples, train_labels, test_samples, test_labels = build_array_of_random_samples('/Users/ky/Desktop/depression-detect/data/processed')
+    #
+    # # save as npz locally
+    # print "saving locally..."
+    # np.savez('/Users/ky/Desktop/depression-detect/data/processed/train_samples.npz', train_samples)
+    # np.savez('/Users/ky/Desktop/depression-detect/data/processed/train_labels.npz', train_labels)
+    # np.savez('/Users/ky/Desktop/depression-detect/data/processed/test_samples.npz', test_samples)
+    # np.savez('/Users/ky/Desktop/depression-detect/data/processed/test_labels.npz', test_labels)
 
-    # save as npz locally
-    print "saving locally..."
-    np.savez('/Users/ky/Desktop/depression-detect/data/processed/train_samples.npz', train_samples)
-    np.savez('/Users/ky/Desktop/depression-detect/data/processed/train_labels.npz', train_labels)
-    np.savez('/Users/ky/Desktop/depression-detect/data/processed/test_samples.npz', test_samples)
-    np.savez('/Users/ky/Desktop/depression-detect/data/processed/test_labels.npz', test_labels)
-
-    # # upload npz files to S3 bucket for accessibilty
-    # print "uploading to S3..."
-    # save_to_bucket('/Users/ky/Desktop/depression-detect/data/processed/samples.npz', 'samples.npz')
-    # save_to_bucket('/Users/ky/Desktop/depression-detect/data/processed/labels.npz', 'labels.npz')
+    # upload npz files to S3 bucket for accessibilty
+    print "uploading to S3..."
+    save_to_bucket('/Users/ky/Desktop/depression-detect/data/processed/train_samples.npz', 'train_samples.npz')
+    save_to_bucket('/Users/ky/Desktop/depression-detect/data/processed/train_labels.npz', 'train_labels.npz')
+    save_to_bucket('/Users/ky/Desktop/depression-detect/data/processed/test_samples.npz', 'test_samples.npz')
+    save_to_bucket('/Users/ky/Desktop/depression-detect/data/processed/test_labels.npz', 'test_labels.npz')
