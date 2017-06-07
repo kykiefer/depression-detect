@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 from skimage.measure import block_reduce  # for downsampling
 np.random.seed(15)  # for reproducibility
 
+from sklearn.metrics import confusion_matrix
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
@@ -139,7 +140,26 @@ def model_performance(model, X_train, X_test, y_train, y_test):
     y_test_pred_proba = model.predict_proba(X_test)
     y_train_pred_proba = model.predict_proba(X_train)
 
-    return y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba
+    # Converting y_test back to 1-D array for confusion matrix computation
+    y_test_1d = y_test[:,1]
+
+    # Computing confusion matrix for Test datasets
+    conf_matrix = confusion_matrix(y_test_1d, y_test_pred)
+    print("Confusion Matrix:")
+    print(conf_matrix)
+
+    return y_train_pred, y_test_pred, y_train_pred_proba, \
+           y_test_pred_proba, conf_matrix
+
+
+def standard_confusion_matrix(y_test, y_test_pred):
+    ''' Computing Confusion Matrix for CNN model, formatting in
+            standard setup
+        Input:  y_true, y_predict values - arrays
+        Output: confusion matrix - array
+    '''
+    [[tn, fp], [fn, tp]] = confusion_matrix(y_test, y_test_pred)
+    return np.array([[tp, fp], [fn, tn]])
 
 
 if __name__ == '__main__':
@@ -152,6 +172,10 @@ if __name__ == '__main__':
     # y = np.load('labels.npz')['arr_0']
 
     # troubleshooting -- 80 samples from 4 particpants
+    # D321 - female
+    # D330 - male
+    # N444 - female
+    # N429 - male
     train_samps = []
     depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D321.npz')
     for key in depressed1.keys():
@@ -159,7 +183,7 @@ if __name__ == '__main__':
     depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D330.npz')
     for key in depressed1.keys():
         train_samps.append(depressed1[key])
-    normal1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/N310.npz')
+    normal1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/N444.npz')
     for key in normal1.keys():
         train_samps.append(normal1[key])
     normal2 = np.load('/Users/ky/Desktop/depression-detect/data/processed/N429.npz')
@@ -169,8 +193,12 @@ if __name__ == '__main__':
     X_train = np.array(train_samps)
     y_train = np.concatenate((np.ones(80), np.zeros(80)))
 
+    # D367 - male
+    # D346 - female
+    # N357 - male
+    # N391 - female
     test_samps = []
-    depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D345.npz')
+    depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D367.npz')
     for key in depressed1.keys():
         test_samps.append(depressed1[key])
     depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D346.npz')
@@ -191,7 +219,7 @@ if __name__ == '__main__':
     # CNN parameters
     batch_size = 8
     nb_classes = 2
-    epochs = 20
+    epochs = 24
 
     # train/test split
     test_size = 0.2
@@ -213,4 +241,4 @@ if __name__ == '__main__':
     model = cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_shape)
 
     # evaluate model
-    y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba = model_performance(model, X_train, X_test, y_train, y_test)
+    y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba, conf_matrix = model_performance(model, X_train, X_test, y_train, y_test)

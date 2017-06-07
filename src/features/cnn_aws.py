@@ -152,8 +152,10 @@ def model_performance(model, X_train, X_test, y_train, y_test):
 
 if __name__ == '__main__':
     # # Uncomment to load from S3 bucket
-    # X = retrieve_from_bucket('samples.npz')
-    # y = retrieve_from_bucket('labels.npz')
+    X_train = retrieve_from_bucket('train_samples.npz')
+    y_train = retrieve_from_bucket('train_labels.npz')
+    X_test = retrieve_from_bucket('test_samples.npz')
+    y_test = retrieve_from_bucket('test_labels.npz')
 
     # # Once stored locally, access with the following
 
