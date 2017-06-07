@@ -68,7 +68,6 @@ def train_test(X_train, y_train, X_test, y_test, nb_classes):
     Y_train and Y_test : arrays
         binary class matrices
     """
-    print('X_train shape:', X_train.shape)
     print('Train on {} samples, validate on {}'.format(X_train.shape[0], X_test.shape[0]))
 
     X_train, X_test = preprocess(X_train, X_test)
@@ -118,8 +117,8 @@ def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_
     model.add(MaxPooling2D(pool_size=(1,3), strides=(1,3)))
 
     model.add(Flatten())
-    model.add(Dense(128, activation='relu'))
-    model.add(Dense(128, activation='relu'))
+    model.add(Dense(512, activation='relu'))
+    model.add(Dense(512, activation='relu'))
     model.add(Dense(nb_classes))
     model.add(Activation('softmax'))
 
@@ -151,62 +150,34 @@ def model_performance(model, X_train, X_test, y_train, y_test):
 
 
 if __name__ == '__main__':
-    # # Uncomment to load from S3 bucket
-    print('Retrieving from S3')
+    # Load from S3 bucket
+    print('Retrieving from S3...')
     X_train = retrieve_from_bucket('train_samples.npz')
     y_train = retrieve_from_bucket('train_labels.npz')
     X_test = retrieve_from_bucket('test_samples.npz')
     y_test = retrieve_from_bucket('test_labels.npz')
 
-
     X_train, y_train, X_test, y_test = X_train['arr_0'], y_train['arr_0'], X_test['arr_0'], y_test['arr_0']
 
-    # # save to EC2 instance
-    # np.savez('~/depression-detect/data/processed/train_samples.npz', X_train)
-    # np.savez('~/depression-detect/data/processed/train_labels.npz', y_train)
-    # np.savez('~/depression-detect/data/processed/test_samples.npz', X_test)
-    # np.savez('~/depression-detect/data/processed/test_labels.npz', y_test)
-    #
-    # # # Once stored locally, access with the following
-    # X_train, y_train, X_test, y_test = np.load('~/depression-detect/data/processed/train_samples.npz')['arr_0'], np.load('~/depression-detect/data/processed/train_labels.npz')['arr_0'], np.load('~/depression-detect/data/processed/test_samples.npz')['arr_0'], np.load('~/depression-detect/data/processed/test_labels.npz')['arr_0']
-
-    # # troubleshooting -- 80 samples from 4 particpants
-    # samples = []
-    # depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D321.npz')
-    # for key in depressed1.keys():
-    #     samples.append(depressed1[key])
-    # depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D330.npz')
-    # for key in depressed1.keys():
-    #     samples.append(depressed1[key])
-    # normal1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/N310.npz')
-    # for key in normal1.keys():
-    #     samples.append(normal1[key])
-    # normal2 = np.load('/Users/ky/Desktop/depression-detect/data/processed/N429.npz')
-    # for key in normal2.keys():
-    #     samples.append(normal2[key])
-    #
-    # X = np.array(samples)
-    # y = np.concatenate((np.ones(80), np.zeros(80)))
-
     # CNN parameters
-    batch_size = 8
+    batch_size = 20
     nb_classes = 2
-    epochs = 4
-    print('Processing images for Keras')
+    epochs = 20
+
     # normalalize data and prep for Keras
+    print('Processing images for Keras...')
     X_train, X_test, y_train, y_test = train_test(X_train, y_train, X_test, y_test, nb_classes=nb_classes)
 
     # specify image dimensions - 513x125x1 for spectrogram with crop size of 125 pixels
     img_rows, img_cols, img_depth = X_train.shape[1], X_train.shape[2], 1
 
-    # prep image input for Keras
+    # reshape image input for Keras
     # used Theano dim_ordering (th), (# images, # chans, # rows, # cols)
     X_train, X_test, input_shape = keras_img_prep(X_train, X_test, img_depth, img_rows, img_cols)
 
     print('X_train shape', X_train.shape)
     print('input shape', input_shape)
 
-    print('image data format:', K.image_data_format())
     print('Fitting model')
     # run CNN
     model = cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_shape)
