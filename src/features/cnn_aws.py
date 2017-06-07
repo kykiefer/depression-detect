@@ -187,7 +187,7 @@ if __name__ == '__main__':
     # CNN parameters
     batch_size = 8
     nb_classes = 2
-    epochs = 1
+    epochs = 25
 
     # normalalize data and prep for Keras
     print('Processing images for Keras...')
