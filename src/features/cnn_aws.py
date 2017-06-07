@@ -3,6 +3,7 @@ import boto
 import os
 import numpy as np
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
 from skimage.measure import block_reduce  # for downsampling
 np.random.seed(15)  # for reproducibility
 
