@@ -181,7 +181,7 @@ if __name__ == '__main__':
     # np.savez('/Users/ky/Desktop/depression-detect/data/processed/test_samples.npz', test_samples)
     # np.savez('/Users/ky/Desktop/depression-detect/data/processed/test_labels.npz', test_labels)
 
-    # upload npz files to S3 bucket for accessibilty
+    # upload npz files to S3 bucket for accessibilty on AWS
     print "uploading to S3..."
     save_to_bucket('/Users/ky/Desktop/depression-detect/data/processed/train_samples.npz', 'train_samples.npz')
     save_to_bucket('/Users/ky/Desktop/depression-detect/data/processed/train_labels.npz', 'train_labels.npz')
