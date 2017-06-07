@@ -121,7 +121,7 @@ def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_
                   optimizer='adadelta',
                   metrics=['accuracy'])
 
-    model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs,
+    history = model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs,
               verbose=1, validation_data=(X_test, y_test))
 
     # Evaluate accuracy on test and train sets
@@ -130,7 +130,7 @@ def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_
     score_test = model.evaluate(X_test, y_test, verbose=0)
     print('Test accuracy:', score_test[1])
 
-    return model
+    return model, history
 
 
 def model_performance(model, X_train, X_test, y_train, y_test):
@@ -219,7 +219,7 @@ if __name__ == '__main__':
     # CNN parameters
     batch_size = 8
     nb_classes = 2
-    epochs = 24
+    epochs = 2
 
     # train/test split
     test_size = 0.2
@@ -238,7 +238,7 @@ if __name__ == '__main__':
     print('image data format:', K.image_data_format())
 
     # run CNN
-    model = cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_shape)
+    model, history = cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_shape)
 
     # evaluate model
     y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba, conf_matrix = model_performance(model, X_train, X_test, y_train, y_test)

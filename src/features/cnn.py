@@ -180,7 +180,7 @@ if __name__ == '__main__':
     # CNN parameters
     batch_size = 20
     nb_classes = 2
-    epochs = 20
+    epochs = 1
 
     # normalalize data and prep for Keras
     X_train, X_test, y_train, y_test = train_test(X_train, y_train, X_test, y_test, nb_classes=nb_classes)

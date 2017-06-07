@@ -35,6 +35,7 @@ def retrieve_from_bucket(file):
     X = np.load(file)
     return X
 
+
 def preprocess(X_train, X_test):
     """
     Convert from float64 to float32 for speed.
@@ -103,14 +104,6 @@ def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_
     """
     model = Sequential()
 
-    # model.add(Conv2D(32, (7, 7), input_shape=input_shape, activation='relu'))
-    #
-    # model.add(Flatten())
-    # model.add(Dense(128, activation='relu'))
-    # model.add(Dense(128, activation='relu'))
-    # model.add(Dense(128, activation='relu'))
-    # model.add(Activation('softmax'))
-
     model.add(Conv2D(32, (57, 6), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
     model.add(MaxPooling2D(pool_size=(4,3), strides=(1,3)))
     model.add(Conv2D(32, (1, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu'))
@@ -127,7 +120,7 @@ def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_
                   optimizer='adadelta',
                   metrics=['accuracy'])
 
-    model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs,
+    history = model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs,
               verbose=1, validation_data=(X_test, y_test))
 
     # Evaluate accuracy on test and train sets
@@ -136,7 +129,7 @@ def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_
     score_test = model.evaluate(X_test, y_test, verbose=0)
     print('Test accuracy:', score_test[1])
 
-    return model
+    return model, history
 
 
 def model_performance(model, X_train, X_test, y_train, y_test):
@@ -146,7 +139,37 @@ def model_performance(model, X_train, X_test, y_train, y_test):
     y_test_pred_proba = model.predict_proba(X_test)
     y_train_pred_proba = model.predict_proba(X_train)
 
-    return y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba
+    # Converting y_test back to 1-D array for confusion matrix computation
+    y_test_1d = y_test[:,1]
+
+    # Computing confusion matrix for test dataset
+    conf_matrix = confusion_matrix(y_test_1d, y_test_pred)
+    print("Confusion Matrix:")
+    print(conf_matrix)
+
+    return y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba, conf_matrix
+
+
+def standard_confusion_matrix(y_test, y_test_pred):
+    ''' Computing Confusion Matrix for CNN model, formatting in
+            standard setup
+        Input:  y_true, y_predict values - arrays
+        Output: confusion matrix - array
+    '''
+    [[tn, fp], [fn, tp]] = confusion_matrix(y_test, y_test_pred)
+    return np.array([[tp, fp], [fn, tn]])
+
+
+def save_to_bucket(file, obj_name):
+    """
+    Saves local file to S3 bucket for redundancy and repreoducibility by others.
+    """
+    conn =  boto.connect_s3(access_key, access_secret_key)
+
+    bucket = conn.get_bucket('depression-detect')
+
+    file_object = bucket.new_key(obj_name)
+    file_object.set_contents_from_filename(file)
 
 
 if __name__ == '__main__':
@@ -162,7 +185,7 @@ if __name__ == '__main__':
     # CNN parameters
     batch_size = 8
     nb_classes = 2
-    epochs = 20
+    epochs = 1
 
     # normalalize data and prep for Keras
     print('Processing images for Keras...')
@@ -174,13 +197,19 @@ if __name__ == '__main__':
     # reshape image input for Keras
     # used Theano dim_ordering (th), (# images, # chans, # rows, # cols)
     X_train, X_test, input_shape = keras_img_prep(X_train, X_test, img_depth, img_rows, img_cols)
-
     print('X_train shape', X_train.shape)
     print('input shape', input_shape)
 
-    print('Fitting model')
     # run CNN
-    model = cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_shape)
-    print('Evaluating model')
+    print('Fitting model...')
+    model, history = cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_shape)
+
     # evaluate model
-    y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba = model_performance(model, X_train, X_test, y_train, y_test)
+    print('Evaluating model...')
+    y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba, conf_matrix = model_performance(model, X_train, X_test, y_train, y_test)
+
+    # store model to S3 bucket
+    print('Saving model to S3...')
+    pkl_name = 'model.pkl'
+    model.save(pkl_name)
+    save_to_bucket(pkl_name, pkl_name)
