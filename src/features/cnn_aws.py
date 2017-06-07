@@ -228,10 +228,10 @@ if __name__ == '__main__':
     recall = float(conf_matrix[0][0]) \
                      / (conf_matrix[0][0] + conf_matrix[1][0])
     f1_score = 2 * (precision * recall) / (precision + recall)
-    print "Accuracy: {}".format(accuracy)
-    print "Precision: {}".format(precision)
-    print "Recall: {}".format(recall)
-    print "F1-Score: {}".format(f1_score)
+    print("Accuracy: {}".format(accuracy))
+    print("Precision: {}".format(precision))
+    print("Recall: {}".format(recall))
+    print("F1-Score: {}".format(f1_score))
 
     # plot train/test loss and accuracy. saves files in cd
     print('Saving plots...')
