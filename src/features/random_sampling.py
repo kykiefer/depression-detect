@@ -118,26 +118,43 @@ def build_array_of_random_samples(npz_file_dir):
     # calculate how many samples to balance classes
     max_samples = min(len(dep_samps), len(norm_samps))
 
-    # randomly select max participnats from each class
+    # randomly select max participants from each class
     dep_select_samps = np.random.choice(dep_samps, size=max_samples)
     norm_select_samps = np.random.choice(norm_samps, size=max_samples)
 
     # randomly select n_samples_per_person (40 in the case of a crop width of 125) from each of the partipcant lists
 
     # refactor this code!
-    samples = []
-    for sample in dep_select_samps:
+    test_size = 0.2
+    num_test_samples = int(len(dep_select_samps) * test_size)
+
+    train_samples = []
+    for sample in dep_select_samps[:-num_test_samples]:
         npz_file = npz_file_dir +  '/' + sample
         with np.load(npz_file) as data:
             for key in data.keys():
-                samples.append(data[key])
-    for sample in norm_select_samps:
+                train_samples.append(data[key])
+    for sample in norm_select_samps[:-num_test_samples]:
         npz_file = npz_file_dir +  '/' + sample
         with np.load(npz_file) as data:
             for key in data.keys():
-                samples.append(data[key])
-    labels = np.concatenate((np.ones(len(samples)/2), np.zeros(len(samples)/2)))
-    return np.array(samples), labels
+                train_samples.append(data[key])
+    train_labels = np.concatenate((np.ones(len(train_samples)/2), np.zeros(len(train_samples)/2)))
+
+    test_samples = []
+    for sample in dep_select_samps[-num_test_samples:]:
+        npz_file = npz_file_dir +  '/' + sample
+        with np.load(npz_file) as data:
+            for key in data.keys():
+                test_samples.append(data[key])
+    for sample in norm_select_samps[-num_test_samples:]:
+        npz_file = npz_file_dir +  '/' + sample
+        with np.load(npz_file) as data:
+            for key in data.keys():
+                test_samples.append(data[key])
+    test_labels = np.concatenate((np.ones(len(test_samples)/2), np.zeros(len(test_samples)/2)))
+
+    return np.array(train_samples), train_labels, np.array(test_samples), test_labels
 
 
 def save_to_bucket(file, obj_name):
@@ -153,16 +170,18 @@ def save_to_bucket(file, obj_name):
 
 
 if __name__ == '__main__':
-    # # build particpants npz files
+    # build particpants npz files
     # create_sample_dicts(crop_width=125)
-    # samples, labels = build_array_of_random_samples('/Users/ky/Desktop/depression-detect/data/processed')
-    #
-    # # save as npz locally
-    # # np.savez('/Users/ky/Desktop/depression-detect/data/processed/samples.npz', samples)
-    # print "saving locally..."
-    # np.savez('/Users/ky/Desktop/depression-detect/data/processed/labels.npz', labels)
+    train_samples, train_labels, test_samples, test_labels = build_array_of_random_samples('/Users/ky/Desktop/depression-detect/data/processed')
 
-    # upload npz files to S3 bucket for accessibilty
-    print "uploading to S3..."
-    save_to_bucket('/Users/ky/Desktop/depression-detect/data/processed/samples.npz', 'samples.npz')
+    # save as npz locally
+    print "saving locally..."
+    np.savez('/Users/ky/Desktop/depression-detect/data/processed/train_samples.npz', train_samples)
+    np.savez('/Users/ky/Desktop/depression-detect/data/processed/train_labels.npz', train_labels)
+    np.savez('/Users/ky/Desktop/depression-detect/data/processed/test_samples.npz', test_samples)
+    np.savez('/Users/ky/Desktop/depression-detect/data/processed/test_labels.npz', test_labels)
+
+    # # upload npz files to S3 bucket for accessibilty
+    # print "uploading to S3..."
+    # save_to_bucket('/Users/ky/Desktop/depression-detect/data/processed/samples.npz', 'samples.npz')
     # save_to_bucket('/Users/ky/Desktop/depression-detect/data/processed/labels.npz', 'labels.npz')

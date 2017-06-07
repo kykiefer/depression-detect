@@ -47,7 +47,7 @@ def preprocess(X_train, X_test):
     return X_train, X_test
 
 
-def train_test(X, y, nb_classes, test_size=0.2):
+def train_test(X_train, y_train, X_test, y_test, nb_classes):
     """
     Split the X, y datasets into training and test sets based on desired test size.
 
@@ -68,8 +68,6 @@ def train_test(X, y, nb_classes, test_size=0.2):
     Y_train and Y_test : arrays
         binary class matrices
     """
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=15, stratify=y)
-
     print('X_train shape:', X_train.shape)
     print('Train on {} samples, validate on {}'.format(X_train.shape[0], X_test.shape[0]))
 
@@ -158,43 +156,34 @@ if __name__ == '__main__':
     # y = retrieve_from_bucket('labels.npz')
 
     # # Once stored locally, access with the following
-    # X = np.load('samples.npz')['arr_0']
-    # y = np.load('labels.npz')['arr_0']
 
-    # troubleshooting -- 80 samples from 4 particpants
-    samples = []
-    depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D321.npz')
-    for key in depressed1.keys():
-        samples.append(depressed1[key])
-    depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D330.npz')
-    for key in depressed1.keys():
-        samples.append(depressed1[key])
-    normal1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/N310.npz')
-    for key in normal1.keys():
-        samples.append(normal1[key])
-    normal2 = np.load('/Users/ky/Desktop/depression-detect/data/processed/N429.npz')
-    for key in normal2.keys():
-        samples.append(normal2[key])
+    X_train, y_train, X_test, y_test = np.load('/Users/ky/Desktop/depression-detect/data/processed/train_samples.npz')['arr_0'], np.load('/Users/ky/Desktop/depression-detect/data/processed/train_labels.npz')['arr_0'], np.load('/Users/ky/Desktop/depression-detect/data/processed/test_samples.npz')['arr_0'], np.load('/Users/ky/Desktop/depression-detect/data/processed/test_labels.npz')['arr_0']
 
-    X = np.array(samples)
-    y = np.concatenate((np.ones(80), np.zeros(80)))
-
-    print('X shape', X.shape)
-
-    # # troubleshooting - downsample images -- mean doesn't work for decibels
-    # X = np.array([block_reduce(x, block_size=(4, 1), func=np.mean) for x in X])
-
-    # bottom of the frequnecy spectrum
-    # X = np.array([x[-125:, :] for x in X])
+    # # troubleshooting -- 80 samples from 4 particpants
+    # samples = []
+    # depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D321.npz')
+    # for key in depressed1.keys():
+    #     samples.append(depressed1[key])
+    # depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D330.npz')
+    # for key in depressed1.keys():
+    #     samples.append(depressed1[key])
+    # normal1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/N310.npz')
+    # for key in normal1.keys():
+    #     samples.append(normal1[key])
+    # normal2 = np.load('/Users/ky/Desktop/depression-detect/data/processed/N429.npz')
+    # for key in normal2.keys():
+    #     samples.append(normal2[key])
+    #
+    # X = np.array(samples)
+    # y = np.concatenate((np.ones(80), np.zeros(80)))
 
     # CNN parameters
     batch_size = 8
     nb_classes = 2
-    epochs = 20
+    epochs = 4
 
-    # train/test split
-    test_size = 0.2
-    X_train, X_test, y_train, y_test = train_test(X, y, nb_classes=2, test_size=test_size)
+    # normalalize data and prep for Keras
+    X_train, X_test, y_train, y_test = train_test(X_train, y_train, X_test, y_test, nb_classes=nb_classes)
 
     # specify image dimensions - 513x125x1 for spectrogram with crop size of 125 pixels
     img_rows, img_cols, img_depth = X_train.shape[1], X_train.shape[2], 1
@@ -207,9 +196,9 @@ if __name__ == '__main__':
     print('input shape', input_shape)
 
     print('image data format:', K.image_data_format())
-    #
-    # # run CNN
-    # model = cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_shape)
-    #
-    # # evaluate model
-    # y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba = model_performance(model, X_train, X_test, y_train, y_test)
+
+    # run CNN
+    model = cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_shape)
+
+    # evaluate model
+    y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba = model_performance(model, X_train, X_test, y_train, y_test)
