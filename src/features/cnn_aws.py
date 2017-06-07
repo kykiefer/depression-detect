@@ -152,6 +152,7 @@ def model_performance(model, X_train, X_test, y_train, y_test):
 
 if __name__ == '__main__':
     # # Uncomment to load from S3 bucket
+    print('Retrieving from S3')
     X_train = retrieve_from_bucket('train_samples.npz')
     y_train = retrieve_from_bucket('train_labels.npz')
     X_test = retrieve_from_bucket('test_samples.npz')
@@ -191,7 +192,7 @@ if __name__ == '__main__':
     batch_size = 8
     nb_classes = 2
     epochs = 4
-
+    print('Processing images for Keras')
     # normalalize data and prep for Keras
     X_train, X_test, y_train, y_test = train_test(X_train, y_train, X_test, y_test, nb_classes=nb_classes)
 
@@ -206,9 +207,9 @@ if __name__ == '__main__':
     print('input shape', input_shape)
 
     print('image data format:', K.image_data_format())
-
+    print('Fitting model')
     # run CNN
     model = cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_shape)
-
+    print('Evaluating model')
     # evaluate model
     y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba = model_performance(model, X_train, X_test, y_train, y_test)
