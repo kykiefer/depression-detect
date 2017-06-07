@@ -19,6 +19,7 @@ src
 │
 └───features
 │   ├──cnn.py
+│   ├──cnn_aws.py
 │   ├──dataframes.py
 │   ├──random_sampling.py
 │   ├──spectrogram_dicts.py
@@ -34,10 +35,12 @@ src
 2. Run `segmentation.py` to create segmented wav files for each participant (silence and the virtual interviewer's speech removed). Feature extraction is performed on the segmented wav files.
 
 ### Features
-3. `spectrograms.py` performs the short-time Fourier transform ([STFT](https://en.wikipedia.org/wiki/Short-time_Fourier_transform)) on the segmented wav files, transforming the wav files into a matrix representation of a spectrogram. The vertical axis representing frequency, the horizontal axis representing time, and a value in the matrix representing the intensity of the frequency component at a particular time. (IN DECIBELS???)
+3. `spectrograms.py` performs the short-time Fourier transform ([STFT](https://en.wikipedia.org/wiki/Short-time_Fourier_transform)) on the segmented wav files, transforming the wav files into a matrix representation of a spectrogram. The vertical axis representing frequency, the horizontal axis representing time, and a value in the matrix representing the intensity (in decibels) of the frequency component at a particular time.
 
 4. `spectrogram_dicts.py` builds dictionaries with keys of participant IDs for the each class and values with the matrix representation of the entire segmented wav file's spectrogram.
 
 5. `random_sampling.py` returns 40 random, 4 second spectrograms for each participant. Then, participants from each class are randomly selected in equal proportion as input to the Convolutional Neural Network (CNN). This was critical step in reducing model bias.
 
-6. Run `cnn.py` to train the CNN.
+6. `cnn.py` performs normalization on the spectrogram and preps the images for Keras. Then trains and evaluates the network.
+
+`cnn_aws` is a version that can be run on an EC2 instance to leverage GPUs, with the spectrogram data being pulled from an S3 bucket.
