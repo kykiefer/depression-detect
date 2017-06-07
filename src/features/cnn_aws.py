@@ -104,6 +104,14 @@ def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_
     """
     model = Sequential()
 
+    # model.add(Conv2D(32, (7, 7), input_shape=input_shape, activation='relu'))
+    #
+    # model.add(Flatten())
+    # model.add(Dense(128, activation='relu'))
+    # model.add(Dense(128, activation='relu'))
+    # model.add(Dense(128, activation='relu'))
+    # model.add(Activation('softmax'))
+
     model.add(Conv2D(32, (57, 6), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
     model.add(MaxPooling2D(pool_size=(4,3), strides=(1,3)))
     model.add(Conv2D(32, (1, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu'))
@@ -148,54 +156,34 @@ if __name__ == '__main__':
     # y = retrieve_from_bucket('labels.npz')
 
     # # Once stored locally, access with the following
-    # X = np.load('samples.npz')['arr_0']
-    # y = np.load('labels.npz')['arr_0']
 
-    # troubleshooting -- 80 samples from 4 particpants
-    train_samps = []
-    depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D321.npz')
-    for key in depressed1.keys():
-        train_samps.append(depressed1[key])
-    depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D330.npz')
-    for key in depressed1.keys():
-        train_samps.append(depressed1[key])
-    normal1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/N310.npz')
-    for key in normal1.keys():
-        train_samps.append(normal1[key])
-    normal2 = np.load('/Users/ky/Desktop/depression-detect/data/processed/N429.npz')
-    for key in normal2.keys():
-        train_samps.append(normal2[key])
+    X_train, y_train, X_test, y_test = np.load('~depression-detect/data/processed/train_samples.npz')['arr_0'], np.load('~/depression-detect/data/processed/train_labels.npz')['arr_0'], np.load('~/depression-detect/data/processed/test_samples.npz')['arr_0'], np.load('~/epression-detect/data/processed/test_labels.npz')['arr_0']
 
-    X_train = np.array(train_samps)
-    y_train = np.concatenate((np.ones(80), np.zeros(80)))
-
-    test_samps = []
-    depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D345.npz')
-    for key in depressed1.keys():
-        test_samps.append(depressed1[key])
-    depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D346.npz')
-    for key in depressed1.keys():
-        test_samps.append(depressed1[key])
-    normal1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/N357.npz')
-    for key in normal1.keys():
-        test_samps.append(normal1[key])
-    normal2 = np.load('/Users/ky/Desktop/depression-detect/data/processed/N391.npz')
-    for key in normal2.keys():
-        test_samps.append(normal2[key])
-
-    X_test = np.array(test_samps)
-    y_test = np.concatenate((np.ones(80), np.zeros(80)))
-
-    print('X_train shape', X_train.shape)
+    # # troubleshooting -- 80 samples from 4 particpants
+    # samples = []
+    # depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D321.npz')
+    # for key in depressed1.keys():
+    #     samples.append(depressed1[key])
+    # depressed1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/D330.npz')
+    # for key in depressed1.keys():
+    #     samples.append(depressed1[key])
+    # normal1 = np.load('/Users/ky/Desktop/depression-detect/data/processed/N310.npz')
+    # for key in normal1.keys():
+    #     samples.append(normal1[key])
+    # normal2 = np.load('/Users/ky/Desktop/depression-detect/data/processed/N429.npz')
+    # for key in normal2.keys():
+    #     samples.append(normal2[key])
+    #
+    # X = np.array(samples)
+    # y = np.concatenate((np.ones(80), np.zeros(80)))
 
     # CNN parameters
     batch_size = 8
     nb_classes = 2
-    epochs = 20
+    epochs = 4
 
-    # train/test split
-    test_size = 0.2
-    X_train, X_test, y_train, y_test = train_test(X_train, y_train, X_test, y_test, nb_classes=2)
+    # normalalize data and prep for Keras
+    X_train, X_test, y_train, y_test = train_test(X_train, y_train, X_test, y_test, nb_classes=nb_classes)
 
     # specify image dimensions - 513x125x1 for spectrogram with crop size of 125 pixels
     img_rows, img_cols, img_depth = X_train.shape[1], X_train.shape[2], 1
