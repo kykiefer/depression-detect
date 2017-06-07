@@ -13,8 +13,8 @@ from keras.utils import np_utils
 from keras import backend as K
 from keras.optimizers import SGD
 K.set_image_dim_ordering('th')
-# access_key = os.environ['AWS_ACCESS_KEY_ID']
-# access_secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
+access_key = os.environ['AWS_ACCESS_KEY_ID']
+access_secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
 
 
 """
@@ -157,8 +157,13 @@ if __name__ == '__main__':
     X_test = retrieve_from_bucket('test_samples.npz')
     y_test = retrieve_from_bucket('test_labels.npz')
 
-    # # Once stored locally, access with the following
+    # save to EC2 instance
+    np.savez('~/depression-detect/data/processed/train_samples.npz', X_train)
+    np.savez('~/depression-detect/data/processed/train_labels.npz', y_train)
+    np.savez('~/depression-detect/data/processed/test_samples.npz', X_test)
+    np.savez('~/depression-detect/data/processed/test_labels.npz', y_test)
 
+    # # Once stored locally, access with the following
     X_train, y_train, X_test, y_test = np.load('~/depression-detect/data/processed/train_samples.npz')['arr_0'], np.load('~/depression-detect/data/processed/train_labels.npz')['arr_0'], np.load('~/depression-detect/data/processed/test_samples.npz')['arr_0'], np.load('~/depression-detect/data/processed/test_labels.npz')['arr_0']
 
     # # troubleshooting -- 80 samples from 4 particpants
