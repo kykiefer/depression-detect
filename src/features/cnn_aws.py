@@ -157,7 +157,7 @@ if __name__ == '__main__':
 
     # # Once stored locally, access with the following
 
-    X_train, y_train, X_test, y_test = np.load('~depression-detect/data/processed/train_samples.npz')['arr_0'], np.load('~/depression-detect/data/processed/train_labels.npz')['arr_0'], np.load('~/depression-detect/data/processed/test_samples.npz')['arr_0'], np.load('~/epression-detect/data/processed/test_labels.npz')['arr_0']
+    X_train, y_train, X_test, y_test = np.load('~/depression-detect/data/processed/train_samples.npz')['arr_0'], np.load('~/depression-detect/data/processed/train_labels.npz')['arr_0'], np.load('~/depression-detect/data/processed/test_samples.npz')['arr_0'], np.load('~/depression-detect/data/processed/test_labels.npz')['arr_0']
 
     # # troubleshooting -- 80 samples from 4 particpants
     # samples = []
