@@ -157,14 +157,17 @@ if __name__ == '__main__':
     X_test = retrieve_from_bucket('test_samples.npz')
     y_test = retrieve_from_bucket('test_labels.npz')
 
-    # save to EC2 instance
-    np.savez('~/depression-detect/data/processed/train_samples.npz', X_train)
-    np.savez('~/depression-detect/data/processed/train_labels.npz', y_train)
-    np.savez('~/depression-detect/data/processed/test_samples.npz', X_test)
-    np.savez('~/depression-detect/data/processed/test_labels.npz', y_test)
 
-    # # Once stored locally, access with the following
-    X_train, y_train, X_test, y_test = np.load('~/depression-detect/data/processed/train_samples.npz')['arr_0'], np.load('~/depression-detect/data/processed/train_labels.npz')['arr_0'], np.load('~/depression-detect/data/processed/test_samples.npz')['arr_0'], np.load('~/depression-detect/data/processed/test_labels.npz')['arr_0']
+    X_train, y_train, X_test, y_test = X_train['arr_0'], y_train['arr_0'], X_test['arr_0'], y_test['arr_0']
+
+    # # save to EC2 instance
+    # np.savez('~/depression-detect/data/processed/train_samples.npz', X_train)
+    # np.savez('~/depression-detect/data/processed/train_labels.npz', y_train)
+    # np.savez('~/depression-detect/data/processed/test_samples.npz', X_test)
+    # np.savez('~/depression-detect/data/processed/test_labels.npz', y_test)
+    #
+    # # # Once stored locally, access with the following
+    # X_train, y_train, X_test, y_test = np.load('~/depression-detect/data/processed/train_samples.npz')['arr_0'], np.load('~/depression-detect/data/processed/train_labels.npz')['arr_0'], np.load('~/depression-detect/data/processed/test_samples.npz')['arr_0'], np.load('~/depression-detect/data/processed/test_labels.npz')['arr_0']
 
     # # troubleshooting -- 80 samples from 4 particpants
     # samples = []
