@@ -160,7 +160,7 @@ if __name__ == '__main__':
     X_train, y_train, X_test, y_test = X_train['arr_0'], y_train['arr_0'], X_test['arr_0'], y_test['arr_0']
 
     # CNN parameters
-    batch_size = 20
+    batch_size = 8
     nb_classes = 2
     epochs = 20
 
