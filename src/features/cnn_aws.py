@@ -4,7 +4,7 @@ import os
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
-from plot import plot_accuracy, plot_loss
+from plot import plot_accuracy, plot_loss, plot_roc_curve
 from skimage.measure import block_reduce  # for downsampling
 np.random.seed(15)  # for reproducibility
 
@@ -210,14 +210,31 @@ if __name__ == '__main__':
     print('Evaluating model...')
     y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba, conf_matrix = model_performance(model, X_train, X_test, y_train, y_test)
 
+    # some unique identifier
+    model_id = history.history['val_acc'][-1] # final val acc
+
     # store model to S3 bucket
     print('Saving model to S3...')
-    pkl_name = 'model.pkl'
+    pkl_name = 'cnn_{}.pkl'.format(model_id)
     model.save(pkl_name)
     save_to_bucket(pkl_name, pkl_name)
 
-    model_id = history.history['val_acc'][-1] # specified by final val acc
+    # more evaluation
+    print('Calculating test metrics...')
+    accuracy = float(conf_matrix[0][0] + conf_matrix[1][1]) \
+                 / np.sum(conf_matrix)
+    precision = float(conf_matrix[0][0]) \
+                      / (conf_matrix[0][0] + conf_matrix[0][1])
+    recall = float(conf_matrix[0][0]) \
+                     / (conf_matrix[0][0] + conf_matrix[1][0])
+    f1_score = 2 * (precision * recall) / (precision + recall)
+    print "Accuracy: {}".format(accuracy)
+    print "Precision: {}".format(precision)
+    print "Recall: {}".format(recall)
+    print "F1-Score: {}".format(f1_score)
 
-    # plot train/test loss and accuracy
+    # plot train/test loss and accuracy. saves files in cd
+    print('Saving plots...')
     plot_loss(history, model_id)
     plot_accuracy(history, model_id)
+    plot_roc_curve(y_test_pred, y_test_pred_proba[:,1], model_id)
