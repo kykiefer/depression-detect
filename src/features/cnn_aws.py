@@ -4,6 +4,7 @@ import os
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
+from plot import plot_accuracy, plot_loss
 from skimage.measure import block_reduce  # for downsampling
 np.random.seed(15)  # for reproducibility
 
@@ -214,3 +215,9 @@ if __name__ == '__main__':
     pkl_name = 'model.pkl'
     model.save(pkl_name)
     save_to_bucket(pkl_name, pkl_name)
+
+    model_id = history.history['val_acc'][-1] # specified by final val acc
+
+    # plot train/test loss and accuracy
+    plot_loss(history, model_id)
+    plot_accuracy(history)
