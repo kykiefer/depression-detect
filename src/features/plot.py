@@ -15,7 +15,6 @@ def plot_accuracy(history, model_id):
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train', 'test'], loc='upper left')
-    return plt
     plt.savefig('{}_accuracy.png'.format(model_id))
 
 
@@ -26,7 +25,6 @@ def plot_loss(history, model_id):
     plt.ylabel('loss')
     plt.xlabel('epoch')
     plt.legend(['train', 'test'], loc='upper left')
-    return plt
     plt.savefig('{}_loss.png'.format(model_id))
 
 

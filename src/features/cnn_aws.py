@@ -220,4 +220,4 @@ if __name__ == '__main__':
 
     # plot train/test loss and accuracy
     plot_loss(history, model_id)
-    plot_accuracy(history)
+    plot_accuracy(history, model_id)
