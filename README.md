@@ -63,11 +63,13 @@ Convolutional Neural Networks (CNNs) is a variation of the better known Multilay
 
 A filter is subsequently slid over an image (in this case a spectrogram) and patterns for depressed and non-depressed individuals are learned. These patterns are representative of different prosodic features.
 
-### Model Architecture
+### Model Architecture ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/cnn_aws.py)
 Place holder
 
-### Training the Model ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/cnn_aws.py)
-I created the model using [Keras](https://keras.io/) with a [Theano](http://deeplearning.net/software/theano/) backend and trained it on an Amazon Web Services ([AWS](https://aws.amazon.com/)) g2.2xlarge EC2 instance to leverage a GPU.
+### Training the Model
+I created the model using [Keras](https://keras.io/) with a [Theano](http://deeplearning.net/software/theano/) backend and trained it on an AWS GPU-optimized EC2 instance.
+
+The model was trained on 40 randomly selected 125x513 audio segments from 31 participants in each class. The 513 frequency bins spanned 0 to 8kHz and each pixel on the time axis represented 32ms (with 125 pixels spanning 4 seconds). The model was trained on just under 3 hours of audio in order to adhere by strict class and speaker balancing parameters and compute time when iterating through CNN architectures.
 
 ### Results
 Below is a summary of how well the current model is predicting.
