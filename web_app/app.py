@@ -9,9 +9,13 @@ def index():
 def donate():
     return render_template('donate.html')
 
-@app.route('/contact')
-def contact():
-    return render_template('contact.html')
+@app.route('/project')
+def project():
+    return render_template('project.html')
+
+@app.route('/results')
+def results():
+    return render_template('results.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True, threaded=True)
