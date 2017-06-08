@@ -234,4 +234,4 @@ if __name__ == '__main__':
     print('Saving plots...')
     plot_loss(history, model_id)
     plot_accuracy(history, model_id)
-    plot_roc_curve(y_test_pred, y_test_pred_proba[:,1], model_id)
+    plot_roc_curve(y_test[:,1], y_test_pred_proba[:,1], model_id)
