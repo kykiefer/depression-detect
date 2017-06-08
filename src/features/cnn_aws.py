@@ -87,9 +87,9 @@ def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_
     """
     model = Sequential()
 
-    model.add(Conv2D(32, (3, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
+    model.add(Conv2D(80, (3, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
     model.add(MaxPooling2D(pool_size=(4,3), strides=(1,3)))
-    model.add(Conv2D(32, (1, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu'))
+    model.add(Conv2D(80, (1, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu'))
     model.add(MaxPooling2D(pool_size=(1,3), strides=(1,3)))
 
     model.add(Flatten())
@@ -170,7 +170,7 @@ if __name__ == '__main__':
     # CNN parameters
     batch_size = 8
     nb_classes = 2
-    epochs = 11
+    epochs = 20
 
     # normalalize data and prep for Keras
     print('Processing images for Keras...')
