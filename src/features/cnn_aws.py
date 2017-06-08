@@ -215,9 +215,9 @@ if __name__ == '__main__':
 
     # store model to S3 bucket
     print('Saving model to S3...')
-    pkl_name = 'cnn_{}.pkl'.format(model_id)
-    model.save(pkl_name)
-    save_to_bucket(pkl_name, pkl_name)
+    model_name = 'cnn_{}.h5'.format(model_id)
+    model.save(model_name)
+    save_to_bucket(model_name, model_name)
 
     # more evaluation
     print('Calculating test metrics...')

@@ -16,6 +16,7 @@ def plot_accuracy(history, model_id):
     plt.xlabel('epoch')
     plt.legend(['train', 'test'], loc='upper left')
     plt.savefig('../../images/{}_accuracy.png'.format(model_id))
+    plt.close()
 
 
 def plot_loss(history, model_id):
@@ -26,6 +27,7 @@ def plot_loss(history, model_id):
     plt.xlabel('epoch')
     plt.legend(['train', 'test'], loc='upper left')
     plt.savefig('../../images/{}_loss.png'.format(model_id))
+    plt.close()
 
 
 def plot_roc_curve(y_test, y_score, model_id):
@@ -43,3 +45,4 @@ def plot_roc_curve(y_test, y_score, model_id):
     plt.ylabel('True Positive Rate')
     plt.title('Receiver operating characteristic curve')
     plt.savefig('../../images/{}_roc.png'.format(model_id))
+    plt.close()
