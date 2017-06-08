@@ -214,7 +214,7 @@ if __name__ == '__main__':
 
     # store model to locally and to S3 bucket
     print('Saving model locally...')
-    model_name = '../model/cnn_{}.h5'.format(model_id)
+    model_name = '../models/cnn_{}.h5'.format(model_id)
     model.save(model_name)
     print('Saving model to S3...')
     save_to_bucket(model_name, model_name)
