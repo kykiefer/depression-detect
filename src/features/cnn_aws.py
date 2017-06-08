@@ -189,7 +189,7 @@ if __name__ == '__main__':
     # CNN parameters
     batch_size = 8
     nb_classes = 2
-    epochs = 3
+    epochs = 2
 
     # normalalize data and prep for Keras
     print('Processing images for Keras...')
@@ -213,10 +213,10 @@ if __name__ == '__main__':
     y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba, conf_matrix = model_performance(model, X_train, X_test, y_train, y_test)
 
     # store model to locally and to S3 bucket
-    print('Saving model locally)
+    print('Saving model locally...')
     model_name = '../model/cnn_{}.h5'.format(model_id)
     model.save(model_name)
-    print('S')
+    print('Saving model to S3...')
     save_to_bucket(model_name, model_name)
 
     # more evaluation
