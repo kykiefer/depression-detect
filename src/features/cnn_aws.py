@@ -216,8 +216,8 @@ if __name__ == '__main__':
     print('Saving model locally...')
     model_name = '../models/cnn_{}.h5'.format(model_id)
     model.save(model_name)
-    print('Saving model to S3...')
-    save_to_bucket(model_name, model_name)
+    # print('Saving model to S3...')
+    # save_to_bucket(model_name, model_name)
 
     # more evaluation
     print('Calculating test metrics...')
