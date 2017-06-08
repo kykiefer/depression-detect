@@ -78,6 +78,10 @@ The model was trained on 40 randomly selected 125x513 audio segments from 31 par
 ### Results
 Below is a summary of how well the current model is predicting.
 
+<img alt="ROC curve" src="images/cnn3_final_roc.png" width='500'>
+
+<sub><b>Figure 1: </b> ROC curve of the final model. </sub>
+
 ## Future Directions
 The model yields promising results initial results.
 
