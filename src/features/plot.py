@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import pickle
-from sklearn.metrics import roc_curve, auc
+from sklearn.metrics import roc_curve
 
 
 """
@@ -35,7 +35,6 @@ def plot_roc_curve(y_test, y_score, model_id):
     https://vkolachalama.blogspot.com/2016/05/keras-implementation-of-mlp-neural.html
     """
     fpr, tpr, _ = roc_curve(y_test, y_score)
-    roc_auc = auc(fpr, tpr)
     plt.figure()
     plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % roc_auc)
     plt.plot([0, 1], [0, 1], 'k--')
