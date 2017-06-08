@@ -1,67 +1,33 @@
-cnn_1
+Baseline architecture
+batch_size = 8
+epochs = 20
+```python
+model = Sequential()
 
-2480/2480 [==============================] - 246s - loss: 0.7241 - acc: 0.4907 - val_loss: 0.6945 - val_acc: 0.5000
-Epoch 2/25
-2480/2480 [==============================] - 244s - loss: 0.6998 - acc: 0.5020 - val_loss: 0.6934 - val_acc: 0.5000
-Epoch 3/25
-2480/2480 [==============================] - 244s - loss: 0.6961 - acc: 0.5004 - val_loss: 0.6924 - val_acc: 0.5607
-Epoch 4/25
-2480/2480 [==============================] - 244s - loss: 0.6967 - acc: 0.5302 - val_loss: 0.6929 - val_acc: 0.5000
-Epoch 5/25
-2480/2480 [==============================] - 244s - loss: 0.6954 - acc: 0.5101 - val_loss: 0.6928 - val_acc: 0.5000
-Epoch 6/25
-2480/2480 [==============================] - 244s - loss: 0.6940 - acc: 0.5258 - val_loss: 0.6930 - val_acc: 0.5000
-Epoch 7/25
-2480/2480 [==============================] - 244s - loss: 0.6896 - acc: 0.5516 - val_loss: 0.6859 - val_acc: 0.5054
-Epoch 8/25
-2480/2480 [==============================] - 244s - loss: 0.6590 - acc: 0.6153 - val_loss: 0.6785 - val_acc: 0.5375
-Epoch 9/25
-2480/2480 [==============================] - 244s - loss: 0.5956 - acc: 0.6722 - val_loss: 0.6506 - val_acc: 0.6125
-Epoch 10/25
-2480/2480 [==============================] - 244s - loss: 0.5335 - acc: 0.7331 - val_loss: 0.7661 - val_acc: 0.5911
-Epoch 11/25
-2480/2480 [==============================] - 244s - loss: 0.4726 - acc: 0.7714 - val_loss: 0.6484 - val_acc: 0.6607
-Epoch 12/25
-2480/2480 [==============================] - 244s - loss: 0.4060 - acc: 0.8214 - val_loss: 0.7411 - val_acc: 0.6000
-Epoch 13/25
-2480/2480 [==============================] - 244s - loss: 0.3405 - acc: 0.8496 - val_loss: 0.6494 - val_acc: 0.6857
-Epoch 14/25
-2480/2480 [==============================] - 244s - loss: 0.2590 - acc: 0.8968 - val_loss: 0.9637 - val_acc: 0.5786
-Epoch 15/25
-2480/2480 [==============================] - 244s - loss: 0.2096 - acc: 0.9145 - val_loss: 0.8040 - val_acc: 0.6768
-Epoch 16/25
-2480/2480 [==============================] - 244s - loss: 0.1460 - acc: 0.9460 - val_loss: 0.8774 - val_acc: 0.6946
-Epoch 17/25
-2480/2480 [==============================] - 244s - loss: 0.0978 - acc: 0.9649 - val_loss: 1.1124 - val_acc: 0.6714
-Epoch 18/25
-2480/2480 [==============================] - 244s - loss: 0.0573 - acc: 0.9867 - val_loss: 1.1262 - val_acc: 0.6875
-Epoch 19/25
-2480/2480 [==============================] - 244s - loss: 0.0597 - acc: 0.9855 - val_loss: 1.2940 - val_acc: 0.7071
-Epoch 20/25
-2480/2480 [==============================] - 244s - loss: 0.0285 - acc: 0.9931 - val_loss: 1.1391 - val_acc: 0.7554
-Epoch 21/25
-2480/2480 [==============================] - 244s - loss: 0.0928 - acc: 0.9798 - val_loss: 1.6403 - val_acc: 0.6839
-Epoch 22/25
-2480/2480 [==============================] - 244s - loss: 0.0358 - acc: 0.9927 - val_loss: 1.5969 - val_acc: 0.6857
-Epoch 23/25
-2480/2480 [==============================] - 244s - loss: 0.0375 - acc: 0.9915 - val_loss: 1.8143 - val_acc: 0.6696
-Epoch 24/25
-2480/2480 [==============================] - 244s - loss: 0.0391 - acc: 0.9927 - val_loss: 1.6361 - val_acc: 0.7071
-Epoch 25/25
-2480/2480 [==============================] - 244s - loss: 0.0186 - acc: 0.9964 - val_loss: 1.8737 - val_acc: 0.7000
-Train accuracy: 1.0
-Test accuracy: 0.7
-Evaluating model...
-560/560 [==============================] - 5s
-2480/2480 [==============================] - 22s
-560/560 [==============================] - 5s
-2480/2480 [==============================] - 22s
-Confusion Matrix:
-[[162 118]
- [ 50 230]]
-Saving model to S3...
-Calculating test metrics...
-Accuracy: 0.7
-Precision: 0.5785714285714286
-Recall: 0.7641509433962265
-F1-Score: 0.6585365853658537
+model.add(Conv2D(32, (7, 7), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
+model.add(MaxPooling2D(pool_size=(4,3), strides=(1,3)))
+model.add(Conv2D(32, (1, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu'))
+model.add(MaxPooling2D(pool_size=(1,3), strides=(1,3)))
+
+model.add(Flatten())
+model.add(Dense(128, activation='relu'))
+model.add(Dense(128, activation='relu'))
+model.add(Dense(nb_classes))
+model.add(Activation('softmax'))
+
+# sgd = SGD(lr=0.001, decay=1e-6, momentum=1.0)
+model.compile(loss='categorical_crossentropy',
+              optimizer='adadelta',
+              metrics=['accuracy'])
+
+history = model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs,
+          verbose=1, validation_data=(X_test, y_test))
+```
+
+cnn_2 (first model with no leaking)
+7x7 filter
+0.56 accuracy after about 10 epochs
+
+
+cnn_3
+3x3 filter
