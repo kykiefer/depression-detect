@@ -118,9 +118,9 @@ def build_array_of_random_samples(npz_file_dir):
     # calculate how many samples to balance classes
     max_samples = min(len(dep_samps), len(norm_samps))
 
-    # randomly select max participants from each class
-    dep_select_samps = np.random.choice(dep_samps, size=max_samples)
-    norm_select_samps = np.random.choice(norm_samps, size=max_samples)
+    # randomly select max participants from each class without replacement
+    dep_select_samps = np.random.choice(dep_samps, size=max_samples, replace=False)
+    norm_select_samps = np.random.choice(norm_samps, size=max_samples, replace=False)
 
     # randomly select n_samples_per_person (40 in the case of a crop width of 125) from each of the partipcant lists
 
