@@ -175,6 +175,8 @@ def save_to_bucket(file, obj_name):
 
 
 if __name__ == '__main__':
+    model_id = input("Enter model id: ")
+
     # Load from S3 bucket
     print('Retrieving from S3...')
     X_train = retrieve_from_bucket('train_samples.npz')
@@ -210,23 +212,18 @@ if __name__ == '__main__':
     print('Evaluating model...')
     y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba, conf_matrix = model_performance(model, X_train, X_test, y_train, y_test)
 
-    # some unique identifier
-    model_id = history.history['val_acc'][-1] # final val acc
-
-    # store model to S3 bucket
-    print('Saving model to S3...')
-    model_name = 'cnn_{}.h5'.format(model_id)
+    # store model to locally and to S3 bucket
+    print('Saving model locally)
+    model_name = '../model/cnn_{}.h5'.format(model_id)
     model.save(model_name)
+    print('S')
     save_to_bucket(model_name, model_name)
 
     # more evaluation
     print('Calculating test metrics...')
-    accuracy = float(conf_matrix[0][0] + conf_matrix[1][1]) \
-                 / np.sum(conf_matrix)
-    precision = float(conf_matrix[0][0]) \
-                      / (conf_matrix[0][0] + conf_matrix[0][1])
-    recall = float(conf_matrix[0][0]) \
-                     / (conf_matrix[0][0] + conf_matrix[1][0])
+    accuracy = float(conf_matrix[0][0] + conf_matrix[1][1]) / np.sum(conf_matrix)
+    precision = float(conf_matrix[0][0]) / (conf_matrix[0][0] + conf_matrix[0][1])
+    recall = float(conf_matrix[0][0]) / (conf_matrix[0][0] + conf_matrix[1][0])
     f1_score = 2 * (precision * recall) / (precision + recall)
     print("Accuracy: {}".format(accuracy))
     print("Precision: {}".format(precision))
