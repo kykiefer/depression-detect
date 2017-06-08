@@ -31,7 +31,7 @@ All audio recordings and associated depression metrics were provided by the [DAI
 <sub><b>Figure 1: </b> Virtual interview with Ellie. </sub>  
 
 ## Acoustic Features of Depressed Speech
-While some research focuses on the semantic content of audio signals in predicting depression, I decided to focus on the [prosodic](http://clas.mq.edu.au/speech/phonetics/phonology/intonation/prosody.html) features. Things that are characterized by a listener as of pitch, loudness, speaking rate, rhythm, voice quality, articulation, intonation, etc. Some features that have been found to be promising predictors of depression include using short sentences, flat intonation, fundamental frequency, Mel frequency cepstral coefficients ([MFCCs](https://en.wikipedia.org/wiki/Mel-frequency_cepstrum)).<sup>[2](#references)</sup>
+While some research focuses on the semantic content of audio signals in predicting depression, I decided to focus on the [prosodic](http://clas.mq.edu.au/speech/phonetics/phonology/intonation/prosody.html) features. Prosodic features are characterized by a listener as pitch, loudness, speaking rate, rhythm, voice quality, articulation, intonation, etc. Some features that have been found to be promising predictors of depression include using short sentences, flat intonation, fundamental frequency, Mel frequency cepstral coefficients ([MFCCs](https://en.wikipedia.org/wiki/Mel-frequency_cepstrum)).<sup>[2](#references)</sup>
 
 ### Segmentation ([code](https://github.com/kykiefer/depression-detect/blob/master/src/data/segmentation.py))
 
@@ -50,9 +50,9 @@ Many of the state of the art emotion and language detection models seem to be us
 ### Class Imbalance ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/random_sampling.py))
 There exists a large imbalance between positive and negative samples, which incurs a large bias in classification. The number of non-depressed subjects is about four times bigger than that of depressed ones. If these samples are used directly for learning, the model will have a strong bias to the non-depressed class. Additionally, the interview lengths vary from 7-33min. A larger volume of signal may emphasize some characteristics that are person specific.
 
-To solve the problem, I perform random cropping on each of the participant's spectrograms of a specified width (time) and constant height (frequency), to ensure the CNN has an equal proportion for every subject and each class. ELABORATE ONCE FINISHED!!!!!!
+To solve the problem, I perform random cropping on each of the participant's spectrograms of a specified width (time) and constant height (frequency), to ensure the CNN has an equal proportion for every subject and each class. The drastically reduced my training size (~3 hours from 50 hours of unedited audio) but was the best solution for proving the viability of my project given the two-week timeline. I prioritize a revised sampling method as my number one priority in [future directions](#future-directions).
 
-<img alt="Random Sampling Method" src="images/random_sampling_method.png" width='400'>
+<img alt="Random Sampling Method" src="images/random_sampling_method.png" width='500'>
 
 <sub><b>Figure 3: </b> Random sampling depicted with audio signals. Actually performed on spectrograms. [Source](https://www.researchgate.net/publication/309127735_DepAudioNet_An_Efficient_Deep_Model_for_Audio_based_Depression_Classification). </sub>  
 
@@ -63,19 +63,23 @@ Convolutional Neural Networks (CNNs) is a variation of the better known Multilay
 
 A filter is subsequently slid over an image (in this case a spectrogram) and patterns for depressed and non-depressed individuals are learned. These patterns are representative of different prosodic features.
 
-### Model Architecture ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/cnn_aws.py)
-Place holder
+### Model Architecture ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/cnn_aws.py))
+I use a X layer Convolutional Neural Network (CNN) model. Each spectrogram input is normalized according to decibels relative to full scale (dBFS).
+
+**Model Architecture Schematic**
+
+<sub><b>Figure 4: </b> CNN model architecture. </sub>  
 
 ### Training the Model
 I created the model using [Keras](https://keras.io/) with a [Theano](http://deeplearning.net/software/theano/) backend and trained it on an AWS GPU-optimized EC2 instance.
 
-The model was trained on 40 randomly selected 125x513 audio segments from 31 participants in each class. The 513 frequency bins spanned 0 to 8kHz and each pixel on the time axis represented 32ms (with 125 pixels spanning 4 seconds). The model was trained on just under 3 hours of audio in order to adhere by strict class and speaker balancing parameters and compute time when iterating through CNN architectures.
+The model was trained on 40 randomly selected 125x513 audio segments from 31 participants in each class. The 513 frequency bins spanned 0 to 8kHz and each pixel on the time axis represented 32ms (with 125 pixels spanning 4 seconds). The model was trained on just under 3 hours of audio in order to adhere by strict class and speaker balancing parameters and compute time when iterating through CNN architectures. The model is trained on 2,480 spectrograms for X epochs, after which it begins to overfit.
 
 ### Results
 Below is a summary of how well the current model is predicting.
 
 ## Future Directions
-The model yields promising results...
+The model yields promising results initial results.
 
 I envision the model being implemented in a wearable device. The device prompts you to answer a simple question in the morning and a simple question before bed on a daily basis. The model stores your predicted depression score and tracks it over time such that the model can learn from your baseline (perhaps using a Bayesian approach). If a threshold is crossed, it notifies you to seek help, or in extreme cases, notifies an emergency contact to help you help yourself.
 
@@ -86,10 +90,10 @@ wget -r -np -nH --cut-dirs=3 -R index.html --user=daicwozuser --ask-password  ht
 ```
 
 How I am prioritizing future efforts:
-1. Segmentation robustness
-2. Incorporate Vocal Tract Length Perturbation ([VTLP](http://www.cs.toronto.edu/~ndjaitly/jaitly-icml13.pdf))
-3. Combine CNN with LSTM
-4. Refactoring -- the MVP was initially written under a 2-week timeline and much optimization was sacrificed.
+1. Sampling methods to increase sample size without introducing class or speaker bias.
+2. Segmentation robustness
+3. Incorporate Vocal Tract Length Perturbation ([VTLP](http://www.cs.toronto.edu/~ndjaitly/jaitly-icml13.pdf))
+4. Combine CNN with LSTM
 
 ## References
 
