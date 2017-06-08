@@ -2,8 +2,10 @@ from __future__ import print_function
 import boto
 import os
 import numpy as np
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 from plot import plot_accuracy, plot_loss, plot_roc_curve
+from skimage.measure import block_reduce  # for downsampling
 np.random.seed(15)  # for reproducibility
 
 from keras.models import Sequential
@@ -19,14 +21,14 @@ access_secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
 
 """
 CNN to classify spectrograms of normal particpants (0) or depressed particpants (1).
-Using Tensorflow with Theano image_dim_ordering:
-(# channels, # images, # rows, # cols)
-(1, 3040, 513, 125)
+Using Theano with TensorFlow image_dim_ordering:
+(# images, # channels, # rows, # cols)
+(3040, 1, 513, 125) for the X images below
 """
 
 def retrieve_from_bucket(file):
     """
-    Download spectrogram representation of matrices from S3 bucket.
+    Download matrices from S3 bucket
     """
     conn = boto.connect_s3(access_key, access_secret_key)
     bucket = conn.get_bucket('depression-detect')
@@ -38,19 +40,36 @@ def retrieve_from_bucket(file):
 
 def preprocess(X_train, X_test):
     """
-    Convert from float64 to float32 and normalize normalize to decibels relative to full scale (dBFS) for the 4 sec clip.
+    Convert from float64 to float32 for speed.
     """
     X_train = X_train.astype('float32')
     X_test = X_test.astype('float32')
-
+    # normalize to decibels relative to full scale (dBFS) for the 4 sec clip
     X_train = np.array([(X - X.min()) / (X.max() - X.min()) for X in X_train])
     X_test = np.array([(X - X.min()) / (X.max() - X.min()) for X in X_test])
     return X_train, X_test
 
 
-def prep_train_test(X_train, y_train, X_test, y_test, nb_classes):
+def train_test(X_train, y_train, X_test, y_test, nb_classes):
     """
-    Prep samples ands labels for Keras input by noramalzing and converting labels to a categorical representation.
+    Split the X, y datasets into training and test sets based on desired test size.
+
+    Parameters
+    ----------
+    X : array
+        X features (represented by spectrogram matrix)
+    y : array
+        y labels (0 for normal; 1 for depressed)
+    nb_classes : int
+        number of classes being classified (2 for a binary label)
+    test_size : float
+        perecentge of data to include in test set
+
+    Returns
+    -------
+    X_train and X_test : arrays
+    Y_train and Y_test : arrays
+        binary class matrices
     """
     print('Train on {} samples, validate on {}'.format(X_train.shape[0], X_test.shape[0]))
 
@@ -87,16 +106,14 @@ def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_
     """
     model = Sequential()
 
-    model.add(Conv2D(32, (7, 7), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
-    model.add(MaxPooling2D(pool_size=(3,3), strides=(2,2)))
-    model.add(Conv2D(32, (5, 5), padding='valid', strides=1, input_shape=input_shape, activation='relu'))
-    model.add(MaxPooling2D(pool_size=(3,3), strides=(2,2)))
     model.add(Conv2D(32, (3, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
-    model.add(MaxPooling2D(pool_size=(3,3), strides=(2,2))
+    # model.add(MaxPooling2D(pool_size=(4,3), strides=(1,3)))
+    model.add(Conv2D(32, (1, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu'))
+    # model.add(MaxPooling2D(pool_size=(1,3), strides=(1,3)))
 
     model.add(Flatten())
-    model.add(Dense(128, activation='relu'))
-    model.add(Dense(128, activation='relu'))
+    model.add(Dense(200, activation='relu'))
+    model.add(Dense(200, activation='relu'))
     model.add(Dense(nb_classes))
     model.add(Activation('softmax'))
 
@@ -169,17 +186,14 @@ if __name__ == '__main__':
 
     X_train, y_train, X_test, y_test = X_train['arr_0'], y_train['arr_0'], X_test['arr_0'], y_test['arr_0']
 
-    # cut sample size in half
-    X_train, y_train = X_train[::2], y_train[::2]
-
     # CNN parameters
     batch_size = 8
     nb_classes = 2
-    epochs = 11
+    epochs = 20
 
     # normalalize data and prep for Keras
     print('Processing images for Keras...')
-    X_train, X_test, y_train, y_test = prep_train_test(X_train, y_train, X_test, y_test, nb_classes=nb_classes)
+    X_train, X_test, y_train, y_test = train_test(X_train, y_train, X_test, y_test, nb_classes=nb_classes)
 
     # specify image dimensions - 513x125x1 for spectrogram with crop size of 125 pixels
     img_rows, img_cols, img_depth = X_train.shape[1], X_train.shape[2], 1
@@ -221,7 +235,3 @@ if __name__ == '__main__':
     plot_loss(history, model_id)
     plot_accuracy(history, model_id)
     plot_roc_curve(y_test[:,1], y_test_pred_proba[:,1], model_id)
-
-    # save model S3
-    model_file = '../models/cnn_{}.h5'.format(model_id)
-    save_to_bucket(model_file, 'cnn_{}.h5'.format(model_id))
