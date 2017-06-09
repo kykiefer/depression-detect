@@ -38,7 +38,7 @@ While some research focuses on the semantic content of audio signals in predicti
 The first step in being able to analyze a person's prosodic features of speech is being able to segment the person's speech from silence, other speakers, and noise. Fortunately, the participant's in the DAIC-WOZ study were wearing close proximity microphones and were in low noise environments, which allowed for fairly complete segmentation (in 84% of interviews) using [pyAudioAnanlysis'](https://github.com/tyiannak/pyAudioAnalysis) segmentation module. When implementing the algorithm in a wearable, [speaker diarisation](https://en.wikipedia.org/wiki/Speaker_diarisation) and background noise removal would obviously have to be extensively explored, but in interest of establishing a minimum viable product, extensive testing and tuning for segmentation robustness was forgone.
 
 ### Feature Extraction ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/spectrograms.py))
-There are several ways to approach acoustic feature extraction and this is by far the most critical component to building a successful model within this space. One approach includes extracting short-term and mid-term audio features such as MFCCs, [chroma vectors](https://en.wikipedia.org/wiki/Chroma_feature), [zero crossing rate](https://en.wikipedia.org/wiki/Zero-crossing_rate), etc. and feeding them as inputs to a Support Vector Machine (SVM) or Random Forest. Since pyAudioAnalysis makes short-term feature extraction fairly streamlined, my first go at the problem was building a short-term feature matrix of 50ms audio segments of the [34 short-term features](https://github.com/tyiannak/pyAudioAnalysis/wiki/3.-Feature-Extraction) available from pyAudioAnalysis.
+There are several ways to approach acoustic feature extraction and this is by far the most critical component to building a successful model within this space. One approach includes extracting short-term and mid-term audio features such as MFCCs, [chroma vectors](https://en.wikipedia.org/wiki/Chroma_feature), [zero crossing rate](https://en.wikipedia.org/wiki/Zero-crossing_rate), etc. and feeding them as inputs to a Support Vector Machine (SVM) or Random Forest. Since pyAudioAnalysis makes short-term feature extraction fairly streamlined, my first go at the problem was building a short-term feature matrix of 50ms audio segments of the [34 short-term features](https://github.com/tyiannak/pyAudioAnalysis/wiki/3.-Feature-Extraction) available from pyAudioAnalysis. These features tend to be lower level representation of audio which I hypothesized would loose some of the subtle features in speech displayed by depressed individuals (especially early stage depression).
 
 Many of the state of the art emotion and language detection models seem to be using neural networks. So with limited initial success with an SVM, I wanted to focus my efforts on a convolutional neural network (CNN) and potentially combining it with Long Short Term Memory (LSTM). One way to implement a CNN on audio signals is to provide it with a series of [spectrograms](https://en.wikipedia.org/wiki/Spectrogram). A spectrogram is a visual representation of sound. It displays the amplitude of the frequency components of a signal over time. If interested in learning more about spectrograms, I recommend this [video](https://www.youtube.com/watch?v=Gg4IHbiITd0).
 
@@ -99,6 +99,11 @@ Below is a summary of how well the current model is predicting.
 
 <sub><b>Figure 5: </b> ROC curve of the final model. </sub>
 
+Confusion Matrix  | -----------------
+------------- | -------------      
+175 (TP)  | 105 (FP)
+135 (FN)  | 145 (TN)
+
 Model #1 (as shown above)
 
 `f1 score: 0.556`
@@ -110,19 +115,14 @@ Model #1 (as shown above)
 `accuracy: 0.555`
 
 Model #2 - (fresh off AWS) one dense layer with 512 nodes 50% dropout.
-Accuracy: 0.525
-Precision: 0.8142857142857143
-Recall: 0.5158371040723982
-F1-Score: 0.631578947368421
 
-
-`f1 score: 0.525`
+`f1 score: 0.632`
 
 `precision: 0.814`
 
 `recall: 0.515`
 
-`accuracy: 0.632`
+`accuracy: 0.525`
 
 This above is predictions on 4 second audio clips. What happens when we compile the 40 predictions on each of the 4 second audio clips by each speaker (160 seconds). Do we get better predictions?
 
