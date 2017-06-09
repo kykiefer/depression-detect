@@ -40,8 +40,6 @@ The first step in being able to analyze a person's prosodic features of speech i
 ### Feature Extraction ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/spectrograms.py))
 There are several ways to approach acoustic feature extraction and this is by far the most critical component to building a successful model within this space. One approach includes extracting short-term and mid-term audio features such as MFCCs, [chroma vectors](https://en.wikipedia.org/wiki/Chroma_feature), [zero crossing rate](https://en.wikipedia.org/wiki/Zero-crossing_rate), etc. and feeding them as inputs to a Support Vector Machine (SVM) or Random Forest. Since pyAudioAnalysis makes short-term feature extraction fairly streamlined, my first go at the problem was building a short-term feature matrix of 50ms audio segments of the [34 short-term features](https://github.com/tyiannak/pyAudioAnalysis/wiki/3.-Feature-Extraction) available from pyAudioAnalysis.
 
-Results...
-
 Many of the state of the art emotion and language detection models seem to be using neural networks. So with limited initial success with an SVM, I wanted to focus my efforts on a convolutional neural network (CNN) and potentially combining it with Long Short Term Memory (LSTM). One way to implement a CNN on audio signals is to provide it with a series of [spectrograms](https://en.wikipedia.org/wiki/Spectrogram). A spectrogram is a visual representation of sound. It displays the amplitude of the frequency components of a signal over time. If interested in learning more about spectrograms, I recommend this [video](https://www.youtube.com/watch?v=Gg4IHbiITd0).
 
 <img alt="Spectrogram" src="images/spectrogram.png" width='700'>
@@ -99,7 +97,7 @@ Below is a summary of how well the current model is predicting.
 
 <img alt="ROC curve" src="images/cnn3_final_roc.png" width='500'>
 
-<sub><b>Figure 1: </b> ROC curve of the final model. </sub>
+<sub><b>Figure 5: </b> ROC curve of the final model. </sub>
 
 Model #1 (as shown above)
 
@@ -111,19 +109,33 @@ Model #1 (as shown above)
 
 `accuracy: 0.555`
 
-Model #2 (run on 50% of data) - one dense layer with 512 nodes 50% dropout.
+Model #2 - (fresh off AWS) one dense layer with 512 nodes 50% dropout.
+Accuracy: 0.525
+Precision: 0.8142857142857143
+Recall: 0.5158371040723982
+F1-Score: 0.631578947368421
 
-`f1 score: 0.572`
 
-`precision: 0.543`
+`f1 score: 0.525`
 
-`recall: 0.605`
+`precision: 0.814`
 
-`accuracy: 0.594`
+`recall: 0.515`
+
+`accuracy: 0.632`
 
 This above is predictions on 4 second audio clips. What happens when we compile the 40 predictions on each of the 4 second audio clips by each speaker (160 seconds). Do we get better predictions?
 
+Not really... :(
 
+**Next step**: add recurrence (LSTM) and L1 loss to deal with outliers.
+
+## Donate Your Data
+The model needs your help. A promising model is in place but detecting depression is hard. Robust models rely on 100s of hours of audio data. The good news is that *you* can contribute! Visit the site below to donate your audio data which will be incorporated in the model.
+
+<img alt="DonateYourData homepage" src="images/website.png" width='600'>
+
+<sub><b>Figure 6: </b> DonateYourData homepage. </sub>  
 
 ## Future Directions
 The model yields promising results initial results.
