@@ -82,12 +82,12 @@ Below is a summary of how well the current model is predicting.
 
 | Confusion Matrix | ----------------- |
 |:----------------:| :----------------:|
-| 175 (TP)         | 105 (FP)          |
-| 135 (FN)         | 145 (TN)          |
+| 240 (TP)         | 40 (FP)          |
+| 212 (FN)         | 69 (TN)          |
 
 | f1 score | precision | recall |
 |:--------:| :--------:| :-----:|
-| 0.593    | 0.625     | 0.571  |
+| 0.658    | 0.857     | 0.531  |
 
 **Next step**: add recurrence (LSTM) and L1 loss to deal with outliers.
 
