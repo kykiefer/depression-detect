@@ -201,8 +201,6 @@ if __name__ == '__main__':
     print('Saving model locally...')
     model_name = '../models/cnn_{}.h5'.format(model_id)
     model.save(model_name)
-    # print('Saving model to S3...')
-    # save_to_bucket(model_name, model_name)
 
     # more evaluation
     print('Calculating test metrics...')
@@ -222,6 +220,7 @@ if __name__ == '__main__':
     plot_roc_curve(y_test[:,1], y_test_pred_proba[:,1], model_id)
 
     # save model S3
+    print('Saving model to S3...')
     model_file = '../models/cnn_{}.h5'.format(model_id)
     save_to_bucket(model_file, 'cnn_{}.h5'.format(model_id))
 
