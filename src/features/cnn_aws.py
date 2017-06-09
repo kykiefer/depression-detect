@@ -94,8 +94,8 @@ def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_
     model.add(MaxPooling2D(pool_size=(1,3), strides=(1,3)))
 
     model.add(Flatten())
-    model.add(Dense(128, activation='relu'))
-    model.add(Dense(128, activation='relu'))
+    model.add(Dense(512, activation='relu'))
+    model.add(Dropout(0.5))
     model.add(Dense(nb_classes))
     model.add(Activation('softmax'))
 
@@ -172,9 +172,9 @@ if __name__ == '__main__':
     X_train, y_train = X_train[::5], y_train[::5]
 
     # CNN parameters
-    batch_size = 8
+    batch_size = 32
     nb_classes = 2
-    epochs = 5
+    epochs = 9
 
     # normalalize data and prep for Keras
     print('Processing images for Keras...')
@@ -223,5 +223,3 @@ if __name__ == '__main__':
     print('Saving model to S3...')
     model_file = '../models/cnn_{}.h5'.format(model_id)
     save_to_bucket(model_file, 'cnn_{}.h5'.format(model_id))
-
-    # calc compiled statistics
