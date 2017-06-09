@@ -64,69 +64,30 @@ A filter is subsequently slid over an image (in this case a spectrogram) and pat
 ### Model Architecture ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/cnn_aws.py))
 I use a X layer Convolutional Neural Network (CNN) model. Each spectrogram input is normalized according to decibels relative to full scale (dBFS).
 
-```python
-model = Sequential()
-
-model.add(Conv2D(32, (3, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
-model.add(MaxPooling2D(pool_size=(4,3), strides=(1,3)))
-model.add(Conv2D(32, (1, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu'))
-model.add(MaxPooling2D(pool_size=(1,3), strides=(1,3)))
-
-model.add(Flatten())
-model.add(Dense(128, activation='relu'))
-model.add(Dense(128, activation='relu'))
-model.add(Dense(nb_classes))
-model.add(Activation('softmax'))
-
-model.compile(loss='categorical_crossentropy',
-              optimizer='adadelta',
-              metrics=['accuracy'])
-```
-
-Schematic placeholder
+*Schematic placeholder*
 
 <sub><b>Figure 4: </b> CNN model architecture. </sub>  
 
 ### Training the Model
 I created the model using [Keras](https://keras.io/) with a [Theano](http://deeplearning.net/software/theano/) backend and trained it on an AWS GPU-optimized EC2 instance.
 
-The model was trained on 40 randomly selected 125x513 audio segments from 31 participants in each class. The 513 frequency bins spanned 0 to 8kHz and each pixel on the time axis represented 32ms (with 125 pixels spanning 4 seconds). The model was trained on just under 3 hours of audio in order to adhere by strict class and speaker balancing parameters and compute time when iterating through CNN architectures. The model is trained on 2,480 spectrograms for ~11 epochs, after which it begins to overfit.
+The model was trained on 40 randomly selected 125x513 audio segments from 31 participants in each class. The 513 frequency bins spanned 0 to 8kHz and each pixel on the time axis represented 32ms (with 125 pixels spanning 4 seconds). The model was trained on just under 3 hours of audio in order to adhere by strict class and speaker balancing parameters and compute time when iterating through CNN architectures. The model is trained on 2,480 spectrograms for 9 epochs, after which it begins to overfit.
 
 ### Results
 Below is a summary of how well the current model is predicting.
 
-<img alt="ROC curve" src="images/cnn3_final_roc.png" width='500'>
+<img alt="ROC curve" src="images/roc_curve.png" width='500'>
 
 <sub><b>Figure 5: </b> ROC curve of the final model. </sub>
 
-Confusion Matrix  | -----------------
-------------- | -------------      
-175 (TP)  | 105 (FP)
-135 (FN)  | 145 (TN)
+| Confusion Matrix | ----------------- |
+|:----------------:| :----------------:|
+| 175 (TP)         | 105 (FP)          |
+| 135 (FN)         | 145 (TN)          |
 
-Model #1 (as shown above)
-
-`f1 score: 0.556`
-
-`precision: 0.557`
-
-`recall: 0.555`
-
-`accuracy: 0.555`
-
-Model #2 - (fresh off AWS) one dense layer with 512 nodes 50% dropout.
-
-`f1 score: 0.632`
-
-`precision: 0.814`
-
-`recall: 0.515`
-
-`accuracy: 0.525`
-
-This above is predictions on 4 second audio clips. What happens when we compile the 40 predictions on each of the 4 second audio clips by each speaker (160 seconds). Do we get better predictions?
-
-Not really... :(
+| f1 score | precision | recall |
+|:--------:| :--------:| :-----:|
+| 0.593    | 0.625     | 0.571  |
 
 **Next step**: add recurrence (LSTM) and L1 loss to deal with outliers.
 
