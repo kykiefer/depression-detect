@@ -44,5 +44,6 @@ def plot_roc_curve(y_test, y_score, model_id):
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.title('Receiver operating characteristic curve')
+    plt.legend(loc="lower right")
     plt.savefig('../../images/cnn{}_roc.png'.format(model_id))
     plt.close()

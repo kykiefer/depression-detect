@@ -52,7 +52,7 @@ model.add(Conv2D(32, (1, 3), padding='valid', strides=1, input_shape=input_shape
 model.add(MaxPooling2D(pool_size=(2,2), strides=(1,1)))
 ```
 
-cnn_3_final
+*cnn_3_final*
 same as cnn_3 but run for 11 epochs to minimize loss
 Train accuracy: 0.813709677419
 Test accuracy: 0.555357142857
@@ -99,3 +99,151 @@ cnn_3 but with 200 nodes in dense layers instead of 128
 
 cnn512 (c4.8xlarge)
 512 nodes in two dense layers
+rain accuracy: 0.663709677419
+Test accuracy: 0.535714285714
+Confusion Matrix:
+[[ 78 202]
+ [ 58 222]]
+Accuracy: 0.5357142857142857
+Precision: 0.2785714285714286
+Recall: 0.5735294117647058
+F1-Score: 0.375
+
+cnn9_sub - noppe
+50% dropout after first pooling and both dense
+
+cnn10_sub - nope
+25% dropout after first pooling and both dense
+
+*cnn11_sub* high recall (i.e. the percentage of depressed who are correctly identified as having the condition). bad precision
+One dense layer 512 nodes with 25% dropout
+Train accuracy: 0.684677419355
+Test accuracy: 0.583928571429
+Confusion Matrix:
+[[104 176]
+ [ 57 223]]
+Accuracy: 0.5839285714285715
+Precision: 0.37142857142857144
+Recall: 0.6459627329192547
+F1-Score: 0.471655328798186
+
+*cnn12_sub* 11 epochs
+One dense layer 512 nodes with 50% dropout
+Train accuracy: 0.743548387289
+Test accuracy: 0.594642857143
+Evaluating model...
+Confusion Matrix:
+[[152 128]
+ [ 99 181]]
+Accuracy: 0.5946428571428571
+Precision: 0.5428571428571428
+Recall: 0.6055776892430279
+F1-Score: 0.5725047080979284
+
+cnn13_sub - changed maxpooling shapes 4x4, 3x3
+Train accuracy: 0.61209677429
+Test accuracy: 0.548214285714
+Confusion Matrix:
+[[ 58 222]
+ [ 31 249]]
+Calculating test metrics...
+Accuracy: 0.5482142857142858
+Precision: 0.20714285714285716
+Recall: 0.651685393258427
+F1-Score: 0.31436314363143636
+
+
+cnn14_sub - potentially, didn't converge quite yet more epochs below
+Train accuracy: 0.654838709293
+Test accuracy: 0.539285714286
+Confusion Matrix:
+[[124 156]
+ [102 178]]
+Calculating test metrics...
+Accuracy: 0.5392857142857143
+Precision: 0.44285714285714284
+Recall: 0.5486725663716814
+F1-Score: 0.4901185770750988
+
+
+THESE WERE ALL ON 1/5th of the data
+cnn12_full - but only 5 epochs by mistake!
+Train accuracy: 0.778225806452
+Test accuracy: 0.521428571429
+Confusion Matrix:
+[[196  84]
+ [184  96]]
+ Accuracy: 0.5214285714285715
+Precision: 0.7
+Recall: 0.5157894736842106
+F1-Score: 0.593939393939394
+Saving plots...
+Saving model to S3...
+
+cnn12_final - garbage after 11 epochs
+
+
+cnn12_20e
+Train accuracy: 0.913306451613
+Test accuracy: 0.525
+Evaluating model...
+560/560 [==============================] - 1s
+496/496 [==============================] - 1s
+560/560 [==============================] - 1s
+496/496 [==============================] - 1s
+Confusion Matrix:
+[[228  52]
+ [214  66]]
+Saving model locally...
+Calculating test metrics...
+Accuracy: 0.525
+Precision: 0.8142857142857143
+Recall: 0.5158371040723982
+F1-Score: 0.631578947368421
+
+cnn12_12e
+Train accuracy: 0.685483870968
+Test accuracy: 0.503571428571
+Confusion Matrix:
+[[257  23]
+ [255  25]]
+Accuracy: 0.5035714285714286
+Precision: 0.9178571428571428
+Recall: 0.501953125
+F1-Score: 0.648989898989899
+
+THESE ARE RUN ON THE FULL TEST SET
+12_12e.25d_full
+Train accuracy: 0.770564516129
+Test accuracy: 0.5625
+Confusion Matrix:
+[[152 128]
+ [117 163]]
+Accuracy: 0.5625
+Precision: 0.5428571428571428
+Recall: 0.5650557620817844
+F1-Score: 0.5537340619307832
+
+12_9e.5d_full
+Train accuracy: 0.700806451613
+Test accuracy: 0.571428571429
+Confusion Matrix:
+[[175 105]
+ [135 145]]
+Saving model locally...
+Calculating test metrics...
+Accuracy: 0.5714285714285714
+Precision: 0.625
+Recall: 0.5645161290322581
+F1-Score: 0.5932203389830509
+
+*12_9e.5d_full_32b* best so far
+Train accuracy: 0.614516129032
+Test accuracy: 0.55
+Confusion Matrix:
+[[240  40]
+ [212  68]]
+Accuracy: 0.55
+Precision: 0.8571428571428571
+Recall: 0.5309734513274337
+F1-Score: 0.6557377049180328
