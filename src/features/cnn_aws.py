@@ -12,6 +12,7 @@ from keras.layers import Conv2D, MaxPooling2D
 from keras.utils import np_utils
 from keras import backend as K
 from keras.optimizers import SGD
+from partic_pred import aggregate_preds
 K.set_image_dim_ordering('th')
 access_key = os.environ['AWS_ACCESS_KEY_ID']
 access_secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
@@ -87,9 +88,9 @@ def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_
     """
     model = Sequential()
 
-    model.add(Conv2D(80, (3, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
+    model.add(Conv2D(32, (3, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
     model.add(MaxPooling2D(pool_size=(4,3), strides=(1,3)))
-    model.add(Conv2D(80, (1, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu'))
+    model.add(Conv2D(32, (1, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu'))
     model.add(MaxPooling2D(pool_size=(1,3), strides=(1,3)))
 
     model.add(Flatten())
@@ -167,10 +168,13 @@ if __name__ == '__main__':
 
     X_train, y_train, X_test, y_test = X_train['arr_0'], y_train['arr_0'], X_test['arr_0'], y_test['arr_0']
 
+    # cut sample size in half
+    X_train, y_train = X_train[::5], y_train[::5]
+
     # CNN parameters
     batch_size = 8
     nb_classes = 2
-    epochs = 20
+    epochs = 5
 
     # normalalize data and prep for Keras
     print('Processing images for Keras...')
@@ -220,3 +224,5 @@ if __name__ == '__main__':
     # save model S3
     model_file = '../models/cnn_{}.h5'.format(model_id)
     save_to_bucket(model_file, 'cnn_{}.h5'.format(model_id))
+
+    # calc compiled statistics
