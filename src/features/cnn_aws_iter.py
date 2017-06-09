@@ -9,6 +9,7 @@ np.random.seed(15)  # for reproducibility
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
+from keras.layers import LSTM
 from keras.utils import np_utils
 from keras import backend as K
 from keras.optimizers import SGD
@@ -89,12 +90,16 @@ def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_
 
     model.add(Conv2D(32, (3, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
     model.add(MaxPooling2D(pool_size=(4,3), strides=(1,3)))
+    model.add(Dropout(0.5))
     model.add(Conv2D(32, (1, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu'))
     model.add(MaxPooling2D(pool_size=(1,3), strides=(1,3)))
+    model.add(Dropout(0.25))
 
     model.add(Flatten())
     model.add(Dense(128, activation='relu'))
+    model.add(Dropout(0.5))
     model.add(Dense(128, activation='relu'))
+    model.add(Dropout(0.5))
     model.add(Dense(nb_classes))
     model.add(Activation('softmax'))
 
