@@ -39,9 +39,11 @@ While some research focuses on the semantic content of audio signals in predicti
 The first step in being able to analyze a person's prosodic features of speech is being able to segment the person's speech from silence, other speakers, and noise. Fortunately, the participant's in the DAIC-WOZ study were wearing close proximity microphones and were in low noise environments, which allowed for fairly complete segmentation (in 84% of interviews) using [pyAudioAnanlysis'](https://github.com/tyiannak/pyAudioAnalysis) segmentation module. When implementing the algorithm in a wearable, [speaker diarisation](https://en.wikipedia.org/wiki/Speaker_diarisation) and background noise removal would have to be extensively explored. In interest of establishing a minimum viable product, extensive testing and tuning for segmentation robustness was forgone.
 
 ### Feature Extraction ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/spectrograms.py))
-There are several ways to approach acoustic feature extraction and this is by far the most critical component to building a successful model within this space. One approach includes extracting short-term and mid-term audio features such as MFCCs, [chroma vectors](https://en.wikipedia.org/wiki/Chroma_feature), [zero crossing rate](https://en.wikipedia.org/wiki/Zero-crossing_rate), etc. and feeding them as inputs to a Support Vector Machine (SVM) or Random Forest. Since pyAudioAnalysis makes short-term feature extraction fairly streamlined, my first go at the problem was building a short-term feature matrix of 50ms audio segments of the [34 short-term features](https://github.com/tyiannak/pyAudioAnalysis/wiki/3.-Feature-Extraction) available from pyAudioAnalysis. These features are lower level representations of audio, which I hypothesized would loose some of the subtle speech characteristics displayed by depressed individuals (especially early stage depression).
+There are several ways to approach acoustic feature extraction and this is by far the most critical component to building a successful model within this space. One approach includes extracting short-term and mid-term audio features such as MFCCs, [chroma vectors](https://en.wikipedia.org/wiki/Chroma_feature), [zero crossing rate](https://en.wikipedia.org/wiki/Zero-crossing_rate), etc. and feeding them as inputs to a Support Vector Machine (SVM) or Random Forest. Since pyAudioAnalysis makes short-term feature extraction fairly streamlined, my first go at the problem was building a short-term feature matrices of 50ms audio segments of the [34 short-term features](https://github.com/tyiannak/pyAudioAnalysis/wiki/3.-Feature-Extraction) available from pyAudioAnalysis. These features are lower level representations of audio, which I hypothesized would loose some of the subtle speech characteristics displayed by depressed individuals (especially early stage depression).
 
-A few iterations using a Random Forest yielded an f1 score of `0.56`. I couldn't get a particularly high recall or precision model (although I think there is potential), so I abandoned this method in pursuit of an approach I found particularly interesting and challenging in this application -- convolutional neural networks.
+**End of project update:** Although low level representation loose some of the signal, they also do a great job at reducing the noise.
+
+A few iterations using a Random Forest yielded an f1 score of `0.61`, it showed some promise, but this approach has been utilized before. I abandoned this method in pursuit of an approach I found particularly interesting and was uncertain would gain traction, but thought could be particularly powerful if it did. Enter convolutional neural networks with spectrograms!
 
 Neural networks seems to be the approach taken my many in cutting edge emotion and language detection models. I began with a convolutional neural network (CNN) and attempted to combine it with Long Short Term Memory (LSTM). CNNs require and image as input. One way to implement a CNN on audio signals is to provide it with a series of [spectrograms](https://en.wikipedia.org/wiki/Spectrogram). A spectrogram is a visual representation of sound. It displays the amplitude of the frequency components of a signal over time. Unlike MFCCs and other transformations that represent low-level features of sound, spectrograms keep the detail (including the noise, which presents challenges).
 
@@ -75,20 +77,13 @@ I created the model using [Keras](https://keras.io/) with a [Theano](http://deep
 The model was trained on 40 randomly selected 125x513 audio segments from 31 participants in each class. The 513 frequency bins spanned 0 to 8kHz and each pixel on the time axis represented 32ms (with 125 pixels spanning 4 seconds). The model was trained on just under 3 hours of audio in order to adhere by strict class and speaker balancing parameters and compute time when iterating through CNN architectures. The model is trained on 2,480 spectrograms for 9 epochs, after which it begins to overfit.
 
 ### Results
-Below is a summary of how well the current model is predicting. Although over 50 model iterations were trialed with different hyperparameters, I settled on this model given its high precision score (i.e. of people the model is predicting as depressed, `85.7%` actually exhibited depression). This came with a big hit to recall score (i.e only `53.1%` of people with depression are correctly labelled by the model as having the disease). There seemed to be a high precision-recall tradeoff with different model architecture. I choose to settle on the high precision model (seen below), because I think it is dangerous to label someone as depressed who is not.
+Below is a summary of how well the current model is predicting.
 
 <img alt="ROC curve" src="images/roc_curve.png" width='500'>
 
 <sub><b>Figure 5: </b> ROC curve of the CNN model. </sub>
 
-|  Confusion Matrix | Actual: Yes | Actual: No |
-|:----------------:| :-------:| :------:|
-| **Predicted: Yes**  | 240 (TP) | 40 (FP) |
-| **Predicted: No**   | 212 (FN) | 68 (TN) |
-
-| f1 score | precision | recall |
-|:--------:| :--------:| :-----:|
-| 0.658    | 0.857     | 0.531  |
+The validation set was composed of 560 spectrograms. The classes were unbalanced in order to maximize the number speakers the model learned from while seeking to strongly validated predictions on depressed individuals. For this reason, I refrain from speaking about recall, precision and displaying the confusion matrix because I find them rather misleading. Rather, I assed by model on AUC score (`0.60`). Over 50 model iterations were assessed with varying hyperparameters and architecture.
 
 **Next step**: add recurrence (LSTM) and L1 loss to deal with outliers.
 
