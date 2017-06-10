@@ -88,14 +88,14 @@ def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_
     """
     model = Sequential()
 
-    model.add(Conv2D(32, (3, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
+    model.add(Conv2D(32, (57, 6), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
     model.add(MaxPooling2D(pool_size=(4,3), strides=(1,3)))
     model.add(Conv2D(32, (1, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu'))
     model.add(MaxPooling2D(pool_size=(1,3), strides=(1,3)))
 
     model.add(Flatten())
-    model.add(Dense(512, activation='relu'))
-    model.add(Dropout(0.5))
+    model.add(Dense(128, activation='relu'))
+    model.add(Dense(128, activation='relu'))
     model.add(Dense(nb_classes))
     model.add(Activation('softmax'))
 
