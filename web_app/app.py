@@ -9,6 +9,10 @@ def index():
 def donate():
     return render_template('donate.html')
 
+@app.route('/survey', methods=['POST'])
+def survey():
+    return render_template('survey.html')
+
 @app.route('/contact')
 def results():
     return render_template('contact.html')
