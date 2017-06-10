@@ -13,9 +13,9 @@ def donate():
 def project():
     return render_template('project.html')
 
-@app.route('/results')
+@app.route('/contact')
 def results():
-    return render_template('results.html')
+    return render_template('contact.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True, threaded=True)

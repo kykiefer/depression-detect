@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Jumbotron Template for Bootstrap</title>
+    <title>Depression Detect</title>
 
     <!-- Bootstrap core CSS -->
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
@@ -18,7 +18,7 @@
     <link href="../static/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="jumbotron.css" rel="stylesheet">
+    <link href="../static/css/jumbotron.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -33,36 +33,52 @@
 
   <body>
 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-inverse navbar-custom navbar-fixed-top">
       <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Depression Detect</a>
+          <a class="navbar-brand" href="/">DepressionDetect</a>
         </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <form class="navbar-form navbar-right">
-            <div class="form-group">
-              <input type="text" placeholder="Email" class="form-control">
-            </div>
-            <div class="form-group">
-              <input type="password" placeholder="Password" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-success">Sign in</button>
-          </form>
-        </div><!--/.navbar-collapse -->
+              <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a href="/">Home</a>
+            </li>
+            <li>
+              <a href="/donate">Donate</a>
+            </li>
+            <li>
+              <a href="/project">Project</a>
+            </li>
+            <li>
+              <a href="/contact">Contact</a>
+            </li>
+          </ul>
+        </div>
+      <!-- /.navbar-collapse -->
       </div>
+    <!-- /.container -->
     </nav>
 
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">
-        <h1>Become a Data Donor!</h1>
-        <p>To donate...</p>
+        <h2>Become a Data Donor!</h1>
+        <p>A major challenge for mental health researchers is access to data. Should you choose to donate, your data will be incorporated into a machine learnign algorithm that learns predictors of depression from acoustic features of speech. If you have lived with depression, know someone with depression, or if you would just like to help, please consider sharing your data.</p>
+
+        <p><a href="https://github.com/kykiefer/depression-detect">DepressionDetect</a> is an open-source project rooted in Python. The project seeks to objectively identify early signs of depression from acoustic features of speech. Early detection and treatment of depression is essential in promoting remission, preventing relapse, and reducing the emotional burden of the disease. To date, the model has learned from over 70 people, but it needs <strong>your help!</strong> Learn more about the project below, donate your data, contribute some code, or share on social media.</p>
+
+        <p>Your audio recordings are anonymized upon donation and will never be distributed. If you have specific questions on how your data is used contact us at <a href="mailto:kkiefer@umich.edu">kkiefer@umich.edu</a>.</p>
+
+        <p><i>Your data really does help.</i></p>
+
         <p><a class="btn btn-primary btn-lg" href="donate" role="button">Donate! &raquo;</a></p>
       </div>
     </div>
@@ -71,26 +87,26 @@
       <!-- Example row of columns -->
       <div class="row">
         <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+          <h2>Donate</h2>
+          <p>We're in need of data donors. Take an 8 question depression survey and upload an audio file and we'll be eternally grateful. 5 minutes of your time could help save lives! </p>
+          <p><a class="btn btn-default" href="donate" role="button">Donate &raquo;</a></p>
         </div>
         <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+          <h2>The Project</h2>
+          <p>Want to get technical? Learn more about the data science behind creating a model to detect depression from speech and track how well we're predicting as our donations grow! </p>
+          <p><a class="btn btn-default" href="project" role="button">Learn more &raquo;</a></p>
        </div>
         <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+          <h2>Contact</h2>
+          <p>If you're inspired, have feedback, or are eager to start contributing, drop us a line. This project is in an early stage with plenty of room for improvement. We're eager to hear from you! </p>
+          <p><a class="btn btn-default" href="contact" role="button">Get in touch &raquo;</a></p>
         </div>
       </div>
 
       <hr>
 
       <footer>
-        <p>&copy; 2017 Ky Kiefer</p>
+        <p>&copy; 2017 DepressionDetect</p>
       </footer>
     </div> <!-- /container -->
 
@@ -99,9 +115,9 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-    <script src="../../dist/js/bootstrap.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../static/js/jquery.min.js"><\/script>')</script>
+    <script src="../static/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+    <script src="../static/js/ie10-viewport-bug-workaround.js"></script>
   </body>
 </html>
