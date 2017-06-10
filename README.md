@@ -41,9 +41,11 @@ The first step in being able to analyze a person's prosodic features of speech i
 ### Feature Extraction ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/spectrograms.py))
 There are several ways to approach acoustic feature extraction and this is by far the most critical component to building a successful model within this space. One approach includes extracting short-term and mid-term audio features such as MFCCs, [chroma vectors](https://en.wikipedia.org/wiki/Chroma_feature), [zero crossing rate](https://en.wikipedia.org/wiki/Zero-crossing_rate), etc. and feeding them as inputs to a Support Vector Machine (SVM) or Random Forest. Since pyAudioAnalysis makes short-term feature extraction fairly streamlined, my first go at the problem was building a short-term feature matrix of 50ms audio segments of the [34 short-term features](https://github.com/tyiannak/pyAudioAnalysis/wiki/3.-Feature-Extraction) available from pyAudioAnalysis. These features are lower level representations of audio, which I hypothesized would loose some of the subtle speech characteristics displayed by depressed individuals (especially early stage depression).
 
-A few iterations using a Random Forest yielded an f1 score of `0.56`. I couldn't get a particularly high recall or precision model, so I abandoned this method in pursuit of an approach I found particularly interesting and challenging in this application...convolutional neural networks.
+A few iterations using a Random Forest yielded an f1 score of `0.56`. I couldn't get a particularly high recall or precision model (although I think there is potential), so I abandoned this method in pursuit of an approach I found particularly interesting and challenging in this application -- convolutional neural networks.
 
-Neural networks seems to be the approach taken my many in cutting edge emotion and language detection models. So with limited initial success with an Random Forest, I wanted to focus my efforts on a convolutional neural network (CNN) and potentially combining it with Long Short Term Memory (LSTM). One way to implement a CNN on audio signals is to provide it with a series of [spectrograms](https://en.wikipedia.org/wiki/Spectrogram). A spectrogram is a visual representation of sound. It displays the amplitude of the frequency components of a signal over time. Unlike MFCCs and other transformations that represent low-level features of sound, spectrograms keep the detail (including the noise, which presents challenges). The input to my model is akin to the spectrogram you see in Figure 2 below. 513 frequency bins on the y-axis and 125 time bins on the x-axis spanning four seconds of audio.
+Neural networks seems to be the approach taken my many in cutting edge emotion and language detection models. I began with a convolutional neural network (CNN) and attempted to combine it with Long Short Term Memory (LSTM). CNNs require and image as input. One way to implement a CNN on audio signals is to provide it with a series of [spectrograms](https://en.wikipedia.org/wiki/Spectrogram). A spectrogram is a visual representation of sound. It displays the amplitude of the frequency components of a signal over time. Unlike MFCCs and other transformations that represent low-level features of sound, spectrograms keep the detail (including the noise, which presents challenges).
+
+The input to my model is akin to the spectrogram you see in Figure 2 below. 513 frequency bins on the y-axis and 125 time bins on the x-axis spanning four seconds of audio.
 
 <img alt="Spectrogram" src="images/spectrogram.png" width='700'>
 <sub><b>Figure 2: </b> Spectrogram of man saying "Watching different TV shows". </sub>  
@@ -91,7 +93,7 @@ Below is a summary of how well the current model is predicting. Although over 50
 **Next step**: add recurrence (LSTM) and L1 loss to deal with outliers.
 
 ## Donate Your Data
-The model needs your help. A promising model is in place but detecting depression is hard. Robust models rely on 100s of hours of audio data. The good news is that *you* can contribute! Visit the site below to donate your audio data which will be incorporated in the model.
+The model needs your help. A promising model is in place but detecting depression is *hard*. Robust models rely on 100s of hours of audio data. The good news is that *you* can contribute! Visit the site below to donate your audio data which will be incorporated in the model.
 
 <img alt="DonateYourData homepage" src="images/website.png" width='600'>
 
