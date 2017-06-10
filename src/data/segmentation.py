@@ -8,7 +8,7 @@ import wave
 """
 A script that iterates through the extracted wav files and uses \
 pyAudioAnalysis' silence extraction module to make a wav file containing the \
-segmented audio (when the particpant is speaking -- silence and virtual \
+segmented audio (when the participant is speaking -- silence and virtual \
 interviewer speech removed)
 """
 
@@ -59,8 +59,8 @@ def remove_silence(filename, out_dir, smoothing=1.0, weight=0.3, plot=False):
             seg_name = "{:s}_{:.2f}-{:.2f}.wav".format(partic_id, s[0], s[1])
             wavfile.write(seg_name, Fs, x[int(Fs * s[0]):int(Fs * s[1])])
 
-        # concatentate segmented wave files within participant directory
-        concatentate_segments(participant_dir, partic_id)
+        # concatenate segmented wave files within participant directory
+        concatenate_segments(participant_dir, partic_id)
 
 
 def is_segmentable(partic_id):
@@ -78,7 +78,7 @@ def is_segmentable(partic_id):
     return partic_id not in troubled
 
 
-def concatentate_segments(participant_dir, partic_id, remove_segment=True):
+def concatenate_segments(participant_dir, partic_id, remove_segment=True):
     """
     A function that concatenates all the wave files in a participants \
     directory in to single wav file (with silence and other speakers removed) \
@@ -110,11 +110,11 @@ if __name__ == '__main__':
     # directory containing wav files
     dir_name = '../../data/raw/audio'
 
-    # directory where a partipant folder will be created containing their
+    # directory where a participant folder will be created containing their
     # segmented wav file
     out_dir = '../../data/interim'
 
-    # iterate thorugh wav files in dir_name and create a segmented wav_file
+    # iterate through wav files in dir_name and create a segmented wav_file
     for file in os.listdir(dir_name):
         if file.endswith('.wav'):
             filename = os.path.join(dir_name, file)
