@@ -2,7 +2,7 @@ from __future__ import print_function
 import boto
 import os
 import numpy as np
-from sklearn.metrics import _matrix
+from sklearn.metrics import confusion_matrix
 from plot import plot_accuracy, plot_loss, plot_roc_curve
 np.random.seed(15)  # for reproducibility
 
@@ -12,7 +12,6 @@ from keras.layers import Conv2D, MaxPooling2D
 from keras.utils import np_utils
 from keras import backend as K
 from keras.optimizers import SGD
-from partic_pred import aggregate_preds
 K.set_image_dim_ordering('th')
 access_key = os.environ['AWS_ACCESS_KEY_ID']
 access_secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
@@ -58,7 +57,7 @@ def prep_train_test(X_train, y_train, X_test, y_test, nb_classes):
     X_train, X_test = preprocess(X_train, X_test)
 
     # Convert class vectors to binary class matrices
-    Y_train = np_utils.tegorical(y_train, nb_classes)
+    Y_train = np_utils.to_categorical(y_train, nb_classes)
     Y_test = np_utils.to_categorical(y_test, nb_classes)
 
     return X_train, X_test, Y_train, Y_test
@@ -89,7 +88,7 @@ def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_
     model = Sequential()
 
     model.add(Conv2D(32, (3, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
-    model.add(MaxPooling2D(pool_size=(4,3), strides=(1,3)))
+    model.add(MaxPooling2D(pool_size=(4,3), strides=(1,1)))
     model.add(Conv2D(32, (1, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu'))
     model.add(MaxPooling2D(pool_size=(1,3), strides=(1,3)))
 
@@ -124,7 +123,7 @@ def model_performance(model, X_train, X_test, y_train, y_test):
     y_train_pred_proba = model.predict_proba(X_train)
 
     # Converting y_test back to 1-D array for confusion matrix computation
-    y_test_1d = y_test[:,1]
+    y_test_1d = y_test[:, 1]
 
     # Computing confusion matrix for test dataset
     conf_matrix = confusion_matrix(y_test_1d, y_test_pred)
