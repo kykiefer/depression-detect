@@ -41,6 +41,7 @@ body {
 .carousel {
   height: 500px;
   margin-bottom: 60px;
+  overflow: hidden; /* added by Ky*/
 }
 /* Since positioning the image, we need to help out the caption */
 .carousel-caption {
@@ -51,6 +52,7 @@ body {
 .carousel .item {
   height: 500px;
   background-color: #777;
+  overflow: hidden; /* added by Ky*/
 }
 .carousel-inner > .item > img {
   position: absolute;
@@ -89,7 +91,7 @@ body {
 .featurette-heading {
   font-weight: 300;
   line-height: 1;
-  letter-spacing: -1px;
+  letter-spacing: -1px; /*was -1
 }
 
 
