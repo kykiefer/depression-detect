@@ -12,6 +12,7 @@ from keras.layers import Conv2D, MaxPooling2D
 from keras.utils import np_utils
 from keras import backend as K
 from keras.optimizers import SGD
+from partic_pred import aggregate_preds
 K.set_image_dim_ordering('th')
 access_key = os.environ['AWS_ACCESS_KEY_ID']
 access_secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
@@ -139,8 +140,6 @@ def standard_confusion_matrix(y_test, y_test_pred):
         Input:  y_true, y_predict values - arrays
         Output: confusion matrix - array
     '''
-    print(y_test)
-    print(y_test_pred)
     [[tn, fp], [fn, tp]] = confusion_matrix(y_test, y_test_pred)
     return np.array([[tp, fp], [fn, tn]])
 
@@ -170,7 +169,7 @@ if __name__ == '__main__':
     X_train, y_train, X_test, y_test = X_train['arr_0'], y_train['arr_0'], X_test['arr_0'], y_test['arr_0']
 
     # cut sample size in half
-    # X_train, y_train = X_train[::5], y_train[::5]
+    X_train, y_train = X_train[::5], y_train[::5]
 
     # CNN parameters
     batch_size = 32
