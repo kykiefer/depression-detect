@@ -68,11 +68,17 @@
     <div class="jumbotron">
       <div class="container">
         <h2>Become a Data Donor!</h1>
-        <p>To donate, begin by uploading a a wave file speaking the following paragraph. After uploading, you will be prompted to take an eight question depression survey. It's that simple. <i>Your data really does help.</i><br></br></p>
+        <p>To donate, begin by uploading a a <strong>.wav</strong> file speaking the following paragraph. After uploading, you will be prompted to take an eight question depression survey. If you miss a word, just keep going. It's that simple. <i>Your data really does help.</i></p>
 
-        <p><var>"This sentence has five words. Here are five more words. Five-word sentences are fine. But several together become monotonous. Listen to what is happening. The writing is getting boring. The sound of it drones. It’s like a stuck record. The ear demands some variety. Now listen. I vary the sentence length, and I create music. Music. The writing sings. It has a pleasant rhythm, a lilt, a harmony. I use short sentences. And I use sentences of medium length. And sometimes, when I am certain the reader is rested, I will engage him with a sentence of considerable length, a sentence that burns with energy and builds with all the impetus of a crescendo, the roll of the drums, the crash of the cymbals–sounds that say listen to this, it is important." – Gary Provost</var></p>
+        <p>The easiest way to record a .wav file is <a href="https://online-voice-recorder.com/" target="_blank"><strong>here</strong></a>. Save the file locally with the <strong>.wav</strong> extension.<br></br></p>
 
-        <p><a class="btn btn-primary btn-lg" href="donate" role="button">Donate! &raquo;</a></p>
+        <p>"This sentence has five words. Here are five more words. Five-word sentences are fine. But several together become monotonous. Listen to what is happening. The writing is getting boring. The sound of it drones. It’s like a stuck record. The ear demands some variety. Now listen. I vary the sentence length, and I create music. Music. The writing sings. It has a pleasant rhythm, a lilt, a harmony. I use short sentences. And I use sentences of medium length. And sometimes, when I am certain the reader is rested, I will engage him with a sentence of considerable length, a sentence that burns with energy and builds with all the impetus of a crescendo, the roll of the drums, the crash of the cymbals–sounds that say listen to this, it is important." – Gary Provost<br></br></p>
+
+        <form action="upload" method="post" enctype="multipart/form-data">
+          <input type="file" name="file"><br /><br />
+          <input type="submit" value="Upload">
+        </form>
+
       </div>
     </div>
 
@@ -87,7 +93,7 @@
         <div class="col-md-4">
           <h2>The Project</h2>
           <p>Want to get technical? Learn more about the data science behind creating a model to detect depression from speech and track how well we're predicting as our donations grow! </p>
-          <p><a class="btn btn-default" href="project" role="button">Learn more &raquo;</a></p>
+          <p><a class="btn btn-default" href="project" role="button">View the repo &raquo;</a></p>
        </div>
         <div class="col-md-4">
           <h2>Contact</h2>
