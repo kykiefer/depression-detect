@@ -87,14 +87,14 @@ def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_
     """
     model = Sequential()
 
-    model.add(Conv2D(32, (57, 6), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
+    model.add(Conv2D(32, (3, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
     model.add(MaxPooling2D(pool_size=(4,3), strides=(1,3)))
     model.add(Conv2D(32, (1, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu'))
     model.add(MaxPooling2D(pool_size=(1,3), strides=(1,3)))
 
     model.add(Flatten())
-    model.add(Dense(128, activation='relu'))
-    model.add(Dense(128, activation='relu'))
+    model.add(Dense(512, activation='relu'))
+    model.add(Dropout(0.5))
     model.add(Dense(nb_classes))
     model.add(Activation('softmax'))
 
@@ -126,7 +126,7 @@ def model_performance(model, X_train, X_test, y_train, y_test):
     y_test_1d = y_test[:,1]
 
     # Computing confusion matrix for test dataset
-    conf_matrix = confusion_matrix(y_test_1d, y_test_pred)
+    conf_matrix = standard_confusion_matrix(y_test_1d, y_test_pred)
     print("Confusion Matrix:")
     print(conf_matrix)
 
@@ -134,11 +134,21 @@ def model_performance(model, X_train, X_test, y_train, y_test):
 
 
 def standard_confusion_matrix(y_test, y_test_pred):
-    ''' Computing Confusion Matrix for CNN model, formatting in
-            standard setup
-        Input:  y_true, y_predict values - arrays
-        Output: confusion matrix - array
-    '''
+    """Make confusion matrix with format:
+                  -----------
+                  | TP | FP |
+                  -----------
+                  | FN | TN |
+                  -----------
+    Parameters
+    ----------
+    y_true : ndarray - 1D
+    y_pred : ndarray - 1D
+
+    Returns
+    -------
+    ndarray - 2D
+    """
     [[tn, fp], [fn, tp]] = confusion_matrix(y_test, y_test_pred)
     return np.array([[tp, fp], [fn, tn]])
 

@@ -219,7 +219,7 @@ if __name__ == '__main__':
     # CNN parameters
     batch_size = 8
     nb_classes = 2
-    epochs = 2
+    epochs = 10
 
     # train/test split
     test_size = 0.2
