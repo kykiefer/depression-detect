@@ -12,6 +12,7 @@ from keras.layers import Conv2D, MaxPooling2D
 from keras.utils import np_utils
 from keras import backend as K
 from keras.optimizers import SGD
+from partic_pred import aggregate_preds
 K.set_image_dim_ordering('th')
 access_key = os.environ['AWS_ACCESS_KEY_ID']
 access_secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
@@ -88,7 +89,7 @@ def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_
     model = Sequential()
 
     model.add(Conv2D(32, (3, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
-    model.add(MaxPooling2D(pool_size=(4,3), strides=(1,1)))
+    model.add(MaxPooling2D(pool_size=(4,3), strides=(1,3)))
     model.add(Conv2D(32, (1, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu'))
     model.add(MaxPooling2D(pool_size=(1,3), strides=(1,3)))
 
@@ -123,7 +124,7 @@ def model_performance(model, X_train, X_test, y_train, y_test):
     y_train_pred_proba = model.predict_proba(X_train)
 
     # Converting y_test back to 1-D array for confusion matrix computation
-    y_test_1d = y_test[:, 1]
+    y_test_1d = y_test[:,1]
 
     # Computing confusion matrix for test dataset
     conf_matrix = confusion_matrix(y_test_1d, y_test_pred)
@@ -134,28 +135,14 @@ def model_performance(model, X_train, X_test, y_train, y_test):
 
 
 def standard_confusion_matrix(y_test, y_test_pred):
-    """Make confusion matrix with format:
-                  -----------
-                  | TP | FP |
-                  -----------
-                  | FN | TN |
-                  -----------
-    Parameters
-    ----------
-    y_true : ndarray - 1D
-    y_pred : ndarray - 1D
-
-    Returns
-    -------
-    ndarray - 2D
-    """
-    print('y_test')
+    ''' Computing Confusion Matrix for CNN model, formatting in
+            standard setup
+        Input:  y_true, y_predict values - arrays
+        Output: confusion matrix - array
+    '''
     print(y_test)
-    print('y_test_pred')
     print(y_test_pred)
     [[tn, fp], [fn, tp]] = confusion_matrix(y_test, y_test_pred)
-    print('np.array([[tp, fp], [fn, tn]])')
-    print(np.array([[tp, fp], [fn, tn]]))
     return np.array([[tp, fp], [fn, tn]])
 
 
@@ -182,10 +169,10 @@ if __name__ == '__main__':
     y_test = retrieve_from_bucket('test_labels.npz')
 
     X_train, y_train, X_test, y_test = X_train['arr_0'], y_train['arr_0'], X_test['arr_0'], y_test['arr_0']
-#
-    # # cut sample size in half
-    # X_train, y_train = X_train[::5], y_train[::5]
-#
+
+    # cut sample size in half
+    X_train, y_train = X_train[::5], y_train[::5]
+
     # CNN parameters
     batch_size = 32
     nb_classes = 2
@@ -194,10 +181,10 @@ if __name__ == '__main__':
     # normalalize data and prep for Keras
     print('Processing images for Keras...')
     X_train, X_test, y_train, y_test = prep_train_test(X_train, y_train, X_test, y_test, nb_classes=nb_classes)
-#
+
     # specify image dimensions - 513x125x1 for spectrogram with crop size of 125 pixels
     img_rows, img_cols, img_depth = X_train.shape[1], X_train.shape[2], 1
-#
+
     # reshape image input for Keras
     # used Theano dim_ordering (th), (# images, # chans, # rows, # cols)
     X_train, X_test, input_shape = keras_img_prep(X_train, X_test, img_depth, img_rows, img_cols)
@@ -211,12 +198,12 @@ if __name__ == '__main__':
     # evaluate model
     print('Evaluating model...')
     y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba, conf_matrix = model_performance(model, X_train, X_test, y_train, y_test)
-#
+
     # store model to locally and to S3 bucket
     print('Saving model locally...')
     model_name = '../models/cnn_{}.h5'.format(model_id)
     model.save(model_name)
-#
+
     # more evaluation
     print('Calculating test metrics...')
     accuracy = float(conf_matrix[0][0] + conf_matrix[1][1]) / np.sum(conf_matrix)
@@ -227,13 +214,13 @@ if __name__ == '__main__':
     print("Precision: {}".format(precision))
     print("Recall: {}".format(recall))
     print("F1-Score: {}".format(f1_score))
-#
+
     # plot train/test loss and accuracy. saves files in cd
     print('Saving plots...')
     plot_loss(history, model_id)
     plot_accuracy(history, model_id)
     plot_roc_curve(y_test[:,1], y_test_pred_proba[:,1], model_id)
-#
+
     # save model S3
     print('Saving model to S3...')
     model_file = '../models/cnn_{}.h5'.format(model_id)
