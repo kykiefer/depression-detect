@@ -83,7 +83,7 @@ Below is a summary of how well the current model is predicting.
 | Confusion Matrix | ----------------- |
 |:----------------:| :----------------:|
 | 240 (TP)         | 40 (FP)          |
-| 212 (FN)         | 69 (TN)          |
+| 212 (FN)         | 68 (TN)          |
 
 | f1 score | precision | recall |
 |:--------:| :--------:| :-----:|

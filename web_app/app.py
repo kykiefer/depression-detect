@@ -9,10 +9,6 @@ def index():
 def donate():
     return render_template('donate.html')
 
-@app.route('/project')
-def project():
-    return render_template('project.html')
-
 @app.route('/contact')
 def results():
     return render_template('contact.html')
