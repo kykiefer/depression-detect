@@ -2,7 +2,7 @@ from __future__ import print_function
 import boto
 import os
 import numpy as np
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import _matrix
 from plot import plot_accuracy, plot_loss, plot_roc_curve
 np.random.seed(15)  # for reproducibility
 
@@ -58,7 +58,7 @@ def prep_train_test(X_train, y_train, X_test, y_test, nb_classes):
     X_train, X_test = preprocess(X_train, X_test)
 
     # Convert class vectors to binary class matrices
-    Y_train = np_utils.to_categorical(y_train, nb_classes)
+    Y_train = np_utils.tegorical(y_train, nb_classes)
     Y_test = np_utils.to_categorical(y_test, nb_classes)
 
     return X_train, X_test, Y_train, Y_test
@@ -135,12 +135,28 @@ def model_performance(model, X_train, X_test, y_train, y_test):
 
 
 def standard_confusion_matrix(y_test, y_test_pred):
-    ''' Computing Confusion Matrix for CNN model, formatting in
-            standard setup
-        Input:  y_true, y_predict values - arrays
-        Output: confusion matrix - array
-    '''
+    """Make confusion matrix with format:
+                  -----------
+                  | TP | FP |
+                  -----------
+                  | FN | TN |
+                  -----------
+    Parameters
+    ----------
+    y_true : ndarray - 1D
+    y_pred : ndarray - 1D
+
+    Returns
+    -------
+    ndarray - 2D
+    """
+    print('y_test')
+    print(y_test)
+    print('y_test_pred')
+    print(y_test_pred)
     [[tn, fp], [fn, tp]] = confusion_matrix(y_test, y_test_pred)
+    print('np.array([[tp, fp], [fn, tn]])')
+    print(np.array([[tp, fp], [fn, tn]]))
     return np.array([[tp, fp], [fn, tn]])
 
 
