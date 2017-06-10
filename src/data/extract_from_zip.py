@@ -63,7 +63,7 @@ if __name__ == '__main__':
     # delete zip file after files retrieval
     delete_zip = False
 
-    # iterate thorugh zip files in dir_name and extracts wav and transcripts
+    # iterate through zip files in dir_name and extracts wav and transcripts
     for file in os.listdir(dir_name):
         if file.endswith('.zip'):
             zip_file = os.path.join(dir_name, file)
