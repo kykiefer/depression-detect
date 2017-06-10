@@ -167,10 +167,10 @@ if __name__ == '__main__':
     y_test = retrieve_from_bucket('test_labels.npz')
 
     X_train, y_train, X_test, y_test = X_train['arr_0'], y_train['arr_0'], X_test['arr_0'], y_test['arr_0']
-
-    # cut sample size in half
-    X_train, y_train = X_train[::5], y_train[::5]
-
+#
+    # # cut sample size in half
+    # X_train, y_train = X_train[::5], y_train[::5]
+#
     # CNN parameters
     batch_size = 32
     nb_classes = 2
@@ -179,10 +179,10 @@ if __name__ == '__main__':
     # normalalize data and prep for Keras
     print('Processing images for Keras...')
     X_train, X_test, y_train, y_test = prep_train_test(X_train, y_train, X_test, y_test, nb_classes=nb_classes)
-
+#
     # specify image dimensions - 513x125x1 for spectrogram with crop size of 125 pixels
     img_rows, img_cols, img_depth = X_train.shape[1], X_train.shape[2], 1
-
+#
     # reshape image input for Keras
     # used Theano dim_ordering (th), (# images, # chans, # rows, # cols)
     X_train, X_test, input_shape = keras_img_prep(X_train, X_test, img_depth, img_rows, img_cols)
@@ -196,12 +196,12 @@ if __name__ == '__main__':
     # evaluate model
     print('Evaluating model...')
     y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba, conf_matrix = model_performance(model, X_train, X_test, y_train, y_test)
-
+#
     # store model to locally and to S3 bucket
     print('Saving model locally...')
     model_name = '../models/cnn_{}.h5'.format(model_id)
     model.save(model_name)
-
+#
     # more evaluation
     print('Calculating test metrics...')
     accuracy = float(conf_matrix[0][0] + conf_matrix[1][1]) / np.sum(conf_matrix)
@@ -212,13 +212,13 @@ if __name__ == '__main__':
     print("Precision: {}".format(precision))
     print("Recall: {}".format(recall))
     print("F1-Score: {}".format(f1_score))
-
+#
     # plot train/test loss and accuracy. saves files in cd
     print('Saving plots...')
     plot_loss(history, model_id)
     plot_accuracy(history, model_id)
     plot_roc_curve(y_test[:,1], y_test_pred_proba[:,1], model_id)
-
+#
     # save model S3
     print('Saving model to S3...')
     model_file = '../models/cnn_{}.h5'.format(model_id)

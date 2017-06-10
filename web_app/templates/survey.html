@@ -67,16 +67,65 @@
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">
-        <h2>Become a Data Donor!</h1>
-        <p>To donate, begin by uploading a a <strong>.wav</strong> file speaking the following paragraph. After uploading, you will be prompted to take an eight question depression survey. If you miss a word, just keep going. It's that simple. <i>Your data really does help.</i></p>
+        <h2>Your file has been sucessfully uploaded!</h1>
+        <p>Please submit the eight question survey below.</p>
 
-        <p>The easiest way to record a .wav file is <a href="https://online-voice-recorder.com/" target="_blank"><strong>here</strong></a>. Save the file locally with the <strong>.wav</strong> extension.<br></br></p>
+        <p>Over the last 2 weeks, how often have you been bothered by any of the following problems?</p>
 
-        <p>"This sentence has five words. Here are five more words. Five-word sentences are fine. But several together become monotonous. Listen to what is happening. The writing is getting boring. The sound of it drones. It’s like a stuck record. The ear demands some variety. Now listen. I vary the sentence length, and I create music. Music. The writing sings. It has a pleasant rhythm, a lilt, a harmony. I use short sentences. And I use sentences of medium length. And sometimes, when I am certain the reader is rested, I will engage him with a sentence of considerable length, a sentence that burns with energy and builds with all the impetus of a crescendo, the roll of the drums, the crash of the cymbals–sounds that say listen to this, it is important." – Gary Provost<br></br></p>
+        <form action="">
 
-        <form action="/survey" method="POST" enctype="multipart/form-data">
-          <input type="file" name="file"><br /><br />
-          <input type="submit" value="Upload">
+          <strong>1. Little interest or pleasure in doing things:</strong>
+          <input type="radio" name="q1" value="0"> Not at all
+          <input type="radio" name="q1" value="1"> Several days
+          <input type="radio" name="q1" value="2"> More than half the days
+          <input type="radio" name="q1" value="3"> Nearly every day<br></br>
+
+          <strong>2. Feeling down, depressed, or hopeless:</strong>
+          <input type="radio" name="q2" value="0"> Not at all
+          <input type="radio" name="q2" value="1"> Several days
+          <input type="radio" name="q2" value="2"> More than half the days
+          <input type="radio" name="q2" value="3"> Nearly every day<br></br>
+
+          <strong>3. Trouble falling or staying asleep, or sleeping too much:</strong>
+          <input type="radio" name="q3" value="0"> Not at all
+          <input type="radio" name="q3" value="1"> Several days
+          <input type="radio" name="q3" value="2"> More than half the days
+          <input type="radio" name="q3" value="3"> Nearly every day<br></br>
+
+          <strong>4. Feeling tired or having little energy:</strong>
+          <input type="radio" name="q4" value="0"> Not at all
+          <input type="radio" name="q4" value="1"> Several days
+          <input type="radio" name="q4" value="2"> More than half the days
+          <input type="radio" name="q4" value="3"> Nearly every day<br></br>
+
+          <strong>5. Poor appetite or overeating:</strong>
+          <input type="radio" name="q5" value="0"> Not at all
+          <input type="radio" name="q5" value="1"> Several days
+          <input type="radio" name="q5" value="2"> More than half the days
+          <input type="radio" name="q5" value="3"> Nearly every day<br></br>
+
+          <strong>6. Feeling bad about yourself, or that you are a failure, or have let yourself or your family down:</strong>
+          <input type="radio" name="q6" value="0"> Not at all
+          <input type="radio" name="q6" value="1"> Several days
+          <input type="radio" name="q6" value="2"> More than half the days
+          <input type="radio" name="q6" value="3"> Nearly every day<br></br>
+
+          <strong>7.  Trouble concentrating on things, such as reading the newspaper or watching television:</strong>
+          <input type="radio" name="q6" value="0"> Not at all
+          <input type="radio" name="q6" value="1"> Several days
+          <input type="radio" name="q6" value="2"> More than half the days
+          <input type="radio" name="q6" value="3"> Nearly every day<br></br>
+
+          <strong>8.  Moving or speaking so slowly that other people could have noticed. Or the opposite – being so fidgety or restless that you have been moving around a lot more than usual:</strong>
+          <input type="radio" name="q6" value="0"> Not at all
+          <input type="radio" name="q6" value="1"> Several days
+          <input type="radio" name="q6" value="2"> More than half the days
+          <input type="radio" name="q6" value="3"> Nearly every day<br></br>
+
+          <form method="POST" action="kkiefer@umich.edu" >
+            <input type="submit" value="Submit Survey" />
+          </form>
+
         </form>
 
       </div>
