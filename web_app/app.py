@@ -41,23 +41,23 @@ def allowed_file(filename):
 # Route that will process the file upload
 @app.route('/upload', methods=['POST'])
 def upload():
-    string = ''
     #  if user has submitted the form
     if request.method == 'POST':
-        string += 'post'
+        string = 'post '
         submitted_file = request.files['file']
         if submitted_file and allowed_file(submitted_file.filename):
             filename = secure_filename(submitted_file.filename)
-            return filename
-            # connect to S3
-            conn = boto.connect_s3(access_key, access_secret_key)
+            string += filename
 
-            # get handle to the S3 bucket
-            bucket_name = 'depression-detect'
-            bucket = conn.get_bucket(bucket_name)
-
-            file_object = bucket.new_key(filename)
-            file_object.set_contents_from_filename(filename)
+            # # connect to S3
+            # conn = boto.connect_s3(access_key, access_secret_key)
+            #
+            # # get handle to the S3 bucket
+            # bucket_name = 'depression-detect'
+            # bucket = conn.get_bucket(bucket_name)
+            #
+            # file_object = bucket.new_key(filename)
+            # file_object.set_contents_from_filename(filename)
 
     return string
 

@@ -24,6 +24,7 @@ Using Tensorflow with Theano image_dim_ordering:
 (1, 3040, 513, 125)
 """
 
+
 def retrieve_from_bucket(file):
     """
     Download spectrogram representation of matrices from S3 bucket.
@@ -157,7 +158,7 @@ def save_to_bucket(file, obj_name):
     """
     Saves local file to S3 bucket for redundancy and repreoducibility by others.
     """
-    conn =  boto.connect_s3(access_key, access_secret_key)
+    conn = boto.connect_s3(access_key, access_secret_key)
 
     bucket = conn.get_bucket('depression-detect')
 
