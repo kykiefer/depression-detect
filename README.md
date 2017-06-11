@@ -81,11 +81,22 @@ Below is a summary of how well the current model is predicting.
 
 <sub><b>Figure 5: </b> ROC curve of the CNN model. </sub>
 
-The validation set was composed of 560 spectrograms. The classes were unbalanced in order to maximize the number speakers the model learned from while seeking to strongly validated predictions on depressed individuals. For this reason, I refrain from speaking about recall, precision and displaying the confusion matrix because I find them rather misleading. Rather, I assed by model on AUC score (`0.60`). Over 50 model iterations were assessed with varying hyperparameters and architecture. State of the emotion detection models exhibit AUC scores `>0.75` using lower level features alluded to.
+|  Confusion Matrix | Actual: Yes | Actual: No |
+|:----------------:| :-------:| :------:|
+| **Predicted: Yes**  | 174 (TP) | 106 (FP) |
+| **Predicted: No**   | 144 (FN) | 136 (TN) |
 
-While the model is not ready for field use, it does display some promise in detecting depression from spectrograms -- an area, that to my knowledge, has not been thoroughly explored.
+| f1 score | precision | recall |
+|:--------:| :--------:| :-----:|
+| 0.582    | 0.621     | 0.547  |
 
-**Next step**: add recurrence (LSTM) and L1 loss to deal with outliers.
+The validation set was composed of 560 spectrograms. I assessed by model on AUC score (`0.58`), since this seems to be standard among emotion detection models and precision and recall can be misleading if validation classes are unbalanced. Over 50 model iterations were assessed with varying hyperparameters and architecture. State of the emotion detection models exhibit AUC scores `>0.7`, utilizing the lower level features alluded to. Although, this model would not gain much traction as is, I believe it shows a promising direction for using spectrograms in depression detection.
+
+**Ky's to do:** add recurrence (LSTM) and L1 loss to deal with outliers.
+
+**Next step**: The model needs to train on more speakers. Low level audio transformations do a good job of reducing the noise in the data, which allows for robust models to be trained on smaller sample sizes. However, I still believe they overlook subtleties in depressed speech.
+
+For this reason, I created a Flask app where you can submit and brief audio clip that is processed for use in the model. Read on, and visit www.XXXX.com to learn how you can contribute to this project by becoming a data donor.
 
 ## Donate Your Data
 The model needs your help. A promising model is in place but detecting depression is *hard*. Robust models rely on 100s of hours of audio data. The good news is that *you* can contribute! Visit the site below to donate your audio data which will be incorporated in the model.
