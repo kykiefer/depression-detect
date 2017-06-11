@@ -48,7 +48,7 @@ Neural networks seems to be the approach taken my many in cutting edge emotion a
 The input to my model is akin to the spectrogram you see in Figure 2 below. 513 frequency bins on the y-axis and 125 time bins on the x-axis spanning four seconds of audio.
 
 <img alt="Spectrogram" src="images/spectrogram.png" width='700'>
-<sub><b>Figure 2: </b> Spectrogram of man saying "Watching different TV shows". </sub>  
+<sub><b>Figure 2: </b> Spectrogram of me saying "Welcome to DepressionDetect". </sub>  
 
 ## Convolutional Neural Networks
 Convolutional Neural Networks (CNNs) is a variation of the better known Multilayer Perceptron (MLP) in which nodes connection are inspired by the visual cortex. They have proved a powerful tool in image recognition, video analysis, and natural language processing.
