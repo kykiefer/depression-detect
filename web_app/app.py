@@ -29,13 +29,13 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
             # save spectrogram to static/spectrograms
+            png_filename = os.path.splitext(filename)[0]+'.png'
+            spec_path = 'static/spectrograms/{}'.format(png_filename)
             plotstft(os.path.join(app.config['UPLOAD_FOLDER'], filename),
-                     plotpath='static/spectrograms/{}.png'.format(filename))
+                     plotpath=spec_path)
 
             # get matrix reprentation and store to s3
             # delete wav file
-
-            spec = 'static/spectrograms/{}.png'.format(filename)
 
             # # connect to S3
             # conn = boto.connect_s3(access_key, access_secret_key)
@@ -46,7 +46,7 @@ def upload_file():
 
             # file_object = bucket.new_key(filename)
             # file_object.set_contents_from_filename(filename)
-            return render_template('survey.html', spectrogram=spec)
+            return render_template('survey.html', spectrogram=spec_path)
 
     return render_template('donate.html')
 
