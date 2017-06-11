@@ -5,6 +5,7 @@
 *.swp
 *.npz
 .DS_Store
+.wav
 
 # Folders
 /data/

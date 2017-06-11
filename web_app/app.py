@@ -3,10 +3,11 @@ from boto.s3.key import Key
 import os
 from flask import Flask, render_template, flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
+from spectrogram import plotstft
 access_key = os.environ['AWS_ACCESS_KEY_ID']
 access_secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
 
-UPLOAD_FOLDER = 'static/audio'
+UPLOAD_FOLDER = 'static/audio_uploads'
 ALLOWED_EXTENSIONS = 'wav'
 
 app = Flask(__name__)
@@ -24,12 +25,18 @@ def upload_file():
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            # saving locally
+            # saving to static/audio_uploads temporarily
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
+            # save spectrogram to static/spectrograms
+            plotstft(os.path.join(app.config['UPLOAD_FOLDER'], filename),
+                     plotpath='static/spectrograms/{}.png'.format(filename))
 
-            # string += filename
-            #
+            # get matrix reprentation and store to s3
+            # delete wav file
+
+            spec = 'static/spectrograms/{}.png'.format(filename)
+
             # # connect to S3
             # conn = boto.connect_s3(access_key, access_secret_key)
             #
@@ -39,7 +46,7 @@ def upload_file():
 
             # file_object = bucket.new_key(filename)
             # file_object.set_contents_from_filename(filename)
-            return render_template('survey.html')
+            return render_template('survey.html', spectrogram=spec)
 
     return render_template('donate.html')
 
