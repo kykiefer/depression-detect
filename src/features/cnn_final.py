@@ -24,7 +24,6 @@ Using Tensorflow with Theano image_dim_ordering:
 (1, 3040, 513, 125)
 """
 
-
 def retrieve_from_bucket(file):
     """
     Download spectrogram representation of matrices from S3 bucket.
@@ -127,7 +126,7 @@ def model_performance(model, X_train, X_test, y_train, y_test):
     y_test_1d = y_test[:,1]
 
     # Computing confusion matrix for test dataset
-    conf_matrix = standard_confusion_matrix(y_test_1d, y_test_pred)
+    conf_matrix = confusion_matrix(y_test_1d, y_test_pred)
     print("Confusion Matrix:")
     print(conf_matrix)
 
@@ -135,21 +134,11 @@ def model_performance(model, X_train, X_test, y_train, y_test):
 
 
 def standard_confusion_matrix(y_test, y_test_pred):
-    """Make confusion matrix with format:
-                  -----------
-                  | TP | FP |
-                  -----------
-                  | FN | TN |
-                  -----------
-    Parameters
-    ----------
-    y_true : ndarray - 1D
-    y_pred : ndarray - 1D
-
-    Returns
-    -------
-    ndarray - 2D
-    """
+    ''' Computing Confusion Matrix for CNN model, formatting in
+            standard setup
+        Input:  y_true, y_predict values - arrays
+        Output: confusion matrix - array
+    '''
     [[tn, fp], [fn, tp]] = confusion_matrix(y_test, y_test_pred)
     return np.array([[tp, fp], [fn, tn]])
 
@@ -158,7 +147,7 @@ def save_to_bucket(file, obj_name):
     """
     Saves local file to S3 bucket for redundancy and repreoducibility by others.
     """
-    conn = boto.connect_s3(access_key, access_secret_key)
+    conn =  boto.connect_s3(access_key, access_secret_key)
 
     bucket = conn.get_bucket('depression-detect')
 
@@ -179,12 +168,12 @@ if __name__ == '__main__':
     X_train, y_train, X_test, y_test = X_train['arr_0'], y_train['arr_0'], X_test['arr_0'], y_test['arr_0']
 
     # cut sample size in half
-    # X_train, y_train = X_train[::5], y_train[::5]
+    # X_train, y_train = X_train[::2], y_train[::2]
 
     # CNN parameters
-    batch_size = 32
+    batch_size = 8
     nb_classes = 2
-    epochs = 9
+    epochs = 7
 
     # normalalize data and prep for Keras
     print('Processing images for Keras...')
@@ -211,6 +200,8 @@ if __name__ == '__main__':
     print('Saving model locally...')
     model_name = '../models/cnn_{}.h5'.format(model_id)
     model.save(model_name)
+    # print('Saving model to S3...')
+    # save_to_bucket(model_name, model_name)
 
     # more evaluation
     print('Calculating test metrics...')

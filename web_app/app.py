@@ -6,20 +6,41 @@ from werkzeug.utils import secure_filename
 access_key = os.environ['AWS_ACCESS_KEY_ID']
 access_secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
 
-UPLOAD_FOLDER = 'Users/ky/Desktop/'
-ALLOWED_EXTENSIONS = set(['wav', 'jpg', 'png'])
+UPLOAD_FOLDER = 'static/audio'
+ALLOWED_EXTENSIONS = 'wav'
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
 
-@app.route('/donate')
-def donate():
+@app.route('/donate', methods=['GET', 'POST'])
+def upload_file():
+    #  if user has submitted the form
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            # saving locally
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+
+            # string += filename
+            #
+            # # connect to S3
+            # conn = boto.connect_s3(access_key, access_secret_key)
+            #
+            # # get handle to the S3 bucket
+            # bucket_name = 'depression-detect'
+            # bucket = conn.get_bucket(bucket_name)
+
+            # file_object = bucket.new_key(filename)
+            # file_object.set_contents_from_filename(filename)
+            return render_template('survey.html')
+
     return render_template('donate.html')
 
 
@@ -36,30 +57,6 @@ def results():
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-# Route that will process the file upload
-@app.route('/upload', methods=['POST'])
-def upload():
-    #  if user has submitted the form
-    if request.method == 'POST':
-        string = 'post '
-        submitted_file = request.files['file']
-        if submitted_file and allowed_file(submitted_file.filename):
-            filename = secure_filename(submitted_file.filename)
-            string += filename
-
-            # # connect to S3
-            # conn = boto.connect_s3(access_key, access_secret_key)
-            #
-            # # get handle to the S3 bucket
-            # bucket_name = 'depression-detect'
-            # bucket = conn.get_bucket(bucket_name)
-            #
-            # file_object = bucket.new_key(filename)
-            # file_object.set_contents_from_filename(filename)
-
-    return string
 
 
 if __name__ == '__main__':
