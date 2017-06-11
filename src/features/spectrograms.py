@@ -6,7 +6,8 @@ import scipy.io.wavfile as wav
 
 
 """
-This script creates spectrogram matrices from wav files that can be passed to the CNN. This was heavily adopted from Frank Zalkow's work.
+This script creates spectrogram matrices from wav files that can be passed \
+to the CNN. This was heavily adopted from Frank Zalkow's work.
 """
 
 
@@ -23,7 +24,9 @@ def stft(sig, frameSize, overlapFac=0.5, window=np.hanning):
     # zeros at end (thus samples can be fully covered by frames)
     samples = np.append(samples, np.zeros(frameSize))
 
-    frames = stride_tricks.as_strided(samples, shape=(cols, frameSize), strides=(samples.strides[0]*hopSize, samples.strides[0])).copy()
+    frames = stride_tricks.as_strided(samples, shape=(cols, frameSize),
+                                      strides=(samples.strides[0]*hopSize,
+                                      samples.strides[0])).copy()
     frames *= win
 
     return np.fft.rfft(frames)
@@ -59,9 +62,14 @@ def logscale_spec(spec, sr=44100, factor=20.):
     return newspec, freqs
 
 
-def stft_matrix(audiopath, binsize=2**10, png_name='tmp.png', save_png=False, offset=0):
+def stft_matrix(audiopath, binsize=2**10, png_name='tmp.png',
+                save_png=False, offset=0):
     """
-    A function that converts a wave file into a spectrogram represented by a matrix where rows represent frequency bins, columns represent time, and the values of the matrix represent the decibel intensity. A matrix of this form cna be passed as input to the CNN after undergoing some normalization.
+    A function that converts a wave file into a spectrogram represented by a \
+    matrix where rows represent frequency bins, columns represent time, and \
+    the values of the matrix represent the decibel intensity. A matrix of \
+    this form can be passed as input to the CNN after undergoing some \
+    normalization.
     """
     samplerate, samples = wav.read(audiopath)
     s = stft(samples, binsize)
@@ -71,7 +79,7 @@ def stft_matrix(audiopath, binsize=2**10, png_name='tmp.png', save_png=False, of
     timebins, freqbins = np.shape(ims)
 
     ims = np.transpose(ims)
-    ims = np.flipud(ims)  # weird - dig into why it needs to be flipped for PIL as opposed to not flipped for matplotlib
+    ims = np.flipud(ims)  # weird - not sure why it gets flipped
 
     if save_png:
         create_png(ims, png_name)
@@ -89,14 +97,16 @@ def create_png(im_matrix, png_name):
 
 
 if __name__ == '__main__':
-    # directory containing segmented participant folders with segmented wav files
-    dir_name = '/Users/ky/Desktop/depression-detect/data/interim'
+    # directory containing participant folders with segmented wav files
+    dir_name = '/../../data/interim'
 
-    # walks through wav files in dir_name and creates pngs of the spectrograms. This is a visual representation of what is passed to the CNN before normalization, although a matrix representation is actually passed.
+    # walks through wav files in dir_name and creates pngs of the spectrograms.
+    # This is a visual representation of what is passed to the CNN before
+    # normalization, although a matrix representation is actually passed.
     for subdir, dirs, files in os.walk(dir_name):
         for file in files:
             if file.endswith('.wav'):
                 wav_file = os.path.join(subdir, file)
                 png_name = subdir + '/' + file[:-4] + '.png'
-                print 'Processing ' + file + '...'
-                stft_matrix(wav_file, png_name=png_name, save_png=True)
+                print('Processing ' + file + '...')
+                stft_matrix(wav_file, png_name=png_name, save_png=False)

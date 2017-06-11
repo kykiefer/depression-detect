@@ -1,21 +1,28 @@
 from spectrograms import stft_matrix
 import os
-from dataframes import df_dev
+from dev_data import df_dev
 
 
 def build_class_dictionaries(dir_name):
     """
-    Builds a dictionary of depressed participants and non-depressed participants with the participant id as the key and the matrix representation of the no_silence wav file as the value. These dictionaries are randomly sampled from to build batch inputs to the CNN.
+    Builds a dictionary of depressed participants and non-depressed \
+    participants with the participant id as the key and the matrix \
+    representation of the no_silence wav file as the value. These \
+    values of this discornary are then randomly cropped and sampled \
+     from to create balanced class and speaker inputs to the CNN.
     Parameters
     ----------
     dir_name : filepath
-        directory containing participant's folders (which contains the no_silence.wav)
+        directory containing participant's folders (which contains the \
+        no_silence.wav)
     Returns
     -------
     depressed_dict : dictionary
-        dictionary of depressed individuals with keys of participant id and values of with the matrix spectrogram representation
+        dictionary of depressed individuals with keys of participant id \
+        and values of with the matrix spectrogram representation
     normal_dict : dictionary
-        dictionary of non-depressed individuals with keys of participant id and values of with the matrix spectrogram representation
+        dictionary of non-depressed individuals with keys of participant id \
+        and values of with the matrix spectrogram representation
     """
     depressed_dict = dict()
     normal_dict = dict()
@@ -25,7 +32,8 @@ def build_class_dictionaries(dir_name):
                 partic_id = int(file.split('_')[0][1:])
                 if in_dev_split(partic_id):
                     wav_file = os.path.join(subdir, file)
-                    mat = stft_matrix(wav_file)  # matrix representation of spectrogram
+                    # matrix representation of spectrogram
+                    mat = stft_matrix(wav_file)
                     depressed = get_depression_label(partic_id)  # 1 if True
                     if depressed:
                         depressed_dict[partic_id] = mat
@@ -36,18 +44,21 @@ def build_class_dictionaries(dir_name):
 
 def in_dev_split(partic_id):
     """
-    Returns True if the participant is in the AVEC development split (aka participant's we have depression labels for)
+    Returns True if the participant is in the AVEC development split \
+    (aka participant's we have depression labels for)
     """
     return partic_id in set(df_dev['Participant_ID'].values)
 
 
 def get_depression_label(partic_id):
     """
-    Returns participant's PHQ8 Binary label. 1 representing depression; 0 representing no depression.
+    Returns participant's PHQ8 Binary label. 1 representing depression; \
+    0 representing no depression.
     """
-    return df_dev.loc[df_dev['Participant_ID'] == partic_id]['PHQ8_Binary'].item()
+    return df_dev.loc[df_dev['Participant_ID'] ==
+                      partic_id]['PHQ8_Binary'].item()
 
 
 if __name__ == '__main__':
-    dir_name = '/Users/ky/Desktop/depression-detect/data/interim'
+    dir_name = '../../data/interim'
     depressed_dict, normal_dict = build_class_dictionaries(dir_name)
