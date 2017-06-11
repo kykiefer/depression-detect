@@ -8,7 +8,7 @@ def build_class_dictionaries(dir_name):
     Builds a dictionary of depressed participants and non-depressed \
     participants with the participant id as the key and the matrix \
     representation of the no_silence wav file as the value. These \
-    values of this discornary are then randomly cropped and sampled \
+    values of this dictionary are then randomly cropped and sampled \
      from to create balanced class and speaker inputs to the CNN.
     Parameters
     ----------
