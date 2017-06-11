@@ -8,8 +8,8 @@ For a code walkthrough, see the [src](https://github.com/kykiefer/depression-det
 2. [Acoustic Features of Depressed Speech](#acoustic-features-of-depressed-speech)
     * [Segmentation](#segmentation-code)
     * [Feature Extraction](#feature-extraction-code)
-    * [Class Imbalance](#class-imbalance-code)
 3. [Convolutional Neural Networks](#convolutional-neural-networks)
+    * [Class Imbalance](#class-imbalance-code)
     * [Model Architecture](#model-architecture)
     * [Training the Model](#training-the-model)  
     * [Results](#results)
@@ -41,8 +41,6 @@ The first step in being able to analyze a person's prosodic features of speech i
 ### Feature Extraction ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/spectrograms.py))
 There are several ways to approach acoustic feature extraction and this is by far the most critical component to building a successful model within this space. One approach includes extracting short-term and mid-term audio features such as MFCCs, [chroma vectors](https://en.wikipedia.org/wiki/Chroma_feature), [zero crossing rate](https://en.wikipedia.org/wiki/Zero-crossing_rate), etc. and feeding them as inputs to a Support Vector Machine (SVM) or Random Forest. Since pyAudioAnalysis makes short-term feature extraction fairly streamlined, my first go at the problem was building a short-term feature matrices of 50ms audio segments of the [34 short-term features](https://github.com/tyiannak/pyAudioAnalysis/wiki/3.-Feature-Extraction) available from pyAudioAnalysis. These features are lower level representations of audio, which I hypothesized would loose some of the subtle speech characteristics displayed by depressed individuals (especially early stage depression).
 
-**End of project update:** Although low level representation loose some of the signal, they also do a great job at reducing the noise.
-
 A few iterations using a Random Forest yielded an f1 score of `0.61`, it showed some promise, but this approach has been utilized before. I abandoned this method in pursuit of an approach I found particularly interesting and was uncertain would gain traction, but thought could be particularly powerful if it did. Enter convolutional neural networks with spectrograms!
 
 Neural networks seems to be the approach taken my many in cutting edge emotion and language detection models. I began with a convolutional neural network (CNN) and attempted to combine it with Long Short Term Memory (LSTM). CNNs require and image as input. One way to implement a CNN on audio signals is to provide it with a series of [spectrograms](https://en.wikipedia.org/wiki/Spectrogram). A spectrogram is a visual representation of sound. It displays the amplitude of the frequency components of a signal over time. Unlike MFCCs and other transformations that represent low-level features of sound, spectrograms keep the detail (including the noise, which presents challenges).
@@ -52,17 +50,17 @@ The input to my model is akin to the spectrogram you see in Figure 2 below. 513 
 <img alt="Spectrogram" src="images/spectrogram.png" width='700'>
 <sub><b>Figure 2: </b> Spectrogram of man saying "Watching different TV shows". </sub>  
 
+## Convolutional Neural Networks
+Convolutional Neural Networks (CNNs) is a variation of the better known Multilayer Perceptron (MLP) in which nodes connection are inspired by the visual cortex. They have proved a powerful tool in image recognition, video analysis, and natural language processing.
+
+A filter is subsequently slid over an image (in this case a spectrogram) and patterns for depressed and non-depressed individuals are learned. These patterns are representative of different prosodic features.
+
 ### Class Imbalance ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/random_sampling.py))
 There exists a large imbalance between positive and negative samples, which incurs a large bias in classification. The number of non-depressed subjects is about four times bigger than that of depressed ones. If these samples are used directly for learning, the model will have a strong bias to the non-depressed class. Additionally, the interview lengths vary from 7-33min. A larger volume of signal from an individual may emphasize some characteristics that are person specific.
 
 To solve the problem, I perform random cropping on each of the participant's spectrograms of a specified width (4 seconds) and randomly sample the cropped segments to ensure the CNN has an equal proportion for every subject and each class. The drastically reduced my training size (~3 hours from 50 hours of unedited audio) but was the best solution for proving the viability of my project given the two-week timeline. I prioritize a revised sampling method as my number one priority in [future directions](#future-directions).
 
 This random sampling method was inspired by [DepAudioNet: An Efficient Deep Model for Audio based Depression Classification](https://www.researchgate.net/publication/309127735_DepAudioNet_An_Efficient_Deep_Model_for_Audio_based_Depression_Classification).
-
-## Convolutional Neural Networks
-Convolutional Neural Networks (CNNs) is a variation of the better known Multilayer Perceptron (MLP) in which nodes connection are inspired by the visual cortex. They have proved a powerful tool in image recognition, video analysis, and natural language processing.
-
-A filter is subsequently slid over an image (in this case a spectrogram) and patterns for depressed and non-depressed individuals are learned. These patterns are representative of different prosodic features.
 
 ### Model Architecture ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/cnn_aws.py))
 I use a X layer Convolutional Neural Network (CNN) model. Each spectrogram input is normalized according to decibels relative to full scale (dBFS).
