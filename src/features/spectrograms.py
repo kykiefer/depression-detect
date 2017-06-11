@@ -98,7 +98,7 @@ def create_png(im_matrix, png_name):
 
 if __name__ == '__main__':
     # directory containing participant folders with segmented wav files
-    dir_name = '/../../data/interim'
+    dir_name = '../../data/interim'
 
     # walks through wav files in dir_name and creates pngs of the spectrograms.
     # This is a visual representation of what is passed to the CNN before
