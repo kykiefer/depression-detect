@@ -83,7 +83,9 @@ Below is a summary of how well the current model is predicting.
 
 <sub><b>Figure 5: </b> ROC curve of the CNN model. </sub>
 
-The validation set was composed of 560 spectrograms. The classes were unbalanced in order to maximize the number speakers the model learned from while seeking to strongly validated predictions on depressed individuals. For this reason, I refrain from speaking about recall, precision and displaying the confusion matrix because I find them rather misleading. Rather, I assed by model on AUC score (`0.60`). Over 50 model iterations were assessed with varying hyperparameters and architecture.
+The validation set was composed of 560 spectrograms. The classes were unbalanced in order to maximize the number speakers the model learned from while seeking to strongly validated predictions on depressed individuals. For this reason, I refrain from speaking about recall, precision and displaying the confusion matrix because I find them rather misleading. Rather, I assed by model on AUC score (`0.60`). Over 50 model iterations were assessed with varying hyperparameters and architecture. State of the emotion detection models exhibit AUC scores `>0.75` using lower level features alluded to.
+
+While the model is not ready for field use, it does display some promise in detecting depression from spectrograms -- an area, that to my knowledge, has not been thoroughly explored.
 
 **Next step**: add recurrence (LSTM) and L1 loss to deal with outliers.
 
