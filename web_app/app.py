@@ -1,4 +1,6 @@
 import os
+import glob
+import csv
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 from spectrogram import plotstft
@@ -41,7 +43,6 @@ def upload_file():
             # save matrix locally
             npz_filename = os.path.splitext(filename)[0]+'.npz'
             np.savez('static/matrices/{}'.format(npz_filename), spec_matrix)
-
             # upload matrix to s3
             upload_file_to_s3('static/matrices/{}'.format(npz_filename))
 
@@ -57,12 +58,16 @@ def upload_file():
 def complete_survey():
     if request.method == 'POST':  # and survey filled out
         form = request.form
-        # check in any values are zero (aka skipped)
+        # KY TO ADD - check in any values are zero (aka skipped)
         phq8_score = sum((int(j) for j in form.values()))
-        if phq8_score >= 10:
-            dep_label = 1
-        else:
-            dep_label = 0
+        # get the newest spectorgram upload to associate with depression label
+        list_of_files = glob.glob('static/spectrograms/*.png')
+        newest_partic = max(list_of_files, key=os.path.getctime)
+        partic_id = os.path.split(newest_partic)[1]  # get file filename
+        fields = [partic_id, phq8_score]
+        with open('dep_log.csv', 'a') as f:
+            writer = csv.writer(f)
+            writer.writerow(fields)
         return render_template('thankyou.html')
 
 
