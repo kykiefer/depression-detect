@@ -55,12 +55,12 @@ def upload_file():
 
 @app.route('/survey', methods=['POST'])
 def survey():
-        return render_template('thank_you.html')
+        return render_template('thankyou.html')
 
 
-@app.route('/thank_you', methods=['GET', 'POST'])
-def thank_you():
-        return render_template('thank_you.html')
+@app.route('/thankyou', methods=['POST'])
+def thankyou():
+        return render_template('thankyou.html')
 
 
 @app.route('/contact')
