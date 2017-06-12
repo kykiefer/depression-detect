@@ -57,12 +57,13 @@ def upload_file():
 def complete_survey():
     if request.method == 'POST':  # and survey filled out
         form = request.form
-        return render_template('thankyou.html', results=form)
-
-
-# @app.route('/thankyou', methods=['POST'])
-# def thankyou():
-#     return render_template('thankyou.html')
+        # check in any values are zero (aka skipped)
+        phq8_score = sum((int(j) for j in form.values()))
+        if phq8_score >= 10:
+            dep_label = 1
+        else:
+            dep_label = 0
+        return render_template('thankyou.html')
 
 
 @app.route('/contact')
