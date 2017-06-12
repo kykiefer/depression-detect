@@ -47,14 +47,14 @@ Neural networks seems to be the approach taken my many in cutting edge emotion a
 
 The input to the CNN is akin to the spectrogram you see in Figure 2 below with 513 frequency bins on the y-axis. The spectrograms passed the model have 125 time bins on the x-axis, spanning four seconds of audio.
 
-<img alt="Spectrogram" src="images/spectrogram2.png" width='700'>
+<img alt="Spectrogram" src="images/spectrogram2.png" width='800'>
 
-<sub><b>Figure 2: </b> Spectrogram of me saying "Welcome to DepressionDetect". </sub>  
+<sub><b>Figure 2: </b> Spectrogram of a [plosive](http://www.soundonsound.com/sound-advice/q-how-can-i-deal-plosives), followed by a second of silence, and then me saying "Welcome to DepressionDetect". </sub>  
 
 ## Convolutional Neural Networks
 Convolutional Neural Networks (CNNs) are a variation of the better known Multilayer Perceptron (MLP) in which nodes connection are inspired by the visual cortex. They have proved a powerful tool in image recognition, video analysis, and natural language processing. I'll give quick primer to CNNs in the context of my project. For an in-depth take, I recommend the Stanford's [CS231 course](http://cs231n.github.io/convolutional-networks/).
 
-<img alt="General CNN architecture" src="images/cnn_general.png" width='1000'>
+<img alt="General CNN architecture" src="images/cnn_general.png" width='1100'>
 
 <sub><b>Figure 3: </b> General CNN architecture. </sub>
 
@@ -86,7 +86,7 @@ The model was trained on 40 randomly selected 125x513 audio segments from 31 par
 ### Results
 Below is a summary of how well the current model is predicting.
 
-<img alt="ROC curve" src="images/roc_curve.png" width='500'>
+<img alt="ROC curve" src="images/roc_curve.png" width='550'>
 
 <sub><b>Figure 5: </b> ROC curve of the CNN model. </sub>
 
