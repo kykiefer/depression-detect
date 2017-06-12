@@ -1,7 +1,5 @@
-import boto
-from boto.s3.key import Key
 import os
-from flask import Flask, render_template, flash, request, redirect, url_for
+from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 from spectrogram import plotstft
 access_key = os.environ['AWS_ACCESS_KEY_ID']
@@ -12,6 +10,7 @@ ALLOWED_EXTENSIONS = 'wav'
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 @app.route('/')
 def index():
