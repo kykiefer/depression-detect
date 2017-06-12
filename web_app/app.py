@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 from spectrogram import plotstft
+from upload_to_s3 import upload_file_to_s3
 access_key = os.environ['AWS_ACCESS_KEY_ID']
 access_secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
 
@@ -25,26 +26,21 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             # saving to static/audio_uploads temporarily
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            wav_filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(wav_filepath)
+
+            # upload to s3
+            upload_file_to_s3(wav_filepath)
 
             # save spectrogram to static/spectrograms
             png_filename = os.path.splitext(filename)[0]+'.png'
             spec_path = 'static/spectrograms/{}'.format(png_filename)
-            plotstft(os.path.join(app.config['UPLOAD_FOLDER'], filename),
-                     plotpath=spec_path)
+            # plot spectrogram and return matrix
+            spec_matrix = plotstft(wav_filepath, plotpath=spec_path)
 
-            # get matrix reprentation and store to s3
             # delete wav file
+            os.remove(wav_filepath)
 
-            # # connect to S3
-            # conn = boto.connect_s3(access_key, access_secret_key)
-            #
-            # # get handle to the S3 bucket
-            # bucket_name = 'depression-detect'
-            # bucket = conn.get_bucket(bucket_name)
-
-            # file_object = bucket.new_key(filename)
-            # file_object.set_contents_from_filename(filename)
             return render_template('survey.html', spectrogram=spec_path)
 
     return render_template('donate.html')

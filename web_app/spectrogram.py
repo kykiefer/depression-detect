@@ -70,8 +70,8 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
 
     sshow, freq = logscale_spec(s, factor=1.0, sr=samplerate)
     ims = 20.*np.log10(np.abs(sshow)/10e-6) # amplitude to decibel
-
     timebins, freqbins = np.shape(ims)
+
     plt.figure(figsize=(15, 7.5))
     plt.imshow(np.transpose(ims), origin="lower", aspect="auto", cmap=colormap, interpolation="none")
     plt.colorbar()
@@ -91,6 +91,12 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
 
     plt.clf()
 
+    ims = np.transpose(ims)
+    ims = np.flipud(ims)  # weird - not sure why it gets flipped
+    return ims
+
+
+
 
 if __name__ == '__main__':
 
@@ -102,4 +108,4 @@ if __name__ == '__main__':
 
     # wave_file = '/Users/ky/Desktop/depression-detect/web_app/static/audio/schnitzelbank.wav'
 
-    plotstft(wav_file, plotpath='static/audio/so_cool.png')
+    plotstft(wav_file, plotpath='static/audio/so_cool.png', save_png=True)
