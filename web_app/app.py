@@ -21,7 +21,7 @@ def index():
 
 @app.route('/donate', methods=['GET', 'POST'])
 def upload_file():
-    #  if user has submitted the form
+    #  if user has submitted the audio file
     if request.method == 'POST':
         file = request.files['file']
         if file and allowed_file(file.filename):
@@ -55,7 +55,12 @@ def upload_file():
 
 @app.route('/survey', methods=['POST'])
 def survey():
-    return render_template('survey.html')
+        return render_template('thank_you.html')
+
+
+@app.route('/thank_you', methods=['GET', 'POST'])
+def thank_you():
+        return render_template('thank_you.html')
 
 
 @app.route('/contact')
