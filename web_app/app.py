@@ -26,17 +26,19 @@ def upload_file():
         file = request.files['file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            # saving to static/audio_uploads temporarily
             wav_filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+            # save wav file  to static/audio_uploads temporarily
             file.save(wav_filepath)
 
             # save spectrogram to static/spectrograms
             png_filename = os.path.splitext(filename)[0]+'.png'
             spec_path = 'static/spectrograms/{}'.format(png_filename)
+
             # plot spectrogram and return matrix
             spec_matrix = plotstft(wav_filepath, plotpath=spec_path)
-            # save matrix locally
 
+            # save matrix locally
             npz_filename = os.path.splitext(filename)[0]+'.npz'
             np.savez('static/matrices/{}'.format(npz_filename), spec_matrix)
 
@@ -44,8 +46,7 @@ def upload_file():
             upload_file_to_s3('static/matrices/{}'.format(npz_filename))
 
             os.remove(wav_filepath)  # delete wav file
-            os.remove('static/matrices/{}'.format(npz_filename))  # delete npz file
-
+            os.remove('static/matrices/{}'.format(npz_filename))  # delete local npz file
 
             return render_template('survey.html', spectrogram=spec_path)
 
