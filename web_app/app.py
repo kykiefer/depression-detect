@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 from spectrogram import plotstft
+import numpy as np
 from upload_to_s3 import upload_file_to_s3
 access_key = os.environ['AWS_ACCESS_KEY_ID']
 access_secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
@@ -29,17 +30,22 @@ def upload_file():
             wav_filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(wav_filepath)
 
-            # upload to s3
-            upload_file_to_s3(wav_filepath)
-
             # save spectrogram to static/spectrograms
             png_filename = os.path.splitext(filename)[0]+'.png'
             spec_path = 'static/spectrograms/{}'.format(png_filename)
             # plot spectrogram and return matrix
             spec_matrix = plotstft(wav_filepath, plotpath=spec_path)
+            # save matrix locally
 
-            # delete wav file
-            os.remove(wav_filepath)
+            npz_filename = os.path.splitext(filename)[0]+'.npz'
+            np.savez('static/matrices/{}'.format(npz_filename), spec_matrix)
+
+            # upload matrix to s3
+            upload_file_to_s3('static/matrices/{}'.format(npz_filename))
+
+            os.remove(wav_filepath)  # delete wav file
+            os.remove('static/matrices/{}'.format(npz_filename))  # delete npz file
+
 
             return render_template('survey.html', spectrogram=spec_path)
 
