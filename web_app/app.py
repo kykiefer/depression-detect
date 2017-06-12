@@ -53,14 +53,16 @@ def upload_file():
     return render_template('donate.html')
 
 
-@app.route('/survey', methods=['POST'])
-def survey():
-        return render_template('thankyou.html')
-
-
 @app.route('/thankyou', methods=['POST'])
-def thankyou():
-        return render_template('thankyou.html')
+def complete_survey():
+    if request.method == 'POST':  # and survey filled out
+        form = request.form
+        return render_template('thankyou.html', results=form)
+
+
+# @app.route('/thankyou', methods=['POST'])
+# def thankyou():
+#     return render_template('thankyou.html')
 
 
 @app.route('/contact')
