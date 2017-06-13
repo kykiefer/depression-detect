@@ -58,16 +58,23 @@ def upload_file():
 def complete_survey():
     if request.method == 'POST':  # and survey filled out
         form = request.form
-        # KY TO ADD - check in any values are zero (aka skipped)
+        # KY TO ADD - check in any values are zero (aka user skipped Q')
         phq8_score = sum((int(j) for j in form.values()))
+
         # get the newest spectorgram upload to associate with depression label
         list_of_files = glob.glob('static/spectrograms/*.png')
         newest_partic = max(list_of_files, key=os.path.getctime)
         partic_id = os.path.split(newest_partic)[1]  # get file filename
+
+        # append spectrogram identifier and phq8_score to csv
         fields = [partic_id, phq8_score]
         with open('dep_log.csv', 'a') as f:
             writer = csv.writer(f)
             writer.writerow(fields)
+
+        # write csv to S3
+        upload_file_to_s3('dep_log.csv')
+
         return render_template('thankyou.html')
 
 
