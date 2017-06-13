@@ -130,7 +130,7 @@ For this reason, I created a [Flask](http://flask.pocoo.org/) app, that utilizes
 Read on, and visit www.XXXX.com to learn how you can contribute to this project by becoming a *data donor*!
 
 ## Donate Your Data
-The model needs your help. A promising model is in place but detecting depression is *hard*. Robust models rely on 100s of hours of audio data. The good news is that *you* can contribute! Visit the site below to donate your audio data which will be incorporated in the model.
+The model needs your help. A promising model is in place but detecting depression is *hard*. Robust models rely on 100s of hours of audio data. The good news is that *you* can contribute! Visit the site below to donate your audio data which will be incorporated in periodic model re-training with a batch algorithm.
 
 <img alt="DonateYourData homepage" src="images/website.gif" width='600'>
 
