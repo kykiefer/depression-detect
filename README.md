@@ -84,28 +84,48 @@ I created the model using [Keras](https://keras.io/) with a [Theano](http://deep
 The model was trained on 40 randomly selected 125x513 audio segments from 31 participants in each class (2,480 spectrograms in total). The 513 frequency bins spanned 0 to 8kHz and each pixel on the time axis represented 32ms (with 125 pixels spanning 4 seconds). The model was trained on just under 3 hours of audio in order to adhere by strict class and speaker balancing parameters. The model was trained for 9 epochs, after which it begins to overfit.
 
 ### Results
-Below is a summary of how well the current model is predicting.
+Below is a summary of how well the current model is predicting on the test set. The test set was composed of 560 spectrograms of 14 participants (40 spectrograms, totaling 160s of audio per participant). At first, predictions were made on each of the 4 second spectrograms, to get a sense of how well we can detect depression from just *4 seconds* of audio.
 
-<img alt="ROC curve" src="images/roc_curve.png" width='550'>
-
-<sub><b>Figure 5: </b> ROC curve of the CNN model. </sub>
+**Test set predictions of 560 4-second spectrograms**
 
 |  Confusion Matrix | Actual: Yes | Actual: No |
 |:----------------:| :-------:| :------:|
 | **Predicted: Yes**  | 174 (TP) | 106 (FP) |
 | **Predicted: No**   | 144 (FN) | 136 (TN) |
 
-| F1 score | precision | recall |
-|:--------:| :--------:| :-----:|
-| 0.582    | 0.621     | 0.547  |
+| F1 score | precision | recall | accuracy |
+|:--------:| :--------:| :-----:| :-------:|
+| 0.582    | 0.621     | 0.547  | 0.555    |
 
-The validation set was composed of 560 spectrograms. I assessed by model on AUC score (`0.58`) and F1 score (`0.582`), since this seems to be standard among emotion detection models and precision and recall can be misleading if validation classes are unbalanced. Over 50 model iterations were assessed with varying hyperparameters and architecture. State of the emotion detection models exhibit AUC scores `>0.7`, utilizing the lower level features alluded to. Although, this model would not gain much traction as is, I believe it shows a promising direction for using spectrograms in depression detection.
+
+<img alt="ROC curve" src="images/roc_curve.png" width='550'>
+
+<sub><b>Figure 5: </b> ROC curve of the CNN model. </sub>
+
+Ultimately, a majority vote across the 40 spectrograms was used to determine the participants' depression label, but the sample size was just 14 users, so I wanted to be sure to include both sets of statistics. As expected, model evaluation statistics improve when taking a majority vote.
+
+**Test set predictions using majority vote on 14 participants (40 spectrograms per user)**
+
+|  Confusion Matrix | Actual: Yes | Actual: No |
+|:----------------:| :-------:| :------:|
+| **Predicted: Yes**  | 4 (TP) | 2 (FP) |
+| **Predicted: No**   | 3 (FN) | 5 (TN) |
+
+| F1 score | precision | recall | accuracy |
+|:--------:| :--------:| :-----:| :-------:|
+| 0.615    | 0.667     | 0.571  | 0.643    |
+
+
+
+I assessed by model and tuned my hyperparameters based AUC score and F1 score, since this seems to be standard among emotion detection models. Precision and recall can be misleading if test sets have unbalanced class (although they were balanced in my set). Over 50 model iterations were assessed with varying hyperparameters and architecture.
+
+State of the emotion detection models exhibit AUC scores `>0.7` (mine had an AUC score of `0.58`), utilizing the lower level features alluded to. Although, this model would not gain much traction as is, I believe it shows a promising direction for using spectrograms in depression detection.
 
 **Ky's to do:** add recurrence (LSTM) and L1 loss to deal with outliers.
 
 **Next step**: The model needs to train on more speakers. Low level audio transformations do a good job of reducing the noise in the data, which allows for robust models to be trained on smaller sample sizes. However, I still believe they overlook subtleties in depressed speech.
 
-For this reason, I created a [Flask](http://flask.pocoo.org/) app, that utilizes [S3](https://aws.amazon.com/s3/) for storage and batch processing, where you can submit and anonymous audio clip and depression survey.
+For this reason, I created a [Flask](http://flask.pocoo.org/) app, that utilizes [S3](https://aws.amazon.com/s3/) for storage and batch processing, where you can submit an anonymous audio clip and PHQ-8 depression survey.
 
 Read on, and visit www.XXXX.com to learn how you can contribute to this project by becoming a *data donor*!
 
