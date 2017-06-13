@@ -132,7 +132,7 @@ Read on, and visit www.XXXX.com to learn how you can contribute to this project 
 ## Donate Your Data
 The model needs your help. A promising model is in place but detecting depression is *hard*. Robust models rely on 100s of hours of audio data. The good news is that *you* can contribute! Visit the site below to donate your audio data which will be incorporated in the model.
 
-<img alt="DonateYourData homepage" src="images/website.png" width='600'>
+<img alt="DonateYourData homepage" src="images/website.gif" width='600'>
 
 <sub><b>Figure 6: </b> DonateYourData homepage. </sub>  
 
