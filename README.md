@@ -160,11 +160,11 @@ How I am prioritizing future efforts:
 4. Incorporate Vocal Tract Length Perturbation ([VTLP](http://www.cs.toronto.edu/~ndjaitly/jaitly-icml13.pdf))
 5. Speaker diarization robustness
 
-Depression is obviously a spectrum and deriving a binary classification (depressed or not) from a single test (PHQ-8) is somewhat naive. The threshold for a depression classification was a score of 10, but how much different exists between a 9 (classified as not depressed) and a 10 (classified as depressed)?
+Depression is obviously a spectrum and deriving a binary classification (depressed or not) from a single test (PHQ-8) is somewhat naive. The threshold for a depression classification was a score of 10, but how much different in depression related speech prosody exists between a 9 (classified as not depressed) and a 10 (classified as depressed)? This problem may be better treated as a regression problem, predicting participant PHQ-8 score between 0 and 24.
 
-<img alt="PHQ-8 Distribution" src="images/phq8_dist.png" width='450'>
+<img alt="PHQ-8 Distribution" src="images/phq8_dist.png" width='500'>
 
-<sub><b>Figure 6: </b> Distribution of PHQ-8 scores </sub>
+<sub><b>Figure 7: </b> Distribution of PHQ-8 scores </sub>
 
 I'm currently excited about the results and and will be monitoring pull requests. However, accessing the DAIC-WOZ Database requires signing an agreement form. Access can be granted [here](http://dcapswoz.ict.usc.edu/). To download the 92GB of zip files `cd` into your desired directory and run the following in your shell. Follow the [code walkthrough](https://github.com/kykiefer/depression-detect/tree/master/src) to get setup.
 

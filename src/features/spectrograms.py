@@ -65,11 +65,10 @@ def logscale_spec(spec, sr=44100, factor=20.):
 def stft_matrix(audiopath, binsize=2**10, png_name='tmp.png',
                 save_png=False, offset=0):
     """
-    A function that converts a wave file into a spectrogram represented by a \
+    A function that converts a wav file into a spectrogram represented by a \
     matrix where rows represent frequency bins, columns represent time, and \
     the values of the matrix represent the decibel intensity. A matrix of \
-    this form can be passed as input to the CNN after undergoing some \
-    normalization.
+    this form can be passed as input to the CNN after undergoing normalization.
     """
     samplerate, samples = wav.read(audiopath)
     s = stft(samples, binsize)
@@ -79,7 +78,7 @@ def stft_matrix(audiopath, binsize=2**10, png_name='tmp.png',
     timebins, freqbins = np.shape(ims)
 
     ims = np.transpose(ims)
-    ims = np.flipud(ims)  # weird - not sure why it gets flipped
+    ims = np.flipud(ims)  # weird - not sure why it needs flipping
 
     if save_png:
         create_png(ims, png_name)
@@ -89,7 +88,7 @@ def stft_matrix(audiopath, binsize=2**10, png_name='tmp.png',
 
 def create_png(im_matrix, png_name):
     """
-    Save png of spectrogram.
+    Save grayscale png of spectrogram.
     """
     image = Image.fromarray(im_matrix)
     image = image.convert('L')  # convert to grayscale
@@ -102,11 +101,12 @@ if __name__ == '__main__':
 
     # walks through wav files in dir_name and creates pngs of the spectrograms.
     # This is a visual representation of what is passed to the CNN before
-    # normalization, although a matrix representation is actually passed.
+    # normalization, although a cropped matrix representation is actually
+    # passed.
     for subdir, dirs, files in os.walk(dir_name):
         for file in files:
             if file.endswith('.wav'):
                 wav_file = os.path.join(subdir, file)
                 png_name = subdir + '/' + file[:-4] + '.png'
                 print('Processing ' + file + '...')
-                stft_matrix(wav_file, png_name=png_name, save_png=False)
+                stft_matrix(wav_file, png_name=png_name, save_png=True)
