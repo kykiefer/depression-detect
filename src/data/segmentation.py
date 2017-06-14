@@ -25,9 +25,9 @@ def remove_silence(filename, out_dir, smoothing=1.0, weight=0.3, plot=False):
         path to the input wav file
     out_dir : filepath
         path to the desired directory (where a participant folder will \
-        be created containg a 'PXXX_no_silence.wav' file)
+        be created containing a 'PXXX_no_silence.wav' file)
     smoothing : float
-        tunable parameter to comepensate for sparness of recordings
+        tunable parameter to compensate for sparseness of recordings
     weight : float
         probability threshold for silence removal used in SVM
     plot : bool
