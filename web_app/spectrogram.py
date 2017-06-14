@@ -104,8 +104,8 @@ if __name__ == '__main__':
     #
     # wav_file = '/Users/ky/Desktop/depression-detect/web_app/static/audio/P302_332.90-334.82.wav'
     #
-    wav_file = '/Users/ky/Desktop/depression-detect/web_app/static/audio/welcome.wav'
+    wav_file = '/Users/ky/Downloads/Vocaroo_s0er01Jq27Z2.wav'
 
     # wave_file = '/Users/ky/Desktop/depression-detect/web_app/static/audio/schnitzelbank.wav'
 
-    plotstft(wav_file, plotpath='static/audio/so_cool.png', save_png=True)
+    plotstft(wav_file, plotpath='/Users/ky/Downloads/so_cool.png')
