@@ -1,7 +1,7 @@
 import os
 import glob
 import csv
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash
 from werkzeug.utils import secure_filename
 from spectrogram import plotstft
 import numpy as np
@@ -49,7 +49,7 @@ def upload_file():
             os.remove(wav_filepath)  # delete wav file
             os.remove('static/matrices/{}'.format(npz_filename))  # delete local npz file
 
-            return render_template('survey.html', spectrogram=spec_path)
+            return render_template('survey.html', spectrogram=spec_path, completion_status='Your audio has been successfully uploaded. Check out the visual representation below!')
 
     return render_template('donate.html')
 
@@ -58,24 +58,26 @@ def upload_file():
 def complete_survey():
     if request.method == 'POST':  # and survey filled out
         form = request.form
-        # KY TO ADD - check in any values are zero (aka user skipped Q')
-        phq8_score = sum((int(j) for j in form.values()))
+        if len(form.keys()) == 8:  # if form complete
+            phq8_score = sum((int(j) for j in form.values()))
 
-        # get the newest spectorgram upload to associate with depression label
-        list_of_files = glob.glob('static/spectrograms/*.png')
-        newest_partic = max(list_of_files, key=os.path.getctime)
-        partic_id = os.path.split(newest_partic)[1]  # get file filename
+            # get the newest spectorgram upload to associate with depression label
+            list_of_files = glob.glob('static/spectrograms/*.png')
+            newest_partic = max(list_of_files, key=os.path.getctime)
+            partic_id = os.path.split(newest_partic)[1]  # get file filename
 
-        # append spectrogram identifier and phq8_score to csv
-        fields = [partic_id, phq8_score]
-        with open('dep_log.csv', 'a') as f:
-            writer = csv.writer(f)
-            writer.writerow(fields)
+            # append spectrogram identifier and phq8_score to csv
+            fields = [partic_id, phq8_score]
+            with open('dep_log.csv', 'a') as f:
+                writer = csv.writer(f)
+                writer.writerow(fields)
 
-        # write csv to S3
-        upload_file_to_s3('dep_log.csv')
+            # write csv to S3
+            upload_file_to_s3('dep_log.csv')
 
-        return render_template('thankyou.html')
+            return render_template('thankyou.html')
+        else:
+            return render_template('survey.html', spectrogram='static/img/oops.png', completion_status='You did not fill in all the responses. Please complete the survey.')
 
 
 @app.route('/contact')
