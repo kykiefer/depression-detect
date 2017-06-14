@@ -18,10 +18,10 @@ def extract_files(zip_file, out_dir, delete_zip=False):
     Parameters
     ----------
     zip_file : filepath
-        path to the input zip file
+        path to the folder containing the DAIC-WOZ zip files
     out_dir : filepath
-        path to the desired directory (where audio and transcript folders \
-        will be created)
+        path to the desired directory where audio and transcript folders \
+        will be created
     delete_zip : bool
         If true, deletes the zip file once relevant files are extracted
 
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     # directory where audio and transcripts folders will be created
     out_dir = '../../depression-detect/data/raw'
 
-    # delete zip file after files retrieval
+    # delete zip file after file wav and csv extraction
     delete_zip = False
 
     # iterate through zip files in dir_name and extracts wav and transcripts
