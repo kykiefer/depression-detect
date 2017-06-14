@@ -16,8 +16,8 @@ interviewer speech removed)
 def remove_silence(filename, out_dir, smoothing=1.0, weight=0.3, plot=False):
     """
     A function that implements pyAudioAnalysis' silence extraction module \
-    and creates wav files of the non-silent portions of audio. The smoothing \
-    and weight parameters were tuned for the AVEC 2016 dataset.
+    and creates wav files of the participant specific portions of audio. The \
+    smoothing and weight parameters were tuned for the AVEC 2016 dataset.
 
     Parameters
     ----------
@@ -25,29 +25,29 @@ def remove_silence(filename, out_dir, smoothing=1.0, weight=0.3, plot=False):
         path to the input wav file
     out_dir : filepath
         path to the desired directory (where a participant folder will \
-        be created)
+        be created containg a 'PXXX_no_silence.wav' file)
     smoothing : float
-        parameter used for smoothing in the SVM
+        tunable parameter to comepensate for sparness of recordings
     weight : float
-        probability threshold for silence removal
+        probability threshold for silence removal used in SVM
     plot : bool
-        plots SVM probabilities of silence (used in troubleshooting)
+        plots SVM probabilities of silence (used in tuning)
 
     Returns
     -------
     A folder for each participant containing a single wav file \
     (named 'PXXX_no_silence.wav') with the vast majority of silence \
-    and virtual interviewer speech removed. Feature extraction can be \
+    and virtual interviewer speech removed. Feature extraction is \
     performed on these segmented wav files.
     """
     partic_id = 'P' + filename.split('/')[-1].split('_')[0]  # PXXX
-    # create participant directory for segmented wav files
     if is_segmentable(partic_id):
+        # create participant directory for segmented wav files
         participant_dir = os.path.join(out_dir, partic_id)
         if not os.path.exists(participant_dir):
             os.makedirs(participant_dir)
 
-        os.chdir(participant_dir)  # change to dir to write segmented files
+        os.chdir(participant_dir)
 
         [Fs, x] = aIO.readAudioFile(filename)
         segments = aS.silenceRemoval(x, Fs, 0.020, 0.020,
@@ -107,7 +107,7 @@ def concatenate_segments(participant_dir, partic_id, remove_segment=True):
 
 
 if __name__ == '__main__':
-    # directory containing wav files
+    # directory containing raw wav files
     dir_name = '../../data/raw/audio'
 
     # directory where a participant folder will be created containing their
