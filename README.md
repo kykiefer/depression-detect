@@ -84,9 +84,21 @@ I use a X layer Convolutional Neural Network (CNN) model. The model consists of 
 
 The frequency range was tuned as a hyperparamter, as most energy in human speech is actually concentrated between 0.3 and 3kHz. Each input is normalized according to decibels relative to full scale (dBFS).
 
-*Schematic placeholder*
+My actual architecture was largely inspired by a paper on Environmental Sound Classification with CNNs<sup>[5](#references)</sup>. Their network is displayed in the figure below. My architecture has some differences, but the photo will help visualize.
 
-<sub><b>Figure 4: </b> CNN model architecture. </sub>  
+<img alt="ROC curve" src="images/cnn_architecture.png" width='575'>
+
+<sub><b>Figure 4: </b> A similar CNN Environmental sound classfication model architecture. </sub>
+
+My CNN beings with an input layer being convolved with 32-3x3 filters to create 32 feature maps followed by a RELU activation function. The feature maps next under go dimensionality reduction with a MaxPooling layer, which uses a 4x3 filter with a stride of 1x3.
+
+Another similar convolutional layer is employed with 32-3x3 filters followed by a MaxPooling layer with a 1x3 filter and stride of 1x3.
+
+This layer is followed by two dense layers, which flattens the feature map into a 512 row vector. After the second dense layer, a dropout layer of 0.5. Each neuron in the second dense layer has a 50% chance of turning off after each batch update.
+
+Lastly, a softmax function is applied, which return the probability that a spectrogram is in the depressed class or not depressed class. The probabilities of each class sum to 1.
+
+The final model went through 7 epochs, after which it begins to overfit. A batch size of 32 (out of 2480 spectrograms) was used along with an Adadelta optimizer, which dynamically adapts the learning rate based on the gradient.
 
 ### Training the Model
 I created the model using [Keras](https://keras.io/) with a [Theano](http://deeplearning.net/software/theano/) backend and trained it on an AWS GPU-optimized EC2 instance.
@@ -178,6 +190,7 @@ wget -r -np -nH --cut-dirs=3 -R index.html --user=daicwozuser --ask-password  ht
     2. Girard J, Cohn J. Automated Depression Analysis. Curr Opin Psychol. 2015 August; 4: 75–79.
     3. Ma X, Yang H, Chen Q, Huang D, and Wang Y. DepAudioNet: An Efficient Deep Model for Audio based Depression Classification. ACM International Conference on Multimedia (ACM-MM) Workshop: Audio/Visual Emotion Challenge (AVEC), 2016.
     4. Giannakopoulos, Theodoros, and Aggelos Pikrakis. Introduction to audio analysis : a MATLAB approach. Oxford: Academic Press, 2014.
+    5. Piczak. Environmental Sound Classification with Convolutional Neural Networks. Institute of Electronic System, Warsaw University of Technology, 2015.
 
 ## Code References
 
