@@ -5,7 +5,7 @@ Automatic Depression Detection (ADD) is a relatively nascent topic that first ap
 
 ## Table of Contents
 1. [Dataset](#dataset)
-2. [Acoustic Features of Depressed Speech](#acoustic-features-of-depressed-speech)
+2. [Acoustic Features of Speech](#acoustic-features-of-speech)
     * [Segmentation](#segmentation-code)
     * [Feature Extraction](#feature-extraction-code)
 3. [Convolutional Neural Networks](#convolutional-neural-networks)
@@ -35,7 +35,7 @@ A transcribed snippet is seen below:
 
 <sub><b>Figure 1: </b> Virtual interview with Ellie. </sub>  
 
-## Acoustic Features of Depressed Speech
+## Acoustic Features of Speech
 While some emotion detection research focuses on the semantic content of audio signals in predicting depression, I decided to focus on the [prosodic](http://clas.mq.edu.au/speech/phonetics/phonology/intonation/prosody.html) features. Prosodic features are characterized by a listener as pitch, loudness, speaking rate, rhythm, voice quality, articulation, intonation, etc. Some features that have been found to be promising predictors of depression include using short sentences, flat intonation, fundamental frequency, and Mel-frequency cepstral coefficients ([MFCCs](https://en.wikipedia.org/wiki/Mel-frequency_cepstrum)).<sup>[2](#references)</sup>
 
 ### Segmentation ([code](https://github.com/kykiefer/depression-detect/blob/master/src/data/segmentation.py))
@@ -164,7 +164,7 @@ Depression is obviously a spectrum and deriving a binary classification (depress
 
 <img alt="PHQ-8 Distribution" src="images/phq8_dist.png" width='500'>
 
-<sub><b>Figure 7: </b> Distribution of PHQ-8 scores </sub>
+<sub><b>Figure 7: </b> Distribution of PHQ-8 scores. </sub>
 
 I'm currently excited about the results and and will be monitoring pull requests. However, accessing the DAIC-WOZ Database requires signing an agreement form. Access can be granted [here](http://dcapswoz.ict.usc.edu/). To download the 92GB of zip files `cd` into your desired directory and run the following in your shell. Follow the [code walkthrough](https://github.com/kykiefer/depression-detect/tree/master/src) to get setup.
 
