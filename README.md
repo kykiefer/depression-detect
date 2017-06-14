@@ -86,7 +86,7 @@ The frequency range was tuned as a hyperparamter, as most energy in human speech
 
 My actual architecture was largely inspired by a paper on Environmental Sound Classification with CNNs<sup>[5](#references)</sup>. Their network is displayed in the figure below. My architecture has some differences, but the photo will help visualize.
 
-<img alt="ROC curve" src="images/cnn_architecture.png" width='575'>
+<img alt="Model architecture" src="images/cnn_architecture.png" width='575'>
 
 <sub><b>Figure 4: </b> A similar CNN Environmental sound classfication model architecture. </sub>
 
