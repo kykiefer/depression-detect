@@ -46,3 +46,6 @@ src
 7. `cnn.py` performs normalization on the spectrogram and preps the images for Keras. Then trains and evaluates the network.
 
 8. `cnn_aws.py` is a version that can be run on an EC2 instance to leverage GPUs, with the spectrogram data being pulled from an S3 bucket.
+
+### Models
+9. `cnn_3_full_7e.h5` is a file containing the configuration and weights of the trained convolutional neural network.

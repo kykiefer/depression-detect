@@ -49,6 +49,8 @@ Neural networks seem to be the approach taken my many in cutting edge emotion an
 
 The input to the CNN is akin to the spectrogram you see in Figure 2 below.
 
+<sub>**Technical note:** The spectrograms are generated through a Short-Time Fourier Transform (STFT). STFT is a short-term processing technique that breaks the signals possibly overlapping frames using a moving window technique and computes the Discrete Fourier Transform (DFT) at each frame.<sup>[4](#references)</sup> There is a trade-off between frequency and time resolution that was not extensively explored in the project. In this project, a window length of 32 ms was used with a Hanning window.</sub>
+
 <img alt="Spectrogram" src="images/spectrogram2.png" width='800'>
 
 <sub><b>Figure 2: </b> Spectrogram of a [plosive](http://www.soundonsound.com/sound-advice/q-how-can-i-deal-plosives), followed by a second of silence, and then me saying "Welcome to *DepressionDetect*". </sub>  
@@ -166,6 +168,7 @@ wget -r -np -nH --cut-dirs=3 -R index.html --user=daicwozuser --ask-password  ht
     1. Gratch J, Artstein R, Lucas GM, Stratou G, Scherer S, Nazarian A, Wood R, Boberg J, DeVault D, Marsella S, Traum DR. The Distress Analysis Interview Corpus of human and computer interviews. InLREC 2014 May (pp. 3123-3128)
     2. Girard J, Cohn J. Automated Depression Analysis. Curr Opin Psychol. 2015 August; 4: 75–79.
     3. Ma X, Yang H, Chen Q, Huang D, and Wang Y. DepAudioNet: An Efficient Deep Model for Audio based Depression Classification. ACM International Conference on Multimedia (ACM-MM) Workshop: Audio/Visual Emotion Challenge (AVEC), 2016.
+    4. Giannakopoulos, Theodoros, and Aggelos Pikrakis. Introduction to audio analysis : a MATLAB approach. Oxford: Academic Press, 2014.
 
 ## Code References
 
