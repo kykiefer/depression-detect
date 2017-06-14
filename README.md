@@ -19,7 +19,9 @@ Automatic Depression Detection (ADD) is a relatively nascent topic that first ap
 For a code walkthrough, see the [src](https://github.com/kykiefer/depression-detect/tree/master/src) folder.
 
 ## Dataset
-All audio recordings and associated depression metrics were provided by the [DAIC-WOZ Database](http://dcapswoz.ict.usc.edu/), which was compiled by USC Institute of Creative Technologies and released as part of the 2016 Audio/Visual Emotional Challenge and Workshop ([AVEC 2016](http://sspnet.eu/avec2016/)). The dataset consists of 189 sessions, averaging 16 minutes, between a participant and virtual interviewer called Ellie, controlled by a human interviewer in another room. Prior to the interview, each participant completed a psychiatric questionnaire ([PHQ-8](http://patienteducation.stanford.edu/research/phq.pdf)) from which a binary classification for depression was derived as a truth label for each participant. A transcribed snippet is seen below:
+All audio recordings and associated depression metrics were provided by the [DAIC-WOZ Database](http://dcapswoz.ict.usc.edu/), which was compiled by USC Institute of Creative Technologies and released as part of the 2016 Audio/Visual Emotional Challenge and Workshop ([AVEC 2016](http://sspnet.eu/avec2016/)). The dataset consists of 189 sessions, averaging 16 minutes, between a participant and virtual interviewer called Ellie, controlled by a human interviewer in another room. Prior to the interview, each participant completed a psychiatric questionnaire ([PHQ-8](http://patienteducation.stanford.edu/research/phq.pdf)) from which a binary classification for depression was derived as a truth label for each participant.
+
+A transcribed snippet is seen below:
 
 > **Ellie** Who’s someone that’s been a positive influence in your life?
 
@@ -153,9 +155,16 @@ I ultimately envision the model being implemented in a wearable device (Apple Wa
 
 How I am prioritizing future efforts:
 1. Sampling methods to increase sample size without introducing class or speaker bias.
-2. Introduce network recurrence (LSTM)
-3. Incorporate Vocal Tract Length Perturbation ([VTLP](http://www.cs.toronto.edu/~ndjaitly/jaitly-icml13.pdf))
-4. Speaker diarization robustness
+2. Treating depression detection as a regression problem (see below)
+3. Introduce network recurrence (LSTM)
+4. Incorporate Vocal Tract Length Perturbation ([VTLP](http://www.cs.toronto.edu/~ndjaitly/jaitly-icml13.pdf))
+5. Speaker diarization robustness
+
+Depression is obviously a spectrum and deriving a binary classification (depressed or not) from a single test (PHQ-8) is somewhat naive. The threshold for a depression classification was a score of 10, but how much different exists between a 9 (classified as not depressed) and a 10 (classified as depressed)?
+
+<img alt="PHQ-8 Distribution" src="images/phq8_dist.png" width='450'>
+
+<sub><b>Figure 6: </b> Distribution of PHQ-8 scores </sub>
 
 I'm currently excited about the results and and will be monitoring pull requests. However, accessing the DAIC-WOZ Database requires signing an agreement form. Access can be granted [here](http://dcapswoz.ict.usc.edu/). To download the 92GB of zip files `cd` into your desired directory and run the following in your shell. Follow the [code walkthrough](https://github.com/kykiefer/depression-detect/tree/master/src) to get setup.
 
