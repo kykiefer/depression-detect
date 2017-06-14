@@ -80,15 +80,15 @@ To solve the problem, I perform cropping on each of the participant's spectrogra
 I prioritize a revised sampling method as my number one priority in [future directions](#future-directions). I came across an [interesting sampling method](https://www.researchgate.net/publication/309127735_DepAudioNet_An_Efficient_Deep_Model_for_Audio_based_Depression_Classification), which I hope to implement in the future to increase the training sample size.
 
 ### Model Architecture ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/cnn_aws.py))
-I use a X layer Convolutional Neural Network (CNN) model. The model consists of 2 convolutional layers with max-pooling and 2 fully connected layers. Each spectrogram input is an image with dimension 513x125 representing 4 seconds of audio and frequencies, ranging from 0 to 8kHz.
+I use a 6 layer Convolutional Neural Network (CNN) model. The model consists of 2 convolutional layers with max-pooling and 2 fully connected layers. Each spectrogram input is an image with dimension 513x125 representing 4 seconds of audio and frequencies, ranging from 0 to 8kHz.
 
-The frequency range was tuned as a hyperparamter, as most energy in human speech is actually concentrated between 0.3 and 3kHz. Each input is normalized according to decibels relative to full scale (dBFS).
+The frequency range was tuned as a hyperparameter, as most energy in human speech is actually concentrated between 0.3 and 3kHz. Each input is normalized according to decibels relative to full scale (dBFS).
 
-My actual architecture was largely inspired by a paper on Environmental Sound Classification with CNNs<sup>[5](#references)</sup>. Their network is displayed in the figure below. My architecture has some differences, but the photo will help visualize.
+My actual architecture was largely inspired by a paper on Environmental Sound Classification with CNNs.<sup>[5](#references)</sup> Their network is displayed in the figure below. My architecture has some differences, but the photo will help visualize.
 
 <img alt="Model architecture" src="images/cnn_architecture.png" width='575'>
 
-<sub><b>Figure 4: </b> A similar CNN Environmental sound classfication model architecture. </sub>
+<sub><b>Figure 4: </b> A similar CNN Environmental sound classification model architecture. </sub>
 
 My CNN beings with an input layer being convolved with 32-3x3 filters to create 32 feature maps followed by a RELU activation function. The feature maps next under go dimensionality reduction with a MaxPooling layer, which uses a 4x3 filter with a stride of 1x3.
 
