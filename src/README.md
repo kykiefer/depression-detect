@@ -19,8 +19,8 @@ src
 │
 └───features
 │   ├──cnn.py
-│   ├──cnn_aws.py
-│   ├──dataframes.py
+│   ├──dev_data.py
+│   ├──plot_metrics.py
 │   ├──random_sampling.py
 │   ├──spectrogram_dicts.py
 │   ├──spectrograms.py
@@ -45,7 +45,7 @@ src
 
 7. `cnn.py` performs normalization on the spectrogram and preps the images for Keras. Then trains and evaluates the network.
 
-8. `cnn_aws.py` is a version that can be run on an EC2 instance to leverage GPUs, with the spectrogram data being pulled from an S3 bucket.
+8. `plot_metrics.py` plots loss, accuracy and an ROC curve.
 
 ### Models
-9. `cnn_final.h5` is a file containing the configuration and weights of the trained convolutional neural network. The file was too large for GitHub, so there exists a `README.md` as a placeholder with instruction how to access it.
+9. `cnn_final.h5` is a file containing the configuration and weights of the trained convolutional neural network. The file was too large for GitHub, so there exists a `README.md` as a placeholder with instruction on how to access it.

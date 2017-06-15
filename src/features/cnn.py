@@ -3,7 +3,7 @@ import boto
 import os
 import numpy as np
 from sklearn.metrics import confusion_matrix
-from plot import plot_accuracy, plot_loss, plot_roc_curve
+from plot_metrics import plot_accuracy, plot_loss, plot_roc_curve
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
@@ -105,6 +105,7 @@ def cnn(X_train, y_train, X_test, y_test, batch_size,
     model.add(Dense(512, activation='relu'))
     model.add(Dense(512, activation='relu'))
     model.add(Dropout(0.5))
+
     model.add(Dense(nb_classes))
     model.add(Activation('softmax'))
 
@@ -125,6 +126,9 @@ def cnn(X_train, y_train, X_test, y_test, batch_size,
 
 
 def model_performance(model, X_train, X_test, y_train, y_test):
+    """
+    Evaluation metrics for network performance.
+    """
     y_test_pred = model.predict_classes(X_test)
     y_train_pred = model.predict_classes(X_train)
 
@@ -144,11 +148,22 @@ def model_performance(model, X_train, X_test, y_train, y_test):
 
 
 def standard_confusion_matrix(y_test, y_test_pred):
-    ''' Computing Confusion Matrix for CNN model, formatting in
-            standard setup
-        Input:  y_true, y_predict values - arrays
-        Output: confusion matrix - array
-    '''
+    """
+    Make confusion matrix with format:
+                  -----------
+                  | TP | FP |
+                  -----------
+                  | FN | TN |
+                  -----------
+    Parameters
+    ----------
+    y_true : ndarray - 1D
+    y_pred : ndarray - 1D
+
+    Returns
+    -------
+    ndarray - 2D
+    """
     [[tn, fp], [fn, tp]] = confusion_matrix(y_test, y_test_pred)
     return np.array([[tp, fp], [fn, tn]])
 
@@ -179,11 +194,8 @@ if __name__ == '__main__':
     X_train, y_train, X_test, y_test = \
         X_train['arr_0'], y_train['arr_0'], X_test['arr_0'], y_test['arr_0']
 
-    # cut sample size in half
-    # X_train, y_train = X_train[::2], y_train[::2]
-
     # CNN parameters
-    batch_size = 8
+    batch_size = 32
     nb_classes = 2
     epochs = 7
 
@@ -200,8 +212,6 @@ if __name__ == '__main__':
     # used Theano dim_ordering (th), (# images, # chans, # rows, # cols)
     X_train, X_test, input_shape = keras_img_prep(X_train, X_test, img_depth,
                                                   img_rows, img_cols)
-    print('X_train shape', X_train.shape)
-    print('input shape', input_shape)
 
     # run CNN
     print('Fitting model...')
@@ -213,15 +223,13 @@ if __name__ == '__main__':
     y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba, \
         conf_matrix = model_performance(model, X_train, X_test, y_train, y_test)
 
-    # store model to locally and to S3 bucket
+    # save model to locally
     print('Saving model locally...')
     model_name = '../models/cnn_{}.h5'.format(model_id)
     model.save(model_name)
-    # print('Saving model to S3...')
-    # save_to_bucket(model_name, model_name)
 
     # more evaluation
-    print('Calculating test metrics...')
+    print('Calculating additional test metrics...')
     accuracy = float(conf_matrix[0][0] + conf_matrix[1][1]) / np.sum(conf_matrix)
     precision = float(conf_matrix[0][0]) / (conf_matrix[0][0] + conf_matrix[0][1])
     recall = float(conf_matrix[0][0]) / (conf_matrix[0][0] + conf_matrix[1][0])
@@ -239,5 +247,4 @@ if __name__ == '__main__':
 
     # save model S3
     print('Saving model to S3...')
-    model_file = '../models/cnn_{}.h5'.format(model_id)
-    save_to_bucket(model_file, 'cnn_{}.h5'.format(model_id))
+    save_to_bucket(model_name, 'cnn_{}.h5'.format(model_id))
