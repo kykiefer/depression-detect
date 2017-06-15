@@ -26,7 +26,7 @@ src
 │   ├──spectrograms.py
 │
 └───models
-    ├──model_sandbox.py
+    ├──README.md
 ```
 
 ### Data
@@ -48,4 +48,4 @@ src
 8. `cnn_aws.py` is a version that can be run on an EC2 instance to leverage GPUs, with the spectrogram data being pulled from an S3 bucket.
 
 ### Models
-9. `cnn_3_full_7e.h5` is a file containing the configuration and weights of the trained convolutional neural network.
+9. `cnn_final.h5` is a file containing the configuration and weights of the trained convolutional neural network. The file was too large for GitHub, so there exists a `README.md` as a placeholder with instruction how to access it.
