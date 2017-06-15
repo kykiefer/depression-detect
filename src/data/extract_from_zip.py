@@ -4,15 +4,15 @@ import zipfile
 
 
 """
-A script iterates through a directory of the 189 DAIC-WOZ participant zip \
+A script iterates through a directory of the 189 DAIC-WOZ participant zip
 files and extracts the wav and transcript files.
 """
 
 
 def extract_files(zip_file, out_dir, delete_zip=False):
     """
-    A function takes in a zip file and extracts the .wav file and \
-    *TRANSCRIPT.csv files into separate folders in a user \
+    A function takes in a zip file and extracts the .wav file and
+    *TRANSCRIPT.csv files into separate folders in a user
     specified directory.
 
     Parameters
@@ -20,7 +20,7 @@ def extract_files(zip_file, out_dir, delete_zip=False):
     zip_file : filepath
         path to the folder containing the DAIC-WOZ zip files
     out_dir : filepath
-        path to the desired directory where audio and transcript folders \
+        path to the desired directory where audio and transcript folders
         will be created
     delete_zip : bool
         If true, deletes the zip file once relevant files are extracted

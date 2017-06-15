@@ -6,17 +6,17 @@ import wave
 
 
 """
-A script that iterates through the extracted wav files and uses \
-pyAudioAnalysis' silence extraction module to make a wav file containing the \
-segmented audio (when the participant is speaking -- silence and virtual \
+A script that iterates through the extracted wav files and uses
+pyAudioAnalysis' silence extraction module to make a wav file containing the
+segmented audio (when the participant is speaking -- silence and virtual
 interviewer speech removed)
 """
 
 
 def remove_silence(filename, out_dir, smoothing=1.0, weight=0.3, plot=False):
     """
-    A function that implements pyAudioAnalysis' silence extraction module \
-    and creates wav files of the participant specific portions of audio. The \
+    A function that implements pyAudioAnalysis' silence extraction module
+    and creates wav files of the participant specific portions of audio. The
     smoothing and weight parameters were tuned for the AVEC 2016 dataset.
 
     Parameters
@@ -24,7 +24,7 @@ def remove_silence(filename, out_dir, smoothing=1.0, weight=0.3, plot=False):
     filename : filepath
         path to the input wav file
     out_dir : filepath
-        path to the desired directory (where a participant folder will \
+        path to the desired directory (where a participant folder will
         be created containing a 'PXXX_no_silence.wav' file)
     smoothing : float
         tunable parameter to compensate for sparseness of recordings
@@ -35,9 +35,9 @@ def remove_silence(filename, out_dir, smoothing=1.0, weight=0.3, plot=False):
 
     Returns
     -------
-    A folder for each participant containing a single wav file \
-    (named 'PXXX_no_silence.wav') with the vast majority of silence \
-    and virtual interviewer speech removed. Feature extraction is \
+    A folder for each participant containing a single wav file
+    (named 'PXXX_no_silence.wav') with the vast majority of silence
+    and virtual interviewer speech removed. Feature extraction is
     performed on these segmented wav files.
     """
     partic_id = 'P' + filename.split('/')[-1].split('_')[0]  # PXXX
@@ -65,9 +65,9 @@ def remove_silence(filename, out_dir, smoothing=1.0, weight=0.3, plot=False):
 
 def is_segmentable(partic_id):
     """
-    A function that returns True if the participant's interview clip is not \
-    in the manually identified set of troubled clips. The clips below were \
-    not segmentable do to excessive static, proximity to the virtual \
+    A function that returns True if the participant's interview clip is not
+    in the manually identified set of troubled clips. The clips below were
+    not segmentable do to excessive static, proximity to the virtual
     interviewer, volume levels, etc.
     """
     troubled = set(['P300', 'P305', 'P306', 'P308', 'P315', 'P316', 'P343',
@@ -80,9 +80,9 @@ def is_segmentable(partic_id):
 
 def concatenate_segments(participant_dir, partic_id, remove_segment=True):
     """
-    A function that concatenates all the wave files in a participants \
-    directory in to single wav file (with silence and other speakers removed) \
-    and writes in to the participant's directory, then removes the individual \
+    A function that concatenates all the wave files in a participants
+    directory in to single wav file (with silence and other speakers removed)
+    and writes in to the participant's directory, then removes the individual
     segments (when remove_segment=True).
     """
     infiles = os.listdir(participant_dir)  # list of wav files in directory

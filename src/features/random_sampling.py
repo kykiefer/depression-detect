@@ -9,46 +9,46 @@ access_secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
 
 
 """
-There exists a large data imbalance between positive and negative samples, \
-which incurs a large bias in classification. The number of non-depressed \
-subjects is about four times bigger than that of depressed ones. If these \
-samples for learning, the model will have a strong bias to the non-depressed \
-class. Moreover, regarding the length of each sample, a much longer signal of \
+There exists a large data imbalance between positive and negative samples,
+which incurs a large bias in classification. The number of non-depressed
+subjects is about four times bigger than that of depressed ones. If these
+samples for learning, the model will have a strong bias to the non-depressed
+class. Moreover, regarding the length of each sample, a much longer signal of
 an individual may emphasize some characteristics that are person specific.
-To solve the problem, I perform random cropping on each of the participant's \
-spectrograms of a specified width (time) and constant height (frequency), to \
-ensure the CNN has an equal proportion for every subject and each class. The \
-size of the Hanning window is 1024, and the audio sample rate is 16000 Hz, \
-which leads to a covering domain of 1024/16000 Hz=0.064s; accordingly, the \
-hop size is 32ms, half of the analysis window. Meaning each pixel of width \
-represents 32ms. Some success has been found using random crops of 3-5 \
-seconds [1]. I'll start with 4 seconds and tune it like a hyperparameter. \
-A width of 4 seconds means 4/0.032 = 125 pixel window size. \
-[1] DeepAudioNet: An Efficient Deep Model for Audio based \
-Depression Classification
+To solve the problem, I perform random cropping on each of the participant's
+spectrograms of a specified width (time) and constant height (frequency), to
+ensure the CNN has an equal proportion for every subject and each class. The
+size of the Hanning window is 1024, and the audio sample rate is 16000 Hz,
+which leads to a covering domain of 1024/16000 Hz=0.064s; accordingly, the
+hop size is 32ms, half of the analysis window. Meaning each pixel of width
+represents 32ms. Some success has been found using random crops of 3-5
+seconds [1]. I'll start with 4 seconds and tune it like a hyperparameter.
+A width of 4 seconds means 4/0.032 = 125 pixel window size.
+[1] DeepAudioNet: An Efficient Deep Model for Audio based
+Depression Classification.
 """
 
 
 def determine_num_crops(depressed_dict, normal_dict, crop_width=125):
     """
-    Finds the shortest clip in the entire dataset which, according to our \
-    random sampling strategy, will limit the number of samples we take from \
+    Finds the shortest clip in the entire dataset which, according to our
+    random sampling strategy, will limit the number of samples we take from
     each clip to make sure our classes are balanced.
 
     Parameters
     ----------
     depressed_dict : dictionary
-        a dictionary of depressed participants with the participant id as the \
-        key and the segmented and concatenated matrix representation of \
+        a dictionary of depressed participants with the participant id as the
+        key and the segmented and concatenated matrix representation of
         their spectrograms as the values.
     crop_width : integer
-        the desired pixel width of the crop samples \
+        the desired pixel width of the crop samples
         (125 pixels = 4 seconds of audio)
 
     Returns
     -------
     num_samples_from_clips : int
-        the maximum number of samples that should be sampled from each clip \
+        the maximum number of samples that should be sampled from each clip
         to ensure balanced classes can be built.
     """
     merged_dict = dict(normal_dict, **depressed_dict)
@@ -60,27 +60,27 @@ def determine_num_crops(depressed_dict, normal_dict, crop_width=125):
 
 def build_class_sample_dict(segmented_audio_dict, n_samples, crop_width):
     """
-    Get N (num_samples) pseudo random non-overlapping samples from the all \
+    Get N (num_samples) pseudo random non-overlapping samples from the all
     the depressed participants.
 
     Parameters
     ----------
     segmented_audio_dict : dictionary
-        a dictionary of a class of participants with keys of participant ids \
+        a dictionary of a class of participants with keys of participant ids
         and values of the segmented audio matrix spectrogram representation
     n_samples : integer
-        number of random non-overlapping samples to extract from each \
+        number of random non-overlapping samples to extract from each
         segmented audio matrix spectrogram
     crop_width : integer
-        the desired pixel width of the crop samples \
+        the desired pixel width of the crop samples
         (125 pixels = 4 seconds of audio)
 
     Returns
     -------
     class sample dict : dictionary
-        a dictionary of a class of participants with keys of participant ids \
-        and values of a list of the cropped samples from the spectrogram \
-        matrices. The lists are n_samples long and the entries within the \
+        a dictionary of a class of participants with keys of participant ids
+        and values of a list of the cropped samples from the spectrogram
+        matrices. The lists are n_samples long and the entries within the
         list have dimension (numFrequencyBins * crop_width)
     """
     class_samples_dict = dict()
@@ -92,7 +92,7 @@ def build_class_sample_dict(segmented_audio_dict, n_samples, crop_width):
 
 def get_random_samples(matrix, n_samples, crop_width):
     """
-    Get N random samples with width of crop_width from the numpy matrix \
+    Get N random samples with width of crop_width from the numpy matrix
     representing the participant's audio spectrogram.
     """
     # crop full spectrogram into segments of width = crop_width
@@ -107,11 +107,11 @@ def get_random_samples(matrix, n_samples, crop_width):
 
 def create_sample_dicts(crop_width):
     """
-    Utilizes the above function to return two dictionaries, depressed \
-    and normal. Each dictionary has only participants in the specific class, \
-    with participant ids as key, a values of a list of the cropped samples \
-    from the spectrogram matrices. The lists are vary in length depending \
-    on the length of the interview clip. The entries within the list are \
+    Utilizes the above function to return two dictionaries, depressed
+    and normal. Each dictionary has only participants in the specific class,
+    with participant ids as key, a values of a list of the cropped samples
+    from the spectrogram matrices. The lists are vary in length depending
+    on the length of the interview clip. The entries within the list are
     numpy arrays with dimennsion (513, 125).
     """
     # build dictionaries of participants and segmented audio matrix
@@ -142,8 +142,8 @@ def create_sample_dicts(crop_width):
 
 def rand_samp_train_test_split(npz_file_dir):
     """
-    Given the cropped segments from each class and particpant, this fucntion \
-    determines how many samples we can draw from each particpant and how many \
+    Given the cropped segments from each class and particpant, this fucntion
+    determines how many samples we can draw from each particpant and how many
     participants we can draw from each class.
 
     Parameters
@@ -151,13 +151,13 @@ def rand_samp_train_test_split(npz_file_dir):
     npz_file_dir : directory
         directory contain the
     crop_width : integer
-        the desired pixel width of the crop samples \
+        the desired pixel width of the crop samples
         (125 pixels = 4 seconds of audio)
 
     Returns
     -------
     num_samples_from_clips : int
-        the maximum number of samples that should be sampled from each clip \
+        the maximum number of samples that should be sampled from each clip
         to ensure balanced classes can be built.
     """
     # files in directory

@@ -2,24 +2,22 @@ from __future__ import print_function
 import boto
 import os
 import numpy as np
-from sklearn.metrics import confusion_matrix, roc_curve, auc
+from sklearn.metrics import confusion_matrix
 from plot import plot_accuracy, plot_loss, plot_roc_curve
-np.random.seed(15)  # for reproducibility
-
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras.utils import np_utils
 from keras import backend as K
-from keras.optimizers import SGD
 K.set_image_dim_ordering('th')
 access_key = os.environ['AWS_ACCESS_KEY_ID']
 access_secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
+np.random.seed(15)  # for reproducibility
 
 
 """
-CNN to classify spectrograms of normal particpants (0) or depressed particpants (1).
-Using Tensorflow with Theano image_dim_ordering:
+CNN used to classify spectrograms of normal particpants (0) or depressed
+particpants (1). Using Theano backend and Theano image_dim_ordering:
 (# channels, # images, # rows, # cols)
 (1, 3040, 513, 125)
 """
@@ -39,7 +37,8 @@ def retrieve_from_bucket(file):
 
 def preprocess(X_train, X_test):
     """
-    Convert from float64 to float32 and normalize normalize to decibels relative to full scale (dBFS) for the 4 sec clip.
+    Convert from float64 to float32 and normalize normalize to decibels
+    relative to full scale (dBFS) for the 4 sec clip.
     """
     X_train = X_train.astype('float32')
     X_test = X_test.astype('float32')
@@ -51,10 +50,13 @@ def preprocess(X_train, X_test):
 
 def prep_train_test(X_train, y_train, X_test, y_test, nb_classes):
     """
-    Prep samples ands labels for Keras input by noramalzing and converting labels to a categorical representation.
+    Prep samples ands labels for Keras input by noramalzing and converting
+    labels to a categorical representation.
     """
-    print('Train on {} samples, validate on {}'.format(X_train.shape[0], X_test.shape[0]))
+    print('Train on {} samples, validate on {}'.format(X_train.shape[0],
+                                                       X_test.shape[0]))
 
+    # normalize to dBfS
     X_train, X_test = preprocess(X_train, X_test)
 
     # Convert class vectors to binary class matrices
@@ -81,31 +83,37 @@ def keras_img_prep(X_train, X_test, img_dep, img_rows, img_cols):
     return X_train, X_test, input_shape
 
 
-def cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_shape):
+def cnn(X_train, y_train, X_test, y_test, batch_size,
+        nb_classes, epochs, input_shape):
     """
     This Convolutional Neural Net architecture for classifying the audio clips
     as normal (0) or depressed (1).
     """
     model = Sequential()
 
-    model.add(Conv2D(32, (3, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu', kernel_initializer='random_uniform'))
-    model.add(MaxPooling2D(pool_size=(4,3), strides=(1,3)))
-    model.add(Conv2D(32, (1, 3), padding='valid', strides=1, input_shape=input_shape, activation='relu'))
-    model.add(MaxPooling2D(pool_size=(1,3), strides=(1,3)))
+    model.add(Conv2D(32, (3, 3), padding='valid', strides=1,
+                     input_shape=input_shape, activation='relu'))
+
+    model.add(MaxPooling2D(pool_size=(4, 3), strides=(1, 3)))
+
+    model.add(Conv2D(32, (1, 3), padding='valid', strides=1,
+              input_shape=input_shape, activation='relu'))
+
+    model.add(MaxPooling2D(pool_size=(1, 3), strides=(1, 3)))
 
     model.add(Flatten())
-    model.add(Dense(128, activation='relu'))
-    model.add(Dense(128, activation='relu'))
+    model.add(Dense(512, activation='relu'))
+    model.add(Dense(512, activation='relu'))
+    model.add(Dropout(0.5))
     model.add(Dense(nb_classes))
     model.add(Activation('softmax'))
 
-    # sgd = SGD(lr=0.001, decay=1e-6, momentum=1.0)
     model.compile(loss='categorical_crossentropy',
                   optimizer='adadelta',
                   metrics=['accuracy'])
 
     history = model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs,
-              verbose=1, validation_data=(X_test, y_test))
+                        verbose=1, validation_data=(X_test, y_test))
 
     # Evaluate accuracy on test and train sets
     score_train = model.evaluate(X_train, y_train, verbose=0)
@@ -124,39 +132,31 @@ def model_performance(model, X_train, X_test, y_train, y_test):
     y_train_pred_proba = model.predict_proba(X_train)
 
     # Converting y_test back to 1-D array for confusion matrix computation
-    y_test_1d = y_test[:,1]
+    y_test_1d = y_test[:, 1]
 
     # Computing confusion matrix for test dataset
     conf_matrix = standard_confusion_matrix(y_test_1d, y_test_pred)
     print("Confusion Matrix:")
     print(conf_matrix)
 
-    return y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba, conf_matrix
+    return y_train_pred, y_test_pred, y_train_pred_proba, \
+        y_test_pred_proba, conf_matrix
 
 
 def standard_confusion_matrix(y_test, y_test_pred):
-    """Make confusion matrix with format:
-                  -----------
-                  | TP | FP |
-                  -----------
-                  | FN | TN |
-                  -----------
-    Parameters
-    ----------
-    y_true : ndarray - 1D
-    y_pred : ndarray - 1D
-
-    Returns
-    -------
-    ndarray - 2D
-    """
+    ''' Computing Confusion Matrix for CNN model, formatting in
+            standard setup
+        Input:  y_true, y_predict values - arrays
+        Output: confusion matrix - array
+    '''
     [[tn, fp], [fn, tp]] = confusion_matrix(y_test, y_test_pred)
     return np.array([[tp, fp], [fn, tn]])
 
 
 def save_to_bucket(file, obj_name):
     """
-    Saves local file to S3 bucket for redundancy and repreoducibility by others.
+    Saves local file to S3 bucket for redundancy and repreoducibility
+    by others.
     """
     conn = boto.connect_s3(access_key, access_secret_key)
 
@@ -176,41 +176,49 @@ if __name__ == '__main__':
     X_test = retrieve_from_bucket('test_samples.npz')
     y_test = retrieve_from_bucket('test_labels.npz')
 
-    X_train, y_train, X_test, y_test = X_train['arr_0'], y_train['arr_0'], X_test['arr_0'], y_test['arr_0']
+    X_train, y_train, X_test, y_test = \
+        X_train['arr_0'], y_train['arr_0'], X_test['arr_0'], y_test['arr_0']
 
     # cut sample size in half
-    # X_train, y_train = X_train[::5], y_train[::5]
+    # X_train, y_train = X_train[::2], y_train[::2]
 
     # CNN parameters
-    batch_size = 32
+    batch_size = 8
     nb_classes = 2
-    epochs = 9
+    epochs = 7
 
     # normalalize data and prep for Keras
     print('Processing images for Keras...')
-    X_train, X_test, y_train, y_test = prep_train_test(X_train, y_train, X_test, y_test, nb_classes=nb_classes)
+    X_train, X_test, y_train, y_test = prep_train_test(X_train, y_train,
+                                                       X_test, y_test,
+                                                       nb_classes=nb_classes)
 
-    # specify image dimensions - 513x125x1 for spectrogram with crop size of 125 pixels
+    # 513x125x1 for spectrogram with crop size of 125 pixels
     img_rows, img_cols, img_depth = X_train.shape[1], X_train.shape[2], 1
 
     # reshape image input for Keras
     # used Theano dim_ordering (th), (# images, # chans, # rows, # cols)
-    X_train, X_test, input_shape = keras_img_prep(X_train, X_test, img_depth, img_rows, img_cols)
+    X_train, X_test, input_shape = keras_img_prep(X_train, X_test, img_depth,
+                                                  img_rows, img_cols)
     print('X_train shape', X_train.shape)
     print('input shape', input_shape)
 
     # run CNN
     print('Fitting model...')
-    model, history = cnn(X_train, y_train, X_test, y_test, batch_size, nb_classes, epochs, input_shape)
+    model, history = cnn(X_train, y_train, X_test, y_test, batch_size,
+                         nb_classes, epochs, input_shape)
 
     # evaluate model
     print('Evaluating model...')
-    y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba, conf_matrix = model_performance(model, X_train, X_test, y_train, y_test)
+    y_train_pred, y_test_pred, y_train_pred_proba, y_test_pred_proba, \
+        conf_matrix = model_performance(model, X_train, X_test, y_train, y_test)
 
     # store model to locally and to S3 bucket
     print('Saving model locally...')
     model_name = '../models/cnn_{}.h5'.format(model_id)
     model.save(model_name)
+    # print('Saving model to S3...')
+    # save_to_bucket(model_name, model_name)
 
     # more evaluation
     print('Calculating test metrics...')
@@ -218,19 +226,16 @@ if __name__ == '__main__':
     precision = float(conf_matrix[0][0]) / (conf_matrix[0][0] + conf_matrix[0][1])
     recall = float(conf_matrix[0][0]) / (conf_matrix[0][0] + conf_matrix[1][0])
     f1_score = 2 * (precision * recall) / (precision + recall)
-    fpr, tpr, _ = roc_curve(y_test, y_score)
-    roc_auc = auc(fpr, tpr)
     print("Accuracy: {}".format(accuracy))
     print("Precision: {}".format(precision))
     print("Recall: {}".format(recall))
     print("F1-Score: {}".format(f1_score))
-    print("AUC: {}".format(roc_auc))
 
     # plot train/test loss and accuracy. saves files in cd
     print('Saving plots...')
     plot_loss(history, model_id)
     plot_accuracy(history, model_id)
-    plot_roc_curve(y_test[:,1], y_test_pred_proba[:,1], model_id)
+    plot_roc_curve(y_test[:, 1], y_test_pred_proba[:, 1], model_id)
 
     # save model S3
     print('Saving model to S3...')

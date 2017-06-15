@@ -4,32 +4,32 @@ from dev_data import df_dev
 
 
 """
-This script builds dictionaries for the depressed and non-depressed classes \
-with each participant id as the key, and the associated segmented matrix \
-spectrogram representation as the value. Said values can than be cropped and \
+This script builds dictionaries for the depressed and non-depressed classes
+with each participant id as the key, and the associated segmented matrix
+spectrogram representation as the value. Said values can than be cropped and
 randomly sampled as input to the CNN.
 """
 
 
 def build_class_dictionaries(dir_name):
     """
-    Builds a dictionary of depressed participants and non-depressed \
-    participants with the participant id as the key and the matrix \
-    representation of the no_silence wav file as the value. These \
-    values of this dictionary are then randomly cropped and sampled \
+    Builds a dictionary of depressed participants and non-depressed
+    participants with the participant id as the key and the matrix
+    representation of the no_silence wav file as the value. These
+    values of this dictionary are then randomly cropped and sampled
     from to create balanced class and speaker inputs to the CNN.
     Parameters
     ----------
     dir_name : filepath
-        directory containing participant's folders (which contains the \
+        directory containing participant's folders (which contains the
         no_silence.wav)
     Returns
     -------
     depressed_dict : dictionary
-        dictionary of depressed individuals with keys of participant id \
+        dictionary of depressed individuals with keys of participant id
         and values of with the matrix spectrogram representation
     normal_dict : dictionary
-        dictionary of non-depressed individuals with keys of participant id \
+        dictionary of non-depressed individuals with keys of participant id
         and values of with the matrix spectrogram representation
     """
     depressed_dict = dict()
@@ -52,7 +52,7 @@ def build_class_dictionaries(dir_name):
 
 def in_dev_split(partic_id):
     """
-    Returns True if the participant is in the AVEC development split \
+    Returns True if the participant is in the AVEC development split
     (aka participant's we have depression labels for)
     """
     return partic_id in set(df_dev['Participant_ID'].values)
@@ -60,7 +60,7 @@ def in_dev_split(partic_id):
 
 def get_depression_label(partic_id):
     """
-    Returns participant's PHQ8 Binary label. 1 representing depression; \
+    Returns participant's PHQ8 Binary label. 1 representing depression;
     0 representing no depression.
     """
     return df_dev.loc[df_dev['Participant_ID'] ==
