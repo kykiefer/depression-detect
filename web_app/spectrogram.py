@@ -1,12 +1,11 @@
 import numpy as np
 from numpy.lib import stride_tricks
-import os
 from matplotlib import pyplot as plt
 import scipy.io.wavfile as wav
 
 
 """
-This script creates spectrogram matrices from wav files that can be passed \
+This script creates spectrogram matrices from wav files that can be passed
 to the CNN. This was heavily adopted from Frank Zalkow's work.
 """
 
@@ -69,7 +68,7 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
     s = stft(samples, binsize)
 
     sshow, freq = logscale_spec(s, factor=1.0, sr=samplerate)
-    ims = 20.*np.log10(np.abs(sshow)/10e-6) # amplitude to decibel
+    ims = 20.*np.log10(np.abs(sshow)/10e-6)  # amplitude to decibel
     timebins, freqbins = np.shape(ims)
 
     plt.figure(figsize=(15, 7.5))
@@ -96,16 +95,7 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
     return ims
 
 
-
-
 if __name__ == '__main__':
+    wav_file = 'static/audio_uploads/Vocaroo_s0er01Jq27Z2.wav'
 
-    # wav_file = '/Users/ky/Desktop/depression-detect/web_app/static/audio/ky_full_paragraph.wav'
-    #
-    # wav_file = '/Users/ky/Desktop/depression-detect/web_app/static/audio/P302_332.90-334.82.wav'
-    #
-    wav_file = '/Users/ky/Downloads/Vocaroo_s0er01Jq27Z2.wav'
-
-    # wave_file = '/Users/ky/Desktop/depression-detect/web_app/static/audio/schnitzelbank.wav'
-
-    plotstft(wav_file, plotpath='/Users/ky/Downloads/so_cool.png')
+    plotstft(wav_file, plotpath='static/img/so_cool.png')

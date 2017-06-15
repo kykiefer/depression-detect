@@ -1,7 +1,7 @@
 import os
 import glob
 import csv
-from flask import Flask, render_template, request, flash
+from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
 from spectrogram import plotstft
 import numpy as np
@@ -43,11 +43,12 @@ def upload_file():
             # save matrix locally
             npz_filename = os.path.splitext(filename)[0]+'.npz'
             np.savez('static/matrices/{}'.format(npz_filename), spec_matrix)
+
             # upload matrix to s3
             upload_file_to_s3('static/matrices/{}'.format(npz_filename))
 
             os.remove(wav_filepath)  # delete wav file
-            os.remove('static/matrices/{}'.format(npz_filename))  # delete local npz file
+            os.remove('static/matrices/{}'.format(npz_filename))  # delete npz
 
             return render_template('survey.html', spectrogram=spec_path, completion_status='Your audio has been successfully uploaded. Check out the visual representation below!')
 
@@ -61,7 +62,7 @@ def complete_survey():
         if len(form.keys()) == 8:  # if form complete
             phq8_score = sum((int(j) for j in form.values()))
 
-            # get the newest spectorgram upload to associate with depression label
+            # get the newest spectrogram upload to associate with depression label
             list_of_files = glob.glob('static/spectrograms/*.png')
             newest_partic = max(list_of_files, key=os.path.getctime)
             partic_id = os.path.split(newest_partic)[1]  # get file filename

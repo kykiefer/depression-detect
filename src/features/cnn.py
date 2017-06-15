@@ -16,8 +16,8 @@ np.random.seed(15)  # for reproducibility
 
 
 """
-CNN used to classify spectrograms of normal particpants (0) or depressed
-particpants (1). Using Theano backend and Theano image_dim_ordering:
+CNN used to classify spectrograms of normal participants (0) or depressed
+participants (1). Using Theano backend and Theano image_dim_ordering:
 (# channels, # images, # rows, # cols)
 (1, 3040, 513, 125)
 """
