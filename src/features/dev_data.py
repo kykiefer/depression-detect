@@ -4,7 +4,8 @@ import pandas as pd
 A quick script to create the development dataframe for some EDA and \
 random participant selection for the train/test split. Made decision to \
 combine AVEC's pre-identified test and train sets (all having depression \
-labels) to ensure stratified and balanced classes with audio segmentation \
+labels) to ensure maximum training size among  stratified and balanced classes
+given audio segmentation challenges.
 challenges.
 """
 

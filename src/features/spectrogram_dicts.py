@@ -3,13 +3,21 @@ import os
 from dev_data import df_dev
 
 
+"""
+This script builds dictionaries for the depressed and non-depressed classes \
+with each participant id as the key, and the associated segmented matrix \
+spectrogram representation as the value. Said values can than be cropped and \
+randomly sampled as input to the CNN.
+"""
+
+
 def build_class_dictionaries(dir_name):
     """
     Builds a dictionary of depressed participants and non-depressed \
     participants with the participant id as the key and the matrix \
     representation of the no_silence wav file as the value. These \
     values of this dictionary are then randomly cropped and sampled \
-     from to create balanced class and speaker inputs to the CNN.
+    from to create balanced class and speaker inputs to the CNN.
     Parameters
     ----------
     dir_name : filepath

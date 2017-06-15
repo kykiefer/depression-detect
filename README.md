@@ -62,7 +62,7 @@ Convolutional Neural Networks (CNNs) are a variation of the better known Multila
 
 I'll give quick primer to CNNs in the context of my project. For an in-depth take, I recommend the Stanford's [CS231 course](http://cs231n.github.io/convolutional-networks/).
 
-<img alt="General CNN architecture" src="images/cnn_general.png" width='1150'>
+<img alt="General CNN architecture" src="images/cnn_general.png" width='1200'>
 
 <sub><b>Figure 3: </b> General CNN architecture. </sub>
 
@@ -84,7 +84,7 @@ I use a 6-layer Convolutional Neural Network (CNN) model. The model consists of 
 
 My actual architecture was largely inspired by a paper on Environmental Sound Classification with CNNs.<sup>[5](#references)</sup> Their network is displayed in the figure below. My CNN architecture has some distinctions, but the figure below will help visualize.
 
-<img alt="Model architecture" src="images/cnn_architecture.png" width='575'>
+<img alt="Model architecture" src="images/cnn_architecture.png" width='550'>
 
 <sub><b>Figure 4: </b> A similar CNN Environmental sound classification model architecture. </sub>
 
@@ -165,7 +165,7 @@ How I am prioritizing future efforts:
 
 Depression is obviously a spectrum and deriving a binary classification (depressed or not depressed) from a single test (PHQ-8) is somewhat naive. The threshold for a depression classification was a score of 10, but how much different in depression related speech prosody exists between a 9 (classified as not depressed) and a 10 (classified as depressed)? For this reason, the problem may be better approach as a regression problem, predicting participants' PHQ-8 scores (an integer between 0 and 24).
 
-<img alt="PHQ-8 Distribution" src="images/phq8_dist.png" width='500'>
+<img alt="PHQ-8 Distribution" src="images/phq8_dist.png" width='550'>
 
 <sub><b>Figure 7: </b> Distribution of PHQ-8 scores. </sub>
 

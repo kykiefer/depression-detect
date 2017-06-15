@@ -37,7 +37,7 @@ src
 ### Features
 3. `spectrograms.py` performs the short-time Fourier transform ([STFT](https://en.wikipedia.org/wiki/Short-time_Fourier_transform)) on the segmented wav files, transforming the wav files into a matrix representation of a spectrogram. The vertical axis representing frequency, the horizontal axis representing time, and a value in the matrix representing the intensity (in decibels) of the frequency component at a particular time.
 
-4. `dev_data.py` is a dataframe including participant depression labels used in model development.
+4. `dev_data.py` creates a dataframe including participant depression labels used in model development.
 
 5. `spectrogram_dicts.py` builds dictionaries with keys of participant IDs for the each class and values with the matrix representation of the entire segmented wav file's spectrogram.
 
