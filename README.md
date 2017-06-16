@@ -85,7 +85,7 @@ I use a 6-layer Convolutional Neural Network (CNN) model. The model consists of 
 
 My actual architecture was largely inspired by a paper on Environmental Sound Classification with CNNs.<sup>[5](#references)</sup> Their network is displayed in the figure below. My CNN architecture has some distinctions, but the figure below will help visualize.
 
-<img alt="Model architecture" src="images/cnn_architecture.png" width='550'>
+<img alt="Model architecture" src="images/cnn_architecture.png" width='525'>
 
 <sub><b>Figure 4: </b> A similar CNN Environmental sound classification model architecture. </sub>
 
@@ -121,7 +121,7 @@ The test (holdout) set was composed of 560 spectrograms from 14 participants (40
 | 0.582    | 0.621     | 0.547  | 0.555    |
 
 
-<img alt="ROC curve" src="images/roc_curve.png" width='575'>
+<img alt="ROC curve" src="images/roc_curve.png" width='550'>
 
 <sub><b>Figure 5: </b> ROC curve of the CNN model. </sub>
 
@@ -138,12 +138,12 @@ As stated above, a majority vote across the 40 spectrograms per participant was 
 |:--------:| :--------:| :-----:| :-------:|
 | 0.615    | 0.667     | 0.571  | 0.643    |
 
+### Discussion
 State of the emotion detection models exhibit AUC scores `~0.7` (my model had an AUC score of `0.58`), utilizing the lower level features alluded to. Although, this model would not gain much traction as is, I believe it shows a promising direction for using spectrograms in depression detection.
 
-### Discussion
 Depression is obviously a spectrum and deriving a binary classification (depressed or not depressed) from a single test (PHQ-8) is somewhat naive. The threshold for a depression classification was a score of 10, but how much different in depression related speech prosody exists between a 9 (classified as not depressed) and a 10 (classified as depressed)? For this reason, the problem may be better approach as a regression problem, predicting participants' PHQ-8 scores (an integer between 0 and 24).
 
-<img alt="PHQ-8 Distribution" src="images/phq8_dist.png" width='550'>
+<img alt="PHQ-8 Distribution" src="images/phq8_dist.png" width='525'>
 
 <sub><b>Figure 7: </b> Distribution of PHQ-8 scores. </sub>
 
@@ -179,10 +179,10 @@ wget -r -np -nH --cut-dirs=3 -R index.html --user=daicwozuser --ask-password  ht
 
 ## References
 
-    1. Gratch J, Artstein R, Lucas GM, Stratou G, Scherer S, Nazarian A, Wood R, Boberg J, DeVault D, Marsella S, Traum DR. The Distress Analysis Interview Corpus of human and computer interviews. InLREC 2014 May (pp. 3123-3128)
-    2. Girard J, Cohn J. Automated Depression Analysis. Curr Opin Psychol. 2015 August; 4: 75–79.
-    3. Ma X, Yang H, Chen Q, Huang D, and Wang Y. DepAudioNet: An Efficient Deep Model for Audio based Depression Classification. ACM International Conference on Multimedia (ACM-MM) Workshop: Audio/Visual Emotion Challenge (AVEC), 2016.
-    4. Giannakopoulos, Theodoros, and Aggelos Pikrakis. Introduction to audio analysis : a MATLAB approach. Oxford: Academic Press, 2014.
+    1. Gratch, Artstein, Lucas, Stratou, Scherer, Nazarian, Wood, Boberg, DeVault, Marsella, Traum. The Distress Analysis Interview Corpus of human and computer interviews. InLREC 2014 May (pp. 3123-3128)
+    2. Girard, Cohn. Automated Depression Analysis. Curr Opin Psychol. 2015 August; 4: 75–79.
+    3. Ma, Yang, Chen, Huang, and Wang. DepAudioNet: An Efficient Deep Model for Audio based Depression Classification. ACM International Conference on Multimedia (ACM-MM) Workshop: Audio/Visual Emotion Challenge (AVEC), 2016.
+    4. Giannakopoulos, Aggelos. Introduction to audio analysis : a MATLAB approach. Oxford: Academic Press, 2014.
     5. Piczak. Environmental Sound Classification with Convolutional Neural Networks. Institute of Electronic System, Warsaw University of Technology, 2015.
 
 ## Code References
