@@ -13,6 +13,7 @@ Automatic Depression Detection (ADD) is a relatively nascent topic that first ap
     * [Model Architecture](#model-architecture-code)
     * [Training the Model](#training-the-model)  
     * [Results](#results)
+    * [Discussion](#discussion)
 4. [Donate Your Data](#donate-your-data-code)
 5. [Future Directions](#future-directions)
 
@@ -137,7 +138,14 @@ As stated above, a majority vote across the 40 spectrograms per participant was 
 |:--------:| :--------:| :-----:| :-------:|
 | 0.615    | 0.667     | 0.571  | 0.643    |
 
-State of the emotion detection models exhibit AUC scores `>0.7` (my model had an AUC score of `0.58`), utilizing the lower level features alluded to. Although, this model would not gain much traction as is, I believe it shows a promising direction for using spectrograms in depression detection.
+State of the emotion detection models exhibit AUC scores `~0.7` (my model had an AUC score of `0.58`), utilizing the lower level features alluded to. Although, this model would not gain much traction as is, I believe it shows a promising direction for using spectrograms in depression detection.
+
+### Discussion
+Depression is obviously a spectrum and deriving a binary classification (depressed or not depressed) from a single test (PHQ-8) is somewhat naive. The threshold for a depression classification was a score of 10, but how much different in depression related speech prosody exists between a 9 (classified as not depressed) and a 10 (classified as depressed)? For this reason, the problem may be better approach as a regression problem, predicting participants' PHQ-8 scores (an integer between 0 and 24).
+
+<img alt="PHQ-8 Distribution" src="images/phq8_dist.png" width='550'>
+
+<sub><b>Figure 7: </b> Distribution of PHQ-8 scores. </sub>
 
 ## Donate Your Data ([code](https://github.com/kykiefer/depression-detect/tree/master/web_app))
 The model needs your help! Detecting depression is *hard*. Robust speech recognition models rely on 100s of hours of audio data. The good news is that *you* can contribute! Visit [www.DataStopsDepression.com](www.DataStopsDepression.com) to become a *data donor*! Your audio data which will be incorporated in periodic model re-training with a batch algorithm.
@@ -162,12 +170,6 @@ How I am prioritizing future efforts:
 2. Treating depression detection as a regression problem (see below).
 3. Introduce network recurrence (LSTM).
 4. Incorporate Vocal Tract Length Perturbation ([VTLP](http://www.cs.toronto.edu/~ndjaitly/jaitly-icml13.pdf)).
-
-Depression is obviously a spectrum and deriving a binary classification (depressed or not depressed) from a single test (PHQ-8) is somewhat naive. The threshold for a depression classification was a score of 10, but how much different in depression related speech prosody exists between a 9 (classified as not depressed) and a 10 (classified as depressed)? For this reason, the problem may be better approach as a regression problem, predicting participants' PHQ-8 scores (an integer between 0 and 24).
-
-<img alt="PHQ-8 Distribution" src="images/phq8_dist.png" width='550'>
-
-<sub><b>Figure 7: </b> Distribution of PHQ-8 scores. </sub>
 
 I'm currently excited about the results and and will be monitoring pull requests. However, accessing the DAIC-WOZ Database requires signing an agreement form. Access can be granted [here](http://dcapswoz.ict.usc.edu/). To download the 92GB of zip files `cd` into your desired directory and run the following in your shell. Follow the [code walkthrough](https://github.com/kykiefer/depression-detect/tree/master/src) to get set up.
 
