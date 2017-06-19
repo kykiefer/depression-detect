@@ -59,7 +59,8 @@ Neural networks are emerging in cutting edge emotion and language detection mode
 An example of a spectrogram input to the CNN is shown in Figure 2.
 
 <sub>**Technical note:** The spectrograms are generated through a short-time Fourier transform (STFT). STFT is a short-term processing technique that breaks the signals possibly overlapping frames using a moving window technique and computes the Discrete Fourier Transform (DFT) at each frame.<sup>[4](#references)</sup> It should be noted that the trade-off between frequency and time resolution was not extensively explored in this effort, which assumed a Hann window with a window length of 513.</sub>
-<img alt="Spectrogram" src="images/spectrogram2.png" width='800'>
+
+<img alt="Spectrogram" src="images/spectrogram2.png" width='775'>
 
 <sub><b>Figure 2: </b> Spectrogram of a [plosive](http://www.soundonsound.com/sound-advice/q-how-can-i-deal-plosives), followed by a second of silence, and the spoken words, "Welcome to *DepressionDetect*". </sub>  
 
@@ -90,11 +91,11 @@ A 6-layer Convolutional Neural Network (CNN) model was employed consisting of 2 
 
 Though there are some differences, the actual architecture employed in this effort was largely inspired by a paper on Environmental Sound Classification with CNNs.<sup>[5](#references)</sup> The network employed in this paper is show in Figure 4, with *DepressionDetect's* displayed in Figure 5.
 
-<img alt="Environmental sound classification CNN architecture" src="images/cnn_architecture.png" width='525'>
+<img alt="Environmental sound classification CNN architecture" src="images/cnn_architecture.png" width='500'>
 
 <sub><b>Figure 4: </b> Environmental Sound Classification CNN architecture. </sub>
 
-<img alt="DepressionDetect CNN architecture" src="images/dep_detect_cnn_architecture.png" width='900'>
+<img alt="DepressionDetect CNN architecture" src="images/dep_detect_cnn_architecture.png" width='850'>
 
 <sub><b>Figure 5: </b> *DepressionDetect* CNN architecture. </sub>
 
@@ -113,9 +114,9 @@ I created the model using [Keras](https://keras.io/) with a [Theano](http://deep
 The model was trained on 40 randomly selected 513x125 (frequency x time bins) audio segments from each of the 31 participants in each category of depression (resulting in 2,480 spectrograms in total). The model was trained on just under 3 hours of audio in order to adhere by strict class (depressed, not depressed) and speaker balancing parameters. The model was trained for 7 epochs, after which it was observed to overfit based on train and validation loss curves.
 
 ### Results
-I assessed my model and tuned my hyperparameters based on [AUC score](https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve) and F1 score on a validation set (which is distinct from the train and validation sets used to develop the model). AUC scores are commonly used to evaluate emotion detection models. It should be noted that precision and recall can be misleading if test sets have unbalanced class (although they were balanced with the employed sampling appoarch). The test (holdout) set was composed of 560 spectrograms from 14 participants (40 spectrograms per participant, totaling 160 seconds of audio). Initially, predictions were made on each of the 4 second spectrograms, to explore extent to which depression can be detected from 4-second audio segments. Ultimately, a majority vote of the 40 predictions per participant was utilized to label the participant as depressed or not depressed.
+I assessed my model and tuned my hyperparameters based on [AUC score](https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve) and F1 score on a validation set (which is distinct from the train and validation sets used to develop the model). AUC scores are commonly used to evaluate emotion detection models. It should be noted that precision and recall can be misleading if test sets have unbalanced class (although they were balanced with the employed approach). The test (holdout) set was composed of 560 spectrograms from 14 participants (40 spectrograms per participant, totaling 160 seconds of audio). Initially, predictions were made on each of the 4 second spectrograms, to explore extent to which depression can be detected from 4-second audio segments. Ultimately, a majority vote of the 40 predictions per participant was utilized to label the participant as depressed or not depressed.
 
-Table 1 provides a summary of the predictive power using 4 second spectrogams and Table 2 using the "majority vote" appoach.
+Table 1 provides a summary of the predictive power using 4 second spectrograms and Table 2 using the "majority vote" approach.
 
 **Table 1:** Test set predictions on 4 second spectrograms
 
@@ -175,7 +176,7 @@ I would prioritizing future efforts in the following areas (ordered by priority)
 
 Depression moves across a spectrum, so deriving a binary classification (depressed or not depressed) from a single test (PHQ-8) is somewhat naïve and perhaps unrealistic. The threshold for a depression classification was a score of 10, but how much difference in depression related speech prosody exists between a 9 (classified as not depressed) and a 10 (classified as depressed)? For this reason, the problem may be better approached by using regression techniques to predict participants' PHQ-8 scores, scoring the model based on RMSE.
 
-<img alt="PHQ-8 Distribution" src="images/phq8_dist.png" width='525'>
+<img alt="PHQ-8 Distribution" src="images/phq8_dist.png" width='500'>
 
 <sub><b>Figure 8: </b> Distribution of PHQ-8 scores. </sub>
 
