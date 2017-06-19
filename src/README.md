@@ -1,5 +1,5 @@
 # Depression Detect Workflow
-Below is the basic workflow I performed. Many of the scripts use my specific file paths and will have to be altered to run on your machine. I'm running in my Python 2.7.13 environment on macOS.
+Below is the basic workflow I performed. I'm running in my Python 2.7.13 environment on macOS.
 
 Gain access to the [DAIC-WOZ database](http://dcapswoz.ict.usc.edu/) and download the zip files to your project directory by running the following command in your shell:
 
@@ -16,12 +16,12 @@ src
 │   ├──segmentation.py
 │
 └───features
-│   ├──cnn.py
-│   ├──dev_data.py
-│   ├──plot_metrics.py
-│   ├──random_sampling.py
-│   ├──spectrogram_dicts.py
 │   ├──spectrograms.py
+│   ├──dev_data.py
+│   ├──spectrogram_dicts.py
+│   ├──random_sampling.py
+│   ├──cnn.py
+│   ├──plot_metrics.py
 │
 └───models
     ├──README.md
@@ -43,7 +43,7 @@ src
 
 7. `cnn.py` performs normalization on the spectrogram and preps the images for Keras. Then trains and evaluates the network.
 
-8. `plot_metrics.py` plots loss, accuracy and an ROC curve.
+8. `plot_metrics.py` plots loss, accuracy and ROC curve.
 
 ### Models
 9. `cnn_final.h5` is a file containing the configuration and weights of the trained convolutional neural network. The file was too large for GitHub, so there exists a `README.md` as a placeholder with instruction on how to access it.

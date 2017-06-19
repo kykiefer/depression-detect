@@ -161,7 +161,7 @@ The [Flask](http://flask.pocoo.org/) app is hosted on an [AWS EC2](https://aws.a
 
 <img alt="DataStopsDepression.com homepage" src="images/website.gif" width='650'>
 
-<sub><b>Figure 7: </b> DataStopsDepression.com homepage. </sub>  
+<sub><b>Figure 7: </b> [DataStopsDepression.com](www.datastopsdepression.com) homepage. </sub>  
 
 ## Future Directions
 I ultimately envision the model being implemented in a wearable device (Apple Watch, Garmin) or home device (Amazon Echo). The device could prompt you to answer a simple question in the morning and a simple question before bed on a daily basis. The model stores your predicted depression score and tracks it over time, such that the model can learn from your baseline (perhaps using a Bayesian approach). If a threshold is crossed, it notifies you to seek help, or in extreme cases, notifies an emergency contact to help you help yourself.
@@ -174,7 +174,7 @@ I would prioritizing future efforts in the following areas (ordered by priority)
 3. Introducing network recurrence ([LSTM](http://blog.echen.me/2017/05/30/exploring-lstms/)).
 4. Incorporate Vocal Tract Length Perturbation ([VTLP](http://www.cs.toronto.edu/~ndjaitly/jaitly-icml13.pdf)).
 
-Depression moves across a spectrum, so deriving a binary classification (depressed or not depressed) from a single test (PHQ-8) is somewhat naïve and perhaps unrealistic. The threshold for a depression classification was a score of 10, but how much difference in depression related speech prosody exists between a 9 (classified as not depressed) and a 10 (classified as depressed)? For this reason, the problem may be better approached by using regression techniques to predict participants' PHQ-8 scores, scoring the model based on RMSE.
+Depression moves across a spectrum, so deriving a binary classification (depressed or not depressed) from a single test (PHQ-8) is somewhat naïve and perhaps unrealistic. The threshold for a depression classification was a score of 10, but how much difference in depression related speech prosody exists between a 9 (classified as not depressed) and a 10 (classified as depressed)? For this reason, the problem may be better approached by using regression techniques to predict participants' PHQ-8 scores and scoring the model based on RMSE.
 
 <img alt="PHQ-8 Distribution" src="images/phq8_dist.png" width='500'>
 
