@@ -20,7 +20,6 @@ Automatic Depression Detection (ADD) is a relatively nascent topic that first ap
     * [Model Architecture](#model-architecture-code)
     * [Training the Model](#training-the-model)  
     * [Results](#results)
-    * [Discussion](#discussion)
 4. [Donate Your Data](#donate-your-data-code)
 5. [Future Directions](#future-directions)
 
@@ -103,7 +102,7 @@ The CNN used here begins with an input layer being convolved with 32-3x3 filters
 
 A second similar convolutional layer is employed with 32-3x3 filters followed by a max pooling layer with a 1x3 filter and stride of 1x3.
 
-This layer is then followed by two dense layers, which flatten the feature map into a 512 row vector. After the second dense layer, a dropout layer of 0.5 is used (meaning each neuron in the second dense layer has a 50% chance of turning off after each batch update).
+This layer is then followed by two dense layers. After the second dense layer, a dropout layer of 0.5 is used (meaning each neuron in the second dense layer has a 50% chance of turning off after each batch update).
 
 Lastly, a softmax function is applied, which returns the probability that a spectrogram is in the depressed class or not depressed class. The sum probabilities of each class is equal to 1.
 A batch size of 32 (out of 2480 spectrograms) was used along with an Adadelta optimizer, which dynamically adapts the learning rate based on the gradient.
@@ -147,7 +146,6 @@ As stated above, a majority vote across the 40 spectrograms per participant was 
 |:--------:| :--------:| :-----:| :-------:|
 | 0.615    | 0.667     | 0.571  | 0.643    |
 
-### Discussion
 State of the emotion detection models exhibit AUC scores `~0.7` (my model had an AUC score of `0.58`), utilizing the lower level features alluded to. Although, this rapidly developed model is not yet at a predictive state for practical usage "as is", these results strongly suggest a promising, new direction for using spectrograms in depression detection.
 
 ## Donate Your Data ([code](https://github.com/kykiefer/depression-detect/tree/master/web_app))
