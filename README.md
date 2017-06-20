@@ -23,7 +23,7 @@ Automatic Depression Detection (ADD) is a relatively nascent topic that first ap
 For a code walkthrough, see the [src](https://github.com/kykiefer/depression-detect/tree/master/src) folder.
 
 ## Dataset
-All audio recordings and associated depression metrics were provided by the [DAIC-WOZ Database](http://dcapswoz.ict.usc.edu/), which was compiled by USC Institute of Creative Technologies and released as part of the 2016 Audio/Visual Emotional Challenge and Workshop ([AVEC 2016](http://sspnet.eu/avec2016/)). The dataset consists of 189 sessions, averaging 16 minutes, between a participant and virtual interviewer called Ellie, controlled by a human interviewer in another room via a "[Wizard of Oz](https://en.wikipedia.org/wiki/Wizard_of_Oz_experiment)" approach. Prior to the interview, to create a binary "truth" classification (depressed, not depressed) for each participant, each participant completed a psychiatric questionnaire ([PHQ-8](http://patienteducation.stanford.edu/research/phq.pdf)).
+All audio recordings and associated depression metrics were provided by the [DAIC-WOZ Database](http://dcapswoz.ict.usc.edu/), which was compiled by USC Institute of Creative Technologies and released as part of the 2016 Audio/Visual Emotional Challenge and Workshop ([AVEC 2016](http://sspnet.eu/avec2016/)). The dataset consists of 189 sessions, averaging 16 minutes, between a participant and virtual interviewer called Ellie, controlled by a human interviewer in another room via a "[Wizard of Oz](https://en.wikipedia.org/wiki/Wizard_of_Oz_experiment)" approach. Prior to the interview, each participant completed a psychiatric questionnaire ([PHQ-8](http://patienteducation.stanford.edu/research/phq.pdf)), from which a binary "truth" classification (depressed, not depressed) was derived.
 
 A representative transcribed interview excerpt is seen below:
 
@@ -40,17 +40,17 @@ A representative transcribed interview excerpt is seen below:
 <sub><b>Figure 1: </b> Virtual interview with Ellie. </sub>  
 
 ## Acoustic Features of Speech
-While some emotion detection research focuses on the semantic content of audio signals in predicting depression, I decided to focus on the [prosodic](http://clas.mq.edu.au/speech/phonetics/phonology/intonation/prosody.html)  features, which have also been found to be promising predictors of depression. These include sentence length and rhythm, intonation, fundamental frequency, and Mel-frequency cepstral coefficients ([MFCCs](https://en.wikipedia.org/wiki/Mel-frequency_cepstrum)).<sup>[2](#references)</sup> More generally, prosodic features can be characterized by a listener as pitch, tone, rhythm, stress, voice quality, articulation, intonation, etc.
+While some emotion detection research focuses on the semantic content of audio signals in predicting depression, I decided to focus on the [prosodic](http://clas.mq.edu.au/speech/phonetics/phonology/intonation/prosody.html)  features, which have also been found to be promising predictors of depression. Prosodic features can be characterized by a listener as pitch, tone, rhythm, stress, voice quality, articulation, intonation, etc. Encouraging features in research include sentence length and rhythm, intonation, fundamental frequency, and Mel-frequency cepstral coefficients ([MFCCs](https://en.wikipedia.org/wiki/Mel-frequency_cepstrum)).<sup>[2](#references)</sup>
 
 ### Segmentation ([code](https://github.com/kykiefer/depression-detect/blob/master/src/data/segmentation.py))
-The first step in analyzing a person's prosodic features of speech is segmenting the person's speech from silence, other speakers, and noise. Fortunately, the participants in the DAIC-WOZ study were wearing close proximity microphones in low noise environments, which allowed for fairly complete segmentation in 84% of interviews using [pyAudioAnanlysis'](https://github.com/tyiannak/pyAudioAnalysis) segmentation module. When implementing the algorithm in a wearable device, [speaker diarization](https://en.wikipedia.org/wiki/Speaker_diarisation)  (speaker identification) and background noise removal would need further development for a more robust product.  However, in the interest of quickly establishing a minimum viable product, this desired further development was not addressed in the current effort.
+The first step in analyzing a person's prosodic features of speech is segmenting the person's speech from silence, other speakers, and noise. Fortunately, the participants in the DAIC-WOZ study were wearing close proximity microphones in low noise environments, which allowed for fairly complete segmentation in 84% of interviews using [pyAudioAnanlysis'](https://github.com/tyiannak/pyAudioAnalysis) segmentation module. When implementing the algorithm in a wearable device, [speaker diarization](https://en.wikipedia.org/wiki/Speaker_diarisation)  (speaker identification) and background noise removal would require further development for a more robust product.  However, in the interest of quickly establishing a minimum viable product, this desired further development was not addressed in the current effort.
 
 ### Feature Extraction ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/spectrograms.py))
-There are several ways to approach acoustic feature extraction, which is the most critical component to building a successful approach. One approach includes extracting short-term and mid-term audio features such as MFCCs, [chroma vectors](https://en.wikipedia.org/wiki/Chroma_feature), [zero crossing rate](https://en.wikipedia.org/wiki/Zero-crossing_rate), etc. and feeding them as inputs to a Support Vector Machine (SVM) or Random Forest. Since pyAudioAnalysis makes short-term feature extraction fairly streamlined, my first approach to this classification problem involved building short-term feature matrices of 50ms audio segments of the [34 short-term features](https://github.com/tyiannak/pyAudioAnalysis/wiki/3.-Feature-Extraction) available from pyAudioAnalysis.  Since these features are lower level representations of audio, the concern arises that subtle speech characteristics displayed by depressed individuals would go undetected.
+There are several ways to approach acoustic feature extraction, which is the most critical component to building a successful approach. One approach includes extracting short-term and mid-term audio features such as MFCCs, [chroma vectors](https://en.wikipedia.org/wiki/Chroma_feature), [zero crossing rate](https://en.wikipedia.org/wiki/Zero-crossing_rate), etc. and feeding them as inputs to a Support Vector Machine (SVM) or Random Forest. Since pyAudioAnalysis makes short-term feature extraction fairly streamlined, my first approach to this classification problem involved building short-term feature matrices from 50ms audio segments of the [34 short-term features](https://github.com/tyiannak/pyAudioAnalysis/wiki/3.-Feature-Extraction) available from pyAudioAnalysis.  Since these features are lower level representations of audio, the concern arises that subtle speech characteristics displayed by depressed individuals would go undetected.
 
-Running a Random Forest on the 34 short-term features alluded to, yielded an encouraging [F1 score](https://en.wikipedia.org/wiki/F1_score) of `0.59`, with minimal tuning. This approach has been previously employed by others, so I treated this as "baseline" comparative data for which to develop and evaluate a completely new approach involving convolutional neural networks (CNNs) with spectrograms, which I felt could be quite promising and powerful.
+Running a Random Forest on the 34 short-term features alluded to yielded an encouraging [F1 score](https://en.wikipedia.org/wiki/F1_score) of `0.59`, with minimal tuning. This approach has been previously employed by others, so I treated this as "baseline" comparative data for which to develop and evaluate a completely new approach involving convolutional neural networks (CNNs) with spectrograms, which I felt could be quite promising and powerful.
 
-Neural networks are emerging in cutting edge emotion and language detection models. CNNs require a visual image. In this effort, speech stimuli is visually represented via [spectrograms](https://en.wikipedia.org/wiki/Spectrogram). A spectrogram is a visual representation of sound, displaying the amplitude of the frequency components of a signal over time. Unlike MFCCs and other transformations that represent lower level features of sound, spectrograms maintain a high level of detail (including the noise, which can present challenges to neural network learning).
+CNNs require a visual image. In this effort, speech stimuli is visually represented via a [spectrogram](https://en.wikipedia.org/wiki/Spectrogram). A spectrogram is a visual representation of sound, displaying the amplitude of the frequency components of a signal over time. Unlike MFCCs and other transformations that represent lower level features of sound, spectrograms maintain a high level of detail (including the noise, which can present challenges to neural network learning).
 
 An example of a spectrogram input to the CNN is shown in Figure 2.
 
@@ -63,7 +63,7 @@ An example of a spectrogram input to the CNN is shown in Figure 2.
 ## Convolutional Neural Networks
 Convolutional Neural Networks (CNNs) are a variation of the better known Multilayer Perceptron (MLP) in which node connections are inspired by the visual cortex.  CNNs have proven to be a powerful tool in image recognition, video analysis, and natural language processing. More germane to the current effort, successful applications have also been applied to speech analysis.
 
-Below is a quick primer to CNNs in the context of my project. For readers interested in more information, Stanford's [CS231 course](http://cs231n.github.io/convolutional-networks/) is recommended.
+Below is a quick primer to CNNs in the context of my project. For readers interested in more information, this [video](https://www.youtube.com/watch?v=FmpDIaiMIeA) and Stanford's [CS231 course](http://cs231n.github.io/convolutional-networks/) is recommended.
 
 <img alt="General CNN architecture" src="images/cnn_general.png" width='1200'>
 
@@ -78,7 +78,7 @@ However, with the highly detailed representations of speech provided in spectrog
 ### Class Imbalance ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/random_sampling.py))
 In the current dataset, the number of non-depressed subjects is about four times larger than that of depressed ones, which can introduce a classification "non-depressed" bias. Additional bias can occur due to the considerable range of interview durations from 7-33 minutes because a larger volume of signal from an individual may emphasize some characteristics that are person specific.
 
-In an attempt to address these issues, each of the participant's segmented spectrograms were cropped into 4 second slices. Next, participants were randomly sampled in 50/50 proportion from each class (depressed, not depressed).. Then, a fixed number of slices were sampled from each of the selected participants to ensure the CNN has an equal interview duration for each participant. This drastically reduced the training dataset size to 3 hours from original 35 hours of segmented audio, which was felt adequate for this exploratory analysis.
+In an attempt to address these issues, each of the participant's segmented spectrograms were cropped into 4 second slices. Next, participants were randomly sampled in 50/50 proportion from each class (depressed, not depressed). Then, a fixed number of slices were sampled from each of the selected participants to ensure the CNN has an equal interview duration for each participant. This drastically reduced the training dataset size to 3 hours from original 35 hours of segmented audio, which was felt adequate for this exploratory analysis.
 
 It should be noted a few different sampling methods were explored to try to increase the size of the training data, and all resulted in highly biased models in which only the "non-depressed" class was predicted. A revised sampling method should be considered as high-priority in future directions (e.g. see [interesting sampling method](https://www.researchgate.net/publication/309127735_DepAudioNet_An_Efficient_Deep_Model_for_Audio_based_Depression_Classification)), which I hope to implement and explore in [future directions](#future-directions) to increase the training sample size.
 
@@ -107,12 +107,12 @@ A batch size of 32 (out of 2480 spectrograms) was used along with an Adadelta op
 ### Training the Model
 I created the model using [Keras](https://keras.io/) with a [Theano](http://deeplearning.net/software/theano/) backend and trained it on an AWS GPU-optimized EC2 instance.
 
-The model was trained on 40 randomly selected 513x125 (frequency x time bins) audio segments from 31 participants in each category of depression (resulting in 2,480 spectrograms in total). The model was trained on just under 3 hours of audio in order to adhere by strict class (depressed, not depressed) and speaker balancing (160 seconds per subject) parameters. The model was trained for 7 epochs, after which it was observed to overfit based on train and validation loss curves.
+The model was trained on 40 randomly selected 513x125 (frequency x time bins) audio segments from 31 participants in each category of depression (resulting in 2,480 spectrograms in total). The network was trained on just under 3 hours of audio in order to adhere by strict class (depressed, not depressed) and speaker balancing (160 seconds per subject) parameters. The model was trained for 7 epochs, after which it was observed to overfit based on train and validation loss curves.
 
 ### Results
-I assessed my model and tuned my hyperparameters based on [AUC score](https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve) and F1 score on a validation set (which is distinct from the train and validation sets used to develop the model). AUC scores are commonly used to evaluate emotion detection models, becuase precision and recall can be misleading if test sets have unbalanced class (although they were balanced with this approach).
+I assessed my model and tuned my hyperparameters based on [AUC score](https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve) and F1 score on a training and validation set. AUC scores are commonly used to evaluate emotion detection models, because precision and recall can be misleading if test sets have unbalanced classes (although they were balanced with this approach).
 
-The test (holdout) set was composed of 560 spectrograms from 14 participants (40 spectrograms per participant, totaling 160 seconds of audio). Initially, predictions were made on each of the 4 second spectrograms, to explore extent to which depression can be detected from 4-second audio segments. Ultimately, a majority vote of the 40 predictions per participant was utilized to label the participant as depressed or not depressed.
+The test set (which is distinct from the train and validation sets used to develop the model) was composed of 560 spectrograms from 14 participants (40 spectrograms per participant, totaling 160 seconds of audio). Initially, predictions were made on each of the 4 second spectrograms, to explore extent to which depression can be detected from 4 second audio segments. Ultimately, a majority vote of the 40 predictions per participant was utilized to label the participant as depressed or not depressed.
 
 Table 1 provides a summary of the predictive power using 4 second spectrograms with Table 2 using the "majority vote" approach.
 
@@ -132,7 +132,7 @@ Table 1 provides a summary of the predictive power using 4 second spectrograms w
 
 <sub><b>Figure 6: </b> ROC curve of the CNN model. </sub>
 
-As stated above, a majority vote across the 40 spectrograms per participant was also explored as a means to predict each participant’s depression category. Only 14 users were contained in the test set (in order to maximize the training data), so I wanted to be sure to include statistics on individual spectrogram predictions as well as the majority vote approach. As might be expected, model evaluation statistics improved somewhat when taking a majority vote.
+As stated above, a majority vote across the 40 spectrograms per participant was also explored as a means to predict each participant’s depression category. Only 14 users were contained in the test set (in order to maximize the training data), so I wanted to be sure to include statistics on individual spectrogram predictions as well as the majority vote approach. As might be expected, model evaluation statistics improved somewhat when taking a majority vote. However, the sample size is quite small.
 
 **Table 2:** Test set predictions using majority vote
 
@@ -152,7 +152,7 @@ The model needs your help! Detecting depression is *hard*. Robust speech recogni
 
 The donation process:
 1. Record a ~40 second anonymized clip of you reading a provided paragraph (and see a cool spectrogram of your audio recording!).
-2. You will be prompted to complete an 8 question depression survey.
+2. You will be prompted to complete an 8 question psychiatric survey.
 
 The [Flask](http://flask.pocoo.org/) app is hosted on an [AWS EC2](https://aws.amazon.com/ec2/) instance utilizing [S3](https://aws.amazon.com/s3/) for storage.
 
@@ -165,19 +165,19 @@ I ultimately envision the model being implemented in a wearable device (Apple Wa
 
 This initial model provides a solid foundation and promising directions for detecting depression with spectrograms. Further work should train the model in more speakers. Low level audio transformations do a good job of reducing the noise in the data, which allows for robust models to be trained on smaller sample sizes. However, I still hypothesize they overlook subtleties in depressed speech.
 
-I would prioritizing future efforts in the following areas (ordered by priority):
+I am prioritizing future efforts in the following areas (ordered by priority):
 1. Sampling methods to increase training size without introducing class or speaker bias.
 2. Treating depression detection as a regression problem (see below).
 3. Introducing network recurrence ([LSTM](http://blog.echen.me/2017/05/30/exploring-lstms/)).
 4. Incorporate Vocal Tract Length Perturbation ([VTLP](http://www.cs.toronto.edu/~ndjaitly/jaitly-icml13.pdf)).
 
-Depression moves across a spectrum, so deriving a binary classification (depressed, not depressed) from a single test (PHQ-8) is somewhat naïve and perhaps unrealistic. The threshold for a depression classification was a score of 10, but how much difference in depression-related speech prosody exists between a 9 (classified as not depressed) and a 10 (classified as depressed)? For this reason, the problem may be better approached by using regression techniques to predict participants' PHQ-8 scores and scoring the model based on [RMSE](https://en.wikipedia.org/wiki/Root-mean-square_deviation).
+Depression moves across a spectrum, so deriving a binary classification (depressed, not depressed) from a single test (PHQ-8) is somewhat naïve and perhaps unrealistic. The threshold for a depression classification was a score of 10, but how much difference in depression-related speech prosody exists between a score of 9 (classified as not depressed) and a 10 (classified as depressed)? For this reason, the problem may be better approached by using regression techniques to predict participants' PHQ-8 scores and scoring the model based on [RMSE](https://en.wikipedia.org/wiki/Root-mean-square_deviation).
 
 <img alt="PHQ-8 Distribution" src="images/phq8_dist.png" width='500'>
 
 <sub><b>Figure 8: </b> Distribution of PHQ-8 scores. </sub>
 
-I'm currently excited about the results and will be monitoring pull requests. However, accessing the DAIC-WOZ Database requires signing an agreement form, which can be granted [here](http://dcapswoz.ict.usc.edu/). To download the 92GB of zip files `cd` into your desired directory and run the following in your shell. Follow the [code walkthrough](https://github.com/kykiefer/depression-detect/tree/master/src) to get set up.
+I'm currently excited about the results and will be monitoring pull requests. However, accessing the DAIC-WOZ Database requires signing an agreement form, which can be found [here](http://dcapswoz.ict.usc.edu/). To download the 92GB of zip files `cd` into your desired directory and run the following in your shell. Follow the [code walkthrough](https://github.com/kykiefer/depression-detect/tree/master/src) to get set up for analysis.
 
 ```shell
 wget -r -np -nH --cut-dirs=3 -R index.html --user=daicwozuser --ask-password  http://dcapswoz.ict.usc.edu/wwwdaicwoz/
