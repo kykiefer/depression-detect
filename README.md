@@ -1,5 +1,5 @@
 # *DepressionDetect*
-This effort addresses automated device for detecting depression from acoustic features in speech.  The tool is aimed at lowering the barrier of entry in seeking help for potential mental illness and supporting medical professionals' diagnoses.
+This effort addresses an automated device for detecting depression from acoustic features in speech.  The tool is aimed at lowering the barrier of entry in seeking help for potential mental illness and supporting medical professionals' diagnoses.
 
 Early detection and treatment of depression is essential in promoting remission, preventing relapse, and reducing the emotional burden of the disease.
 
