@@ -86,7 +86,7 @@ def keras_img_prep(X_train, X_test, img_dep, img_rows, img_cols):
 def cnn(X_train, y_train, X_test, y_test, batch_size,
         nb_classes, epochs, input_shape):
     """
-    This Convolutional Neural Net architecture for classifying the audio clips
+    The Convolutional Neural Net architecture for classifying the audio clips
     as normal (0) or depressed (1).
     """
     model = Sequential()
@@ -209,7 +209,7 @@ if __name__ == '__main__':
     img_rows, img_cols, img_depth = X_train.shape[1], X_train.shape[2], 1
 
     # reshape image input for Keras
-    # used Theano dim_ordering (th), (# images, # chans, # rows, # cols)
+    # used Theano dim_ordering (th), (# chans, # images, # rows, # cols)
     X_train, X_test, input_shape = keras_img_prep(X_train, X_test, img_depth,
                                                   img_rows, img_cols)
 
@@ -228,7 +228,7 @@ if __name__ == '__main__':
     model_name = '../models/cnn_{}.h5'.format(model_id)
     model.save(model_name)
 
-    # more evaluation
+    # custom evaluation metrics
     print('Calculating additional test metrics...')
     accuracy = float(conf_matrix[0][0] + conf_matrix[1][1]) / np.sum(conf_matrix)
     precision = float(conf_matrix[0][0]) / (conf_matrix[0][0] + conf_matrix[0][1])
@@ -239,7 +239,7 @@ if __name__ == '__main__':
     print("Recall: {}".format(recall))
     print("F1-Score: {}".format(f1_score))
 
-    # plot train/test loss and accuracy. saves files in cd
+    # plot train/test loss and accuracy. saves files in working dir
     print('Saving plots...')
     plot_loss(history, model_id)
     plot_accuracy(history, model_id)
