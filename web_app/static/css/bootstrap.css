@@ -1186,7 +1186,7 @@ h6,
   font-family: inherit;
   font-weight: 500;
   line-height: 1.1;
-  color: inherit;
+  color: #00F;
 }
 h1 small,
 h2 small,
@@ -1334,7 +1334,7 @@ mark,
   text-transform: capitalize;
 }
 .text-muted {
-  color: #777;
+  color: #FF6347;
 }
 .text-primary {
   color: #337ab7;
