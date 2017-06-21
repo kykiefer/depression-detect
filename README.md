@@ -73,7 +73,7 @@ CNNs take images as input. In the case of the spectrogram, I pass (or input) a g
 
 The CNN begins by learning features like vertical lines, but in subsequent layers, begins to pick up on features like the shape of frequency-time curve (perhaps representative of speaker intonation). Such learned features may provide an elegant and powerful representation of different prosodic features of speech, which in turn are representative of underlying differences between depressed and non-depressed speech.
 
-However, with the highly detailed representations of speech provided in spectrograms, false noise signals (ambient noise, plosives, unsegmented audio from other speakers, etc) can be inconveniently picked up by the network. One can mitigate this noise with different regularization parameters in the network (pooling layers, L1 loss functions, dropout, etc.), but unless your training data is abundant, it is challenging for the network to distinguish real predictors of depression from the false signal.
+However, with the highly detailed representations of speech provided in spectrograms, false noise signals (ambient noise, plosives, unsegmented audio from other speakers, etc.) can be inconveniently picked up by the network. One can mitigate this noise with different regularization parameters in the network (pooling layers, L1 loss functions, dropout, etc.), but unless your training data is abundant, it is challenging for the network to distinguish real predictors of depression from the false signal.
 
 ### Class Imbalance ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/random_sampling.py))
 In the current dataset, the number of non-depressed subjects is about four times larger than that of depressed ones, which can introduce a classification "non-depressed" bias. Additional bias can occur due to the considerable range of interview durations from 7-33 minutes because a larger volume of signal from an individual may emphasize some characteristics that are person specific.
@@ -85,7 +85,7 @@ It should be noted a few different sampling methods were explored to try to incr
 ### Model Architecture ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/cnn_aws.py))
 A 6-layer Convolutional Neural Network (CNN) model was employed consisting of 2 convolutional layers with max-pooling and 2 fully connected layers. Each spectrogram input is an image with dimension 513x125 representing 4 seconds of audio and frequencies ranging from 0 to 8kHz. The frequency range was tuned as a hyperparameter, since most human speech energy is concentrated between 0.3-3kHz. Each input is normalized according to decibels relative to full scale (dBFS).
 
-Though there are some differences, the actual architecture employed in this effort was largely inspired by a paper on Environmental Sound Classification with CNNs.<sup>[5](#references)</sup> The network employed in this paper is show in Figure 4, with *DepressionDetect's* displayed in Figure 5.
+Though there are some differences, the actual architecture employed in this effort was largely inspired by a paper on Environmental Sound Classification with CNNs.<sup>[5](#references)</sup> The network employed in this paper is shown in Figure 4, with *DepressionDetect's* displayed in Figure 5.
 
 <img alt="Environmental sound classification CNN architecture" src="images/cnn_architecture.png" width='500'>
 
