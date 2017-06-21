@@ -82,6 +82,8 @@ In an attempt to address these issues, each of the participant's segmented spect
 
 It should be noted a few different sampling methods were explored to try to increase the size of the training data, and all resulted in highly biased models in which only the "non-depressed" class was predicted. A revised sampling method should be considered as high-priority in future directions (e.g. see [interesting sampling method](https://www.researchgate.net/publication/309127735_DepAudioNet_An_Efficient_Deep_Model_for_Audio_based_Depression_Classification)) to increase the training sample size.
 
+<sup>**6/21/2017 update:** The need for class balancing on binary classification problems, where class probabilities are assigned by the model, is somewhat disputed (see questions posed on Cross Validated [[1](https://stats.stackexchange.com/questions/283170/when-is-unbalanced-data-really-a-problem-in-machine-learning), [2](https://stats.stackexchange.com/questions/247871/what-is-the-root-cause-of-the-class-imbalance-problem)].</sup>
+
 ### Model Architecture ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/cnn.py))
 A 6-layer Convolutional Neural Network (CNN) model was employed consisting of 2 convolutional layers with max-pooling and 2 fully connected layers. Each spectrogram input is an image with dimension 513x125 representing 4 seconds of audio and frequencies ranging from 0 to 8kHz. The frequency range was tuned as a hyperparameter, since most human speech energy is concentrated between 0.3-3kHz. Each input is normalized according to decibels relative to full scale (dBFS).
 
