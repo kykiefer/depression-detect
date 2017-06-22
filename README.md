@@ -150,16 +150,16 @@ As stated above, a majority vote across the 40 spectrograms per participant was 
 State of the emotion detection models exhibit AUC scores `~0.7` (my model had an AUC score of `0.58`), utilizing the lower level features alluded to. Although, this rapidly developed model is not yet at a predictive state for practical usage "as is", these results strongly suggest a promising, new direction for using spectrograms in depression detection.
 
 ## Donate Your Data ([code](https://github.com/kykiefer/depression-detect/tree/master/web_app))
-The model needs your help! Detecting depression is *hard*. Robust speech recognition models rely on hundreds of hours of audio data. The good news is that *you* can contribute! Visit [www.DataStopsDepression.com](http://www.datastopsdepression.com/) to become a *data donor*! Your audio data will be incorporated in periodic model re-training with a batch algorithm.
+The model needs your help! Detecting depression is *hard*. Robust speech recognition models rely on hundreds of hours of audio data. The good news is that *you* can contribute! Visit [DataStopsDepression.com](http://www.datastopsdepression.com/) to become a *data donor*! Your audio data will be incorporated in periodic model re-training with a batch algorithm.
 
 The donation process:
 1. Record a 40-second anonymized clip of yourself reading a provided paragraph and see a cool spectrogram of your audio recording!
 2. You will be prompted to complete an 8 question psychiatric survey.
 
-The [Flask](http://flask.pocoo.org/) app is hosted on an [AWS EC2](https://aws.amazon.com/ec2/) instance utilizing [S3](https://aws.amazon.com/s3/) for storage. The donation process is illustrated in Figure 7 below.
+The [Flask](http://flask.pocoo.org/) app is hosted on an [AWS EC2](https://aws.amazon.com/ec2/) instance utilizing [S3](https://aws.amazon.com/s3/) for storage. The donation process is illustrated step-by-step in Figure 7 below.
 
 <kbd>
-<img alt="DataStopsDepression.com homepage" src="images/website.gif" width='650'>
+  <img alt="DataStopsDepression.com homepage" src="images/website.gif" width='650'>
 </kbd>
 
 <sub><b>Figure 7: </b> [DataStopsDepression.com](http://www.datastopsdepression.com/) donation process. </sub>  
@@ -169,7 +169,7 @@ I ultimately envision the model being implemented in a wearable device (Apple Wa
 
 This initial model provides a solid foundation and promising directions for detecting depression with spectrograms. Further work should train in more speakers. Low level audio transformations do a good job of reducing the noise in the data, which allows for robust models to be trained on smaller sample sizes. However, I still hypothesize they overlook subtleties in depressed speech.
 
-I am prioritizing future efforts in the following areas (ordered by priority):
+I would prioritize future efforts as follows:
 1. Sampling methods to increase training size without introducing class or speaker bias.
 2. Treating depression detection as a regression problem (see below).
 3. Introducing network recurrence ([LSTM](http://blog.echen.me/2017/05/30/exploring-lstms/)).
@@ -197,5 +197,5 @@ wget -r -np -nH --cut-dirs=3 -R index.html --user=daicwozuser --ask-password  ht
 
 ## Code References
 
-    1. http://yerevann.github.io/2015/10/11/spoken-language-identification-with-deep-convolutional-networks/
+    1. http://yerevann.github.io/2015/10/11/spoken-language-identification-with-deep-convolutional-networks
     2. http://www.frank-zalkow.de/en/code-snippets/create-audio-spectrograms-with-python.html
