@@ -48,7 +48,7 @@ The first step in analyzing a person's prosodic features of speech is segmenting
 ### Feature Extraction ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/spectrograms.py))
 There are several ways to approach acoustic feature extraction, which is the most critical component to building a successful approach. One method includes extracting short-term and mid-term audio features such as MFCCs, [chroma vectors](https://en.wikipedia.org/wiki/Chroma_feature), [zero crossing rate](https://en.wikipedia.org/wiki/Zero-crossing_rate), etc. and feeding them as inputs to a Support Vector Machine (SVM) or Random Forest. Since pyAudioAnalysis makes short-term feature extraction fairly streamlined, my first approach to this classification problem involved building short-term feature matrices from 50ms audio segments of the [34 short-term features](https://github.com/tyiannak/pyAudioAnalysis/wiki/3.-Feature-Extraction) available from pyAudioAnalysis.  Since these features are lower level representations of audio, the concern arises that subtle speech characteristics displayed by depressed individuals would go undetected.
 
-Running a Random Forest on the 34 short-term features alluded to yielded an encouraging [F1 score](https://en.wikipedia.org/wiki/F1_score) of `0.59`, with minimal tuning. This approach has been previously employed by others, so I treated this as "baseline" comparative data for which to develop and evaluate a completely new approach involving convolutional neural networks (CNNs) with spectrograms, which I felt could be quite promising and powerful.
+Running a Random Forest on the 34 short-term features yielded an encouraging [F1 score](https://en.wikipedia.org/wiki/F1_score) of `0.59`, with minimal tuning. This approach has been previously employed by others, so I treated this as "baseline" comparative data for which to develop and evaluate a completely new approach involving convolutional neural networks (CNNs) with spectrograms, which I felt could be quite promising and powerful.
 
 CNNs require a visual image. In this effort, speech stimuli is represented via a [spectrogram](https://en.wikipedia.org/wiki/Spectrogram). A spectrogram is a visual representation of sound, displaying the amplitude of the frequency components of a signal over time. Unlike MFCCs and other transformations that represent lower level features of sound, spectrograms maintain a high level of detail (including the noise, which can present challenges to neural network learning).
 
@@ -61,7 +61,7 @@ An example of a spectrogram input to the CNN is shown in Figure 2.
 <sub><b>Figure 2: </b> Spectrogram of a [plosive](http://www.soundonsound.com/sound-advice/q-how-can-i-deal-plosives), followed by a second of silence, and the spoken words, "Welcome to *DepressionDetect*". </sub>  
 
 ## Convolutional Neural Networks
-Convolutional Neural Networks (CNNs) are a variation of the better known Multilayer Perceptron (MLP) in which node connections are inspired by the visual cortex.  CNNs have proven to be a powerful tool in image recognition, video analysis, and natural language processing. More germane to the current effort, successful applications have also been applied to speech analysis.
+Convolutional neural networks (CNNs) are a variation of the better known Multilayer Perceptron (MLP) in which node connections are inspired by the visual cortex.  CNNs have proven to be a powerful tool in image recognition, video analysis, and natural language processing. More germane to the current effort, successful applications have also been applied to speech analysis.
 
 Below is a quick primer to CNNs in the context of my project. For readers interested in more information, this [video](https://www.youtube.com/watch?v=FmpDIaiMIeA) and Stanford's [CS231 course](http://cs231n.github.io/convolutional-networks/) are recommended.
 
@@ -78,16 +78,16 @@ However, with the highly detailed representations of speech provided in spectrog
 ### Class Imbalance ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/random_sampling.py))
 In the current dataset, the number of non-depressed subjects is about four times larger than that of depressed ones, which can introduce a classification "non-depressed" bias. Additional bias can occur due to the considerable range of interview durations from 7-33 minutes because a larger volume of signal from an individual may emphasize some characteristics that are person specific.
 
-In an attempt to address these issues, each of the participant's segmented spectrograms were cropped into 4 second slices. Next, participants were randomly sampled in 50/50 proportion from each class (depressed, not depressed). Then, a fixed number of slices were sampled from each of the selected participants to ensure the CNN has an equal interview duration for each participant. This drastically reduced the training dataset size to 3 hours from the original 35 hours of segmented audio, which was felt adequate for this exploratory analysis.
+In an attempt to address these issues, each of the participant's segmented spectrograms were cropped into 4-second slices. Next, participants were randomly sampled in 50/50 proportion from each class (depressed, not depressed). Then, a fixed number of slices were sampled from each of the selected participants to ensure the CNN has an equal interview duration for each participant. This drastically reduced the training dataset size to 3 hours from the original 35 hours of segmented audio, which was felt adequate for this exploratory analysis.
 
 It should be noted a few different sampling methods were explored to try to increase the size of the training data, and all resulted in highly biased models in which only the "non-depressed" class was predicted. A revised sampling method should be considered as high-priority in future directions (e.g. see [interesting sampling method](https://www.researchgate.net/publication/309127735_DepAudioNet_An_Efficient_Deep_Model_for_Audio_based_Depression_Classification)) to increase the training sample size.
 
-<sup>**6/21/2017 update:** The need for class balancing on binary classification problems, where class probabilities are assigned by the model, is somewhat disputed (see questions posed on Cross Validated [[1](https://stats.stackexchange.com/questions/283170/when-is-unbalanced-data-really-a-problem-in-machine-learning), [2](https://stats.stackexchange.com/questions/247871/what-is-the-root-cause-of-the-class-imbalance-problem)].</sup>
+<sup>**6/21/2017 update:** The need for class balancing on binary classification problems, where class probabilities are assigned by the model, is somewhat disputed. See questions posed on Cross Validated [[1](https://stats.stackexchange.com/questions/283170/when-is-unbalanced-data-really-a-problem-in-machine-learning), [2](https://stats.stackexchange.com/questions/247871/what-is-the-root-cause-of-the-class-imbalance-problem)].</sup>
 
 ### Model Architecture ([code](https://github.com/kykiefer/depression-detect/blob/master/src/features/cnn.py))
-A 6-layer Convolutional Neural Network (CNN) model was employed consisting of 2 convolutional layers with max-pooling and 2 fully connected layers. Each spectrogram input is an image with dimension 513x125 representing 4 seconds of audio and frequencies ranging from 0 to 8kHz. The frequency range was tuned as a hyperparameter, since most human speech energy is concentrated between 0.3-3kHz. Each input is normalized according to decibels relative to full scale (dBFS).
+A 6-layer convolutional neural network (CNN) model was employed consisting of 2 convolutional layers with max-pooling and 2 fully connected layers. Each spectrogram input is an image with dimension 513x125 representing 4 seconds of audio and frequencies ranging from 0 to 8kHz. The frequency range was tuned as a hyperparameter, since most human speech energy is concentrated between 0.3-3kHz. Each input is normalized according to decibels relative to full scale (dBFS).
 
-Though there are some differences, the actual architecture employed in this effort was largely inspired by a paper on Environmental Sound Classification with CNNs.<sup>[5](#references)</sup> The network employed in this paper is shown in Figure 4, with *DepressionDetect's* displayed in Figure 5.
+Though there are some differences, the actual architecture employed in this effort was largely inspired by a paper on Environmental Sound Classification with CNNs.<sup>[5](#references)</sup> The network architecture employed in this paper is shown in Figure 4, with *DepressionDetect's* architecture displayed in Figure 5.
 
 <img alt="Environmental sound classification CNN architecture" src="images/cnn_architecture.png" width='500'>
 
@@ -114,11 +114,11 @@ The model was trained on 40 randomly selected 513x125 (frequency x time bins) au
 ### Results
 I assessed my model and tuned my hyperparameters based on [AUC score](https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve) and F1 score on a training and validation set. AUC scores are commonly used to evaluate emotion detection models, because precision and recall can be misleading if test sets have unbalanced classes (although they were balanced with this approach).
 
-The test set (which is distinct from the train and validation sets used to develop the model) was composed of 560 spectrograms from 14 participants (40 spectrograms per participant, totaling 160 seconds of audio). Initially, predictions were made on each of the 4 second spectrograms, to explore extent to which depression can be detected from 4 second audio segments. Ultimately, a majority vote of the 40 spectrogram predictions per participant was utilized to classify the participant as depressed or not depressed.
+The test set (which is distinct from the train and validation sets used to develop the model) was composed of 560 spectrograms from 14 participants (40 spectrograms per participant, totaling 160 seconds of audio). Initially, predictions were made on each of the 4-second spectrograms, to explore the extent to which depression can be detected from 4-second audio segments. Ultimately, a majority vote of the 40 spectrogram predictions per participant was utilized to classify the participant as depressed or not depressed.
 
-Table 1 provides a summary of the predictive power using 4 second spectrograms with Table 2 using the "majority vote" approach.
+Table 1 provides a summary of the predictive power using 4-second spectrograms with Table 2 using the "majority vote" approach.
 
-**Table 1:** Test set predictions on 4 second spectrograms
+**Table 1:** Test set predictions on 4-second spectrograms
 
 |  Confusion Matrix | Actual: Yes | Actual: No |
 |:----------------:| :-------:| :------:|
@@ -153,14 +153,16 @@ State of the emotion detection models exhibit AUC scores `~0.7` (my model had an
 The model needs your help! Detecting depression is *hard*. Robust speech recognition models rely on hundreds of hours of audio data. The good news is that *you* can contribute! Visit [www.DataStopsDepression.com](http://www.datastopsdepression.com/) to become a *data donor*! Your audio data will be incorporated in periodic model re-training with a batch algorithm.
 
 The donation process:
-1. Record a ~40 second anonymized clip of you reading a provided paragraph (and see a cool spectrogram of your audio recording!).
+1. Record a 40-second anonymized clip of yourself reading a provided paragraph and see a cool spectrogram of your audio recording!
 2. You will be prompted to complete an 8 question psychiatric survey.
 
-The [Flask](http://flask.pocoo.org/) app is hosted on an [AWS EC2](https://aws.amazon.com/ec2/) instance utilizing [S3](https://aws.amazon.com/s3/) for storage.
+The [Flask](http://flask.pocoo.org/) app is hosted on an [AWS EC2](https://aws.amazon.com/ec2/) instance utilizing [S3](https://aws.amazon.com/s3/) for storage. The donation process is illustrated in Figure 7 below.
 
+<kbd>
 <img alt="DataStopsDepression.com homepage" src="images/website.gif" width='650'>
+</kbd>
 
-<sub><b>Figure 7: </b> [DataStopsDepression.com](http://www.datastopsdepression.com/) homepage. </sub>  
+<sub><b>Figure 7: </b> [DataStopsDepression.com](http://www.datastopsdepression.com/) donation process. </sub>  
 
 ## Future Directions
 I ultimately envision the model being implemented in a wearable device (Apple Watch, Garmin) or home device (Amazon Echo). The device could prompt you to answer a simple question in the morning and a simple question before bed on a daily basis. The model stores your predicted depression score and tracks it over time, such that the model can learn from your baseline (perhaps using a Bayesian approach). If a threshold is crossed, it notifies you to seek help, or in extreme cases, notifies an emergency contact to help you help yourself.
